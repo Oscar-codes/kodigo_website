@@ -8,6 +8,12 @@ import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
 
+// El Header ya muestra la navegacion completa. En el Footer evitamos esos
+// enlaces para no duplicarlos visualmente (Bug del ticket: 'Saber mas' y
+// 'Clientes' aparecian dos veces). Solo dejamos los items que actuan como
+// portal de retorno rapido desde el bottom de la pagina.
+const FOOTER_EXCLUDED = new Set(["Saber más", "Clientes"]);
+
 // Footer azul marino de Eduhall (neutral-900): columnas de enlaces y barra inferior.
 const Wrap = styled.footer`
   background: ${({ theme }) => theme.colors.navy};
@@ -74,11 +80,13 @@ export const Footer = () => (
       <nav aria-label="Secciones">
         <h2>Secciones</h2>
         <ul>
-          {navigation.map((n) => (
-            <li key={n.to}>
-              <Link to={n.to}>{n.label}</Link>
-            </li>
-          ))}
+          {navigation
+            .filter((n) => !FOOTER_EXCLUDED.has(n.label))
+            .map((n) => (
+              <li key={n.to}>
+                <Link to={n.to}>{n.label}</Link>
+              </li>
+            ))}
         </ul>
       </nav>
       <nav aria-label="Bootcamps destacados">
