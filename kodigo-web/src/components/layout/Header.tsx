@@ -24,8 +24,8 @@ const Bar = styled.header<{ $scrolled: boolean }>`
     ${({ theme, $scrolled }) => ($scrolled ? theme.colors.main100 : "transparent")};
   box-shadow: ${({ theme, $scrolled }) => ($scrolled ? theme.shadows.float : "0 0 0 rgba(7, 20, 49, 0)")};
   color: ${({ theme }) => theme.colors.purple};
-  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(32px) saturate(2)" : "none")};
-  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(32px) saturate(2)" : "none")};
+  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(32px) saturate(2.2)" : "none")};
+  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(32px) saturate(2.2)" : "none")};
   transition:
     background-color ${({ theme }) => theme.motion.duration.base} linear,
     border-color ${({ theme }) => theme.motion.duration.base} linear,
