@@ -7,7 +7,7 @@ import { navigation, type NavItem } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
-import { ChevronDown, Phone } from "../ui/Icons";
+import { ChevronDown } from "../ui/Icons";
 import { ScrollProgress } from "../ui/ScrollProgress";
 
 // Header de Kodigo: barra blanca, logo a color, menú en mayúsculas con texto morado
@@ -44,29 +44,6 @@ const Inner = styled(Container)<{ $scrolled: boolean }>`
     $scrolled ? theme.layout.headerHeightScrolled : theme.layout.headerHeight};
   transition:
     min-height ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing};
-`;
-
-const Cta = styled.a`
-  display: none;
-  flex: none;
-  align-items: center;
-  gap: ${({ theme }) => theme.space(2)};
-  padding: ${({ theme }) => `${theme.space(2.5)} ${theme.space(6)}`};
-  border: 2px solid ${({ theme }) => theme.colors.purple};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  color: ${({ theme }) => theme.colors.purple};
-  font-size: 0.9375rem;
-  font-weight: ${({ theme }) => theme.weights.semibold};
-  transition: background-color ${({ theme }) => theme.motion.duration.hover} linear, color ${({ theme }) => theme.motion.duration.hover} linear;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.purple};
-    color: ${({ theme }) => theme.colors.white};
-  }
-
-  ${media.up("lg")} {
-    display: inline-flex;
-  }
 `;
 
 const Brand = styled(Link)<{ $scrolled: boolean }>`
@@ -126,9 +103,10 @@ const Item = styled.li`
     padding: ${({ theme }) => `${theme.space(2.5)} ${theme.space(3.5)}`};
     border-radius: ${({ theme }) => theme.radii.pill};
     font-size: 0.875rem;
-    /* Manrope primero; cae al system stack si no esta cargada. Sin negrita por
-       defecto para que el menu se sienta ligero: el bold solo se activa en
-       hover/expanded (regla review-animations: hover gated por hover/pointer). */
+    /* Manrope primero; cae al system stack si no esta cargada. Mantenemos el
+       mismo peso en hover y en expanded (medium) para evitar el "saltito" de
+       layout cuando un glyph de peso 700 mete width mayor que su version 500
+       (regla review-animations: nada que mueva layout al cursor). */
     font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-weight: ${({ theme }) => theme.weights.medium};
     letter-spacing: 0.01em;
@@ -136,22 +114,14 @@ const Item = styled.li`
        del dato y respeta "Bootcamps", "Nosotros", etc. */
     text-transform: capitalize;
     color: ${({ theme }) => theme.colors.purple};
-    transition:
-      color ${({ theme }) => theme.motion.duration.hover} linear,
-      font-weight ${({ theme }) => theme.motion.duration.hover} linear;
-
-    /* Activar bold al pasar el cursor o cuando el dropdown ya esta abierto.
-       Solo en dispositivos con hover real (evita bold permanente en tactiles). */
-    @media (hover: hover) and (pointer: fine) {
-      &:hover,
-      &[aria-expanded="true"] {
-        font-weight: ${({ theme }) => theme.weights.bold};
-      }
-    }
+    transition: color ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
-  /* Color de hover/expanded sin dispositivo de hover (touch). */
+  /* En hover/expanded no cambiamos font-weight: la pista visual viene del
+     color (purpleDark + una linea dashed bajo el item activo via border
+     aplicada al padre <li>). Asi el menu no se mueve al pasar el cursor. */
   > a:hover,
+  > button:hover,
   > button[aria-expanded="true"] {
     color: ${({ theme }) => theme.colors.purpleDark};
   }
@@ -374,9 +344,6 @@ export const Header = () => {
             )}
           </ul>
         </Menu>
-        <Cta href="#contacto">
-          <Phone size={18} /> Contáctanos
-        </Cta>
       </Inner>
     </Bar>
   );
