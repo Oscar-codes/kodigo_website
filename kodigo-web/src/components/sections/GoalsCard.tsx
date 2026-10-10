@@ -325,107 +325,6 @@ const Suggestion = styled.div`
   }
 `;
 
-// === MINI-CARD FLOTANTE "TU SIGUIENTE PASO" ===
-const MiniCard = styled.div`
-  position: relative;
-  z-index: 3;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.space(3)};
-  padding: ${({ theme }) => `${theme.space(3)} ${theme.space(4)}`};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: ${({ theme }) => theme.shadows.float};
-  color: ${({ theme }) => theme.colors.heading};
-  margin-top: ${({ theme }) => theme.space(4)};
-
-  ${media.up("md")} {
-    position: absolute;
-    left: -2rem;
-    bottom: -1.75rem;
-    margin-top: 0;
-    width: clamp(320px, 75%, 420px);
-    flex-wrap: nowrap;
-    padding: ${({ theme }) => `${theme.space(4)} ${theme.space(5)}`};
-  }
-
-  ${media.up("lg")} {
-    left: -3rem;
-  }
-
-  .note {
-    display: flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.space(3)};
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .note .dot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: ${({ theme }) => theme.colors.main50};
-    color: ${({ theme }) => theme.colors.main};
-    flex: none;
-  }
-
-  .note .text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-    min-width: 0;
-  }
-
-  .note strong {
-    font-size: 0.8125rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.heading};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .note span {
-    font-size: 0.75rem;
-    color: ${({ theme }) => theme.colors.textMuted};
-  }
-`;
-
-const CtaMini = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space(2)};
-  height: 44px;
-  padding: ${({ theme }) => `0 ${theme.space(5)}`};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.main};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 0.875rem;
-  font-weight: ${({ theme }) => theme.weights.semibold};
-  text-decoration: none;
-  flex: none;
-  transition:
-    background-color ${({ theme }) => theme.motion.duration.hover} linear,
-    transform ${({ theme }) => theme.motion.duration.hover} ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.mainHover};
-    transform: translateY(-2px);
-  }
-
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.yellow};
-    outline-offset: 3px;
-  }
-`;
-
 interface Props {
   /** Indica la opción a destacar (key del array). Si no, la última opción marcada `highlighted`. */
   highlightIndex?: number;
@@ -491,22 +390,6 @@ export const GoalsCard = ({ highlightIndex }: Props) => {
           </Suggestion>
         </Body>
       </Panel>
-
-      <MiniCard role="complementary" aria-label="Tu siguiente paso en Kodigo">
-        <div className="note">
-          <span className="dot" aria-hidden="true">
-            <Sparkles size={18} />
-          </span>
-          <span className="text">
-            <strong>Tu siguiente paso comienza aquí.</strong>
-            <span>Te guiamos según tu meta.</span>
-          </span>
-        </div>
-        <CtaMini to="/bootcamps" aria-label="Ver todas las opciones de Kodigo">
-          Ver opciones
-          <ArrowUpRight size={16} />
-        </CtaMini>
-      </MiniCard>
     </Wrapper>
   );
 };
