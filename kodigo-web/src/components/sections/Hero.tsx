@@ -165,6 +165,20 @@ const Slide = styled.div<SlideProps>`
 
 const Content = styled.div`
   max-width: 760px;
+
+  /* A partir de md la GoalsCard es un panel flotante de 400px a la derecha. Si
+     la dejamos libre, el texto se monta sobre la tarjeta y rompe layout. Lo
+     capamos con calc(100vw - 460px) para que el texto respete 460 px desde
+     el borde derecho del viewport (400 + 24 del Wrapper en right + buffer).
+     Edge Chromium, Chrome, Firefox y Safari interpretan calc(100vw - Xpx)
+     igual y la funcion min() resuelve el limite duro del 760px. */
+  ${media.up("md")} {
+    max-width: min(760px, calc(100vw - 460px));
+  }
+
+  ${media.up("xl")} {
+    max-width: 720px;
+  }
 `;
 
 const Label = styled.p`
