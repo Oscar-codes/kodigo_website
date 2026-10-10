@@ -114,15 +114,22 @@ const Slide = styled.div<SlideProps>`
   min-width: 0;
   background-color: ${({ theme }) => theme.colors.navy};
   /* El banner ocupa casi todo el alto visible (cabecera + banner + borde del panel) con el contenido centrado,
-     como el Home 3 de Eduhall. El panel de rutas solo se superpone un poco al banner. */
+     como el Home 3 de Eduhall. El panel de rutas solo se superpone un poco al banner.
+     En >= md: el GoalsCard se vuelve position: absolute y queda al lado del texto.
+     En <= md: ambos hijos se apilan verticalmente para no pelearse el ancho. */
   display: flex;
   align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: ${({ theme }) => theme.space(8)};
   min-height: clamp(34rem, calc(100svh - ${({ theme }) => theme.layout.headerHeight} - 3.5rem), 62rem);
   /* Deja libre la fila de controles (44 px) bajo el contenido. */
   padding-block: 3rem calc(${PANEL_OVERLAP} + 5.5rem);
 
-  > * {
-    width: 100%;
+  ${media.up("md")} {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0;
   }
 
   ${({ $mode, $image, $imageSmall }) =>
