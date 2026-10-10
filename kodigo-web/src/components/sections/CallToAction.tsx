@@ -78,7 +78,11 @@ const Circle = styled(Float)`
 `;
 
 export const CallToAction = ({ flushTop = false }: { flushTop?: boolean }) => (
-  <Section style={flushTop ? { paddingTop: 0 } : undefined}>
+  <Section
+    id="cta"
+    aria-labelledby="cta-title"
+    style={flushTop ? { paddingTop: 0 } : undefined}
+  >
     <Container>
       <Reveal direction="zoom">
         <Panel>
@@ -87,7 +91,7 @@ export const CallToAction = ({ flushTop = false }: { flushTop?: boolean }) => (
           <Circle style={{ width: 160, height: 160, left: "10%", bottom: "10%" }} $range={10} $delay={-1.5} />
           <Circle style={{ width: 200, height: 200, right: "12%", top: "8%" }} $range={12} $delay={-2} />
 
-          <Label>Tu próximo capítulo</Label>
+          <Label id="cta-title">Tu próximo capítulo</Label>
           <Heading>
             El futuro que imaginas empieza con lo que <em>aprendes hoy.</em>
           </Heading>

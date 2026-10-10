@@ -95,6 +95,10 @@ const Wrap = styled.section`
   position: relative;
   isolation: isolate;
   background-color: ${({ theme }) => theme.colors.navy};
+  /* Anchor para el menu 'Inicio' del Header: ancla al borde superior de la
+     section (no al titulo h1), asi el menu 'Inicio' lleva justo al inicio
+     visual de la pagina en vez de la mitad inferior del Hero. */
+  scroll-margin-top: ${({ theme }) => theme.layout.headerHeight};
 `;
 
 // Todas las diapositivas ocupan la misma celda: el alto lo fija la más alta (las "sizer" invisibles).
@@ -480,6 +484,7 @@ export const Hero = () => {
 
   return (
     <Wrap
+      id="hero-top"
       aria-roledescription="carrusel"
       aria-label="Destacados"
       onMouseEnter={() => setHovered(true)}
