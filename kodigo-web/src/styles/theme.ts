@@ -47,9 +47,9 @@ export const theme = {
     /** Errores de formulario (contraste 6.5:1 sobre blanco). */
     danger: "#B42318",
     dangerSoft: "#FEF3F2",
-    bgTranslucent: "rgba(255, 255, 255, 0.97)",
+bgTranslucent: "rgba(255, 255, 255, 0.97)",
     /** Cabecera al hacer scroll: blanco translúcido sobre el contenido (con desenfoque). */
-    headerGlass: "rgba(255, 255, 255, 0.78)",
+    headerGlass: "rgba(255, 255, 255, 0.7)",
   },
   fonts: {
     body: `"Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`,
@@ -63,7 +63,16 @@ export const theme = {
     float: "0 10px 40px rgba(7, 20, 49, 0.12)",
   },
   breakpoints: { sm: "576px", md: "768px", lg: "992px", xl: "1200px" },
-  layout: { maxWidth: "1320px", headerHeight: "88px" },
+  layout: {
+    maxWidth: "1320px",
+    /** Altura del Header sticky en reposo (en píxeles, sin unidad). */
+    headerHeight: "84px",
+    /** Altura del Header sticky una vez desplazada la página (compactado). */
+    headerHeightScrolled: "64px",
+    /** Header/logo altura inicial; el logo se reduce a la mitad cuando va scrolled. */
+    logoHeight: "36px",
+    logoHeightScrolled: "28px",
+  },
   type: {
     display: "clamp(2.5rem, 1rem + 5.2vw, 5rem)", // h1 del banner: 80/96 px en escritorio
     h2: "clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem)", // 40/48 px

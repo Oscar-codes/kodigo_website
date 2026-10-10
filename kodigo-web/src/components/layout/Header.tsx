@@ -21,8 +21,8 @@ const Bar = styled.header<{ $scrolled: boolean }>`
   border-bottom: 1px solid ${({ theme }) => theme.colors.main100};
   box-shadow: ${({ theme, $scrolled }) => ($scrolled ? theme.shadows.float : "0 0 0 rgba(7, 20, 49, 0)")};
   color: ${({ theme }) => theme.colors.purple};
-  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(16px) saturate(1.4)" : "none")};
-  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(16px) saturate(1.4)" : "none")};
+  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(22px) saturate(1.6)" : "none")};
+  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(22px) saturate(1.6)" : "none")};
   transition:
     background-color ${({ theme }) => theme.motion.duration.base} linear,
     box-shadow ${({ theme }) => theme.motion.duration.base} linear;
@@ -31,11 +31,14 @@ const Bar = styled.header<{ $scrolled: boolean }>`
 /** Distancia de scroll (px) a partir de la cual la cabecera pasa de sólida a translúcida. */
 const SCROLL_THRESHOLD = 24;
 
-const Inner = styled(Container)`
+const Inner = styled(Container)<{ $scrolled: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.space(6)};
-  min-height: ${({ theme }) => theme.layout.headerHeight};
+  min-height: ${({ theme, $scrolled }) =>
+    $scrolled ? theme.layout.headerHeightScrolled : theme.layout.headerHeight};
+  transition:
+    min-height ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing};
 `;
 
 const Cta = styled.a`
@@ -61,14 +64,18 @@ const Cta = styled.a`
   }
 `;
 
-const Brand = styled(Link)`
+const Brand = styled(Link)<{ $scrolled: boolean }>`
   display: inline-flex;
   align-items: center;
+  flex: none;
 
   img {
     display: block;
-    height: 30px;
+    height: ${({ theme, $scrolled }) =>
+      $scrolled ? theme.layout.logoHeightScrolled : theme.layout.logoHeight};
     width: auto;
+    transition:
+      height ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing};
   }
 `;
 
@@ -115,8 +122,10 @@ const Item = styled.li`
     border-radius: ${({ theme }) => theme.radii.pill};
     font-size: 0.875rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    /* Capitalize: solo la primera letra en mayúsculas. Mantiene "FAQ" intacto si viene
+       del dato y respeta "Bootcamps", "Nosotros", etc. */
+    text-transform: capitalize;
     color: ${({ theme }) => theme.colors.purple};
     transition: color ${({ theme }) => theme.motion.duration.hover} linear;
   }
@@ -314,8 +323,8 @@ export const Header = () => {
 
   return (
     <Bar $scrolled={scrolled}>
-      <Inner>
-        <Brand to="/" aria-label={`${siteConfig.name} - Inicio`}>
+      <Inner $scrolled={scrolled}>
+        <Brand to="/" $scrolled={scrolled} aria-label={`${siteConfig.name} - Inicio`}>
           <img src={logoDark} alt={siteConfig.name} width={brand.logoDark.width} height={brand.logoDark.height} />
         </Brand>
         <Toggle
