@@ -5,8 +5,8 @@ import { media } from "@/styles/theme";
 import { ArrowUpRight, Compass, Sparkles, TrendUp, Users } from "../ui/Icons";
 
 // "Encuentra tu punto de partida": tarjeta flotante que aparece en el carrusel del Hero (solo en
-// ≥ lg) y comunica los beneficios/resultados de estudiar en Kodigo. Cada opción es una pequeña row
-// con icono + título + subtítulo + flecha; el CTA inferior es la fuga principal hacia todas las rutas.
+// ≥ md). Estilo: cabecera tipo macOS (3 puntos + breadcrumb) + 4 rutas horizontales + tarjeta
+// flotante "Tu siguiente paso" abajo-izquierda con CTA a "Ver opciones".
 
 interface Goal {
   icon: ReactNode;
@@ -46,16 +46,45 @@ const goals: Goal[] = [
   },
 ];
 
-// === SHELL DE LA TARJETA ===
-const Panel = styled.aside`
+// === WRAPPER: agrupa el panel + la mini-card flotante y los posiciona juntos sobre el slide ===
+const Wrapper = styled.div`
+  /* En móvil se renderiza dentro del flujo (debajo del Content del Hero). */
+  width: 100%;
+  margin-top: ${({ theme }) => theme.space(6)};
+
+  /* En ≥ md flota a la derecha, centrado vertical. */
+  ${media.up("md")} {
+    position: absolute;
+    top: 50%;
+    right: ${({ theme }) => theme.space(6)};
+    transform: translateY(-50%);
+    width: 400px;
+    margin-top: 0;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: cardWrapIn 700ms ${({ theme }) => theme.motion.easing} both;
+    }
+
+    @keyframes cardWrapIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(-50%); }
+    }
+  }
+
+  ${media.up("lg")} {
+    right: ${({ theme }) => theme.space(10)};
+  }
+`;
+
+// === PANEL PRINCIPAL ===
+const Panel = styled.div`
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 380px;
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.space(5)};
-  padding: ${({ theme }) => `${theme.space(7)} ${theme.space(6)} ${theme.space(6)}`};
+  gap: ${({ theme }) => theme.space(4)};
+  padding: 0;
   border-radius: ${({ theme }) => theme.radii.xl};
   background:
     radial-gradient(80% 80% at 100% 0%, rgba(75, 74, 241, 0.35), transparent 65%),
@@ -63,76 +92,61 @@ const Panel = styled.aside`
   border: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
   box-shadow: ${({ theme }) => theme.shadows.lift};
   color: ${({ theme }) => theme.colors.white};
-
-  /* Solo flota sobre el hero en desktop/tablet. En móvil se renderiza dentro del flujo del slide. */
-  ${media.down("md")} {
-    margin-top: ${({ theme }) => theme.space(6)};
-  }
-
-  ${media.up("md")} {
-    position: absolute;
-    top: 50%;
-    right: ${({ theme }) => theme.space(6)};
-    transform: translateY(-50%);
-    width: 380px;
-  }
-
-  ${media.up("lg")} {
-    right: ${({ theme }) => theme.space(10)};
-    width: 400px;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: cardIn 700ms ${({ theme }) => theme.motion.easing} both;
-  }
-
-  @keyframes cardIn {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(calc(-50% - 0px));
-    }
-  }
+  overflow: hidden;
 `;
 
-// Decoración: monigote violeta "código" en la esquina superior derecha (anclaje visual sin tocar contenido).
-const CodeMark = styled.span`
-  position: absolute;
-  top: -1.25rem;
-  right: -1rem;
-  width: 64px;
-  height: 64px;
+// === BARRA TIPO MACOS (3 puntos + breadcrumb) ===
+const WindowBar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  background: ${({ theme }) => theme.colors.main};
-  color: ${({ theme }) => theme.colors.white};
-  transform: rotate(8deg);
-  box-shadow: 0 18px 36px rgba(75, 74, 241, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-  font-size: 1.5rem;
-  font-weight: ${({ theme }) => theme.weights.bold};
-  pointer-events: none;
+  gap: ${({ theme }) => theme.space(3)};
+  padding: ${({ theme }) => `${theme.space(3)} ${theme.space(5)}`};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+  background: rgba(255, 255, 255, 0.03);
 
-  ${media.up("md")} {
-    top: -1.75rem;
-    right: -1.5rem;
-    width: 88px;
-    height: 88px;
-    border-radius: 22px;
-    font-size: 1.875rem;
+  .dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
-  > svg {
-    width: 60%;
-    height: 60%;
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #febc2e; }
+  .dot.green { background: #28c840; }
+
+  .crumb {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8125rem;
+    color: ${({ theme }) => theme.colors.onNavy};
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .crumb strong {
+    color: ${({ theme }) => theme.colors.white};
+    font-weight: ${({ theme }) => theme.weights.semibold};
   }
 `;
 
-// === CABECERA ===
+// === CONTENIDO ===
+const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space(5)};
+  padding: ${({ theme }) => `${theme.space(6)} ${theme.space(6)} ${theme.space(6)}`};
+`;
+
 const Head = styled.div`
   display: flex;
   flex-direction: column;
@@ -173,7 +187,6 @@ const Sub = styled.p`
   line-height: 1.4;
 `;
 
-// === LISTA DE OPCIONES ===
 const List = styled.ul`
   display: grid;
   gap: ${({ theme }) => theme.space(2)};
@@ -238,7 +251,6 @@ const Row = styled.li<{ $active?: boolean }>`
     font-size: 0.9375rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
     color: ${({ theme }) => theme.colors.white};
-    /* Permite truncar títulos largos sin desbordes. */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -260,7 +272,6 @@ const Row = styled.li<{ $active?: boolean }>`
   }
 `;
 
-// === PIE: ruta sugerida + CTA ===
 const Suggestion = styled.div`
   display: flex;
   align-items: baseline;
@@ -274,29 +285,73 @@ const Suggestion = styled.div`
   }
 `;
 
-const Footer = styled.div`
+// === MINI-CARD FLOTANTE "TU SIGUIENTE PASO" ===
+const MiniCard = styled.div`
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.space(3)};
-  padding-top: ${({ theme }) => theme.space(3)};
-  border-top: 1px dashed ${({ theme }) => theme.colors.borderOnNavy};
+  gap: ${({ theme }) => theme.space(4)};
+  padding: ${({ theme }) => `${theme.space(4)} ${theme.space(5)}`};
+  border-radius: ${({ theme }) => theme.radii.xl};
+  background: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.shadows.float};
+  color: ${({ theme }) => theme.colors.heading};
+
+  /* En móvil queda debajo del panel; en ≥ md se sale por la esquina inferior-izquierda del Wrapper. */
+  margin-top: ${({ theme }) => theme.space(3)};
+
+  ${media.up("md")} {
+    position: absolute;
+    left: -2rem;
+    bottom: -1.5rem;
+    margin-top: 0;
+    width: clamp(320px, 75%, 420px);
+  }
 
   .note {
-    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.space(3)};
+  }
+
+  .note .dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: ${({ theme }) => theme.colors.main50};
+    color: ${({ theme }) => theme.colors.main};
+    flex: none;
+  }
+
+  .note .text {
+    display: flex;
+    flex-direction: column;
     line-height: 1.2;
-    color: ${({ theme }) => theme.colors.onNavy};
+    min-width: 0;
   }
 
   .note strong {
-    display: block;
-    color: ${({ theme }) => theme.colors.white};
-    font-weight: ${({ theme }) => theme.weights.semibold};
     font-size: 0.8125rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    color: ${({ theme }) => theme.colors.heading};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .note span {
+    font-size: 0.75rem;
+    color: ${({ theme }) => theme.colors.textMuted};
   }
 `;
 
-const Cta = styled(Link)`
+const CtaMini = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.space(2)};
@@ -308,6 +363,7 @@ const Cta = styled(Link)`
   font-size: 0.875rem;
   font-weight: ${({ theme }) => theme.weights.semibold};
   text-decoration: none;
+  flex: none;
   transition:
     background-color ${({ theme }) => theme.motion.duration.hover} linear,
     transform ${({ theme }) => theme.motion.duration.hover} ease;
@@ -336,54 +392,68 @@ export const GoalsCard = ({ highlightIndex }: Props) => {
   );
 
   return (
-    <Panel aria-label="Encuentra tu punto de partida">
-      <CodeMark aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 8 4 12 9 16" />
-          <polyline points="15 8 20 12 15 16" />
-        </svg>
-      </CodeMark>
+    <Wrapper aria-labelledby="goals-card-title">
+      <Panel>
+        <WindowBar aria-hidden="true">
+          <span className="dots">
+            <span className="dot red" />
+            <span className="dot yellow" />
+            <span className="dot green" />
+          </span>
+          <span className="crumb">
+            tu_ruta <span aria-hidden="true">/</span> <strong>kodigo</strong>
+          </span>
+          <span style={{ width: 50 }} />
+        </WindowBar>
 
-      <Head>
-        <Eyebrow>Encuentra tu punto de partida</Eyebrow>
-        <Title>¿Qué quieres lograr?</Title>
-        <Sub>Selecciona tu objetivo y descubre por dónde empezar.</Sub>
-      </Head>
+        <Body>
+          <Head>
+            <Eyebrow>Encuentra tu punto de partida</Eyebrow>
+            <Title id="goals-card-title">¿Qué quieres lograr?</Title>
+            <Sub>Selecciona tu objetivo y descubre por dónde empezar.</Sub>
+          </Head>
 
-      <List>
-        {goals.map((g, i) => (
-          <Row key={g.title} $active={i === activeIdx}>
-            <Link to={g.to} aria-label={`${g.title}: ${g.text}`}>
-              <span className="icon" aria-hidden="true">
-                {g.icon}
-              </span>
-              <span className="body">
-                <span className="title">{g.title}</span>
-                <span className="text">{g.text}</span>
-              </span>
-              <span className="arrow" aria-hidden="true">
-                <ArrowUpRight size={16} />
-              </span>
-            </Link>
-          </Row>
-        ))}
-      </List>
+          <List>
+            {goals.map((g, i) => (
+              <Row key={g.title} $active={i === activeIdx}>
+                <Link to={g.to} aria-label={`${g.title}: ${g.text}`}>
+                  <span className="icon" aria-hidden="true">
+                    {g.icon}
+                  </span>
+                  <span className="body">
+                    <span className="title">{g.title}</span>
+                    <span className="text">{g.text}</span>
+                  </span>
+                  <span className="arrow" aria-hidden="true">
+                    <ArrowUpRight size={16} />
+                  </span>
+                </Link>
+              </Row>
+            ))}
+          </List>
 
-      <Suggestion>
-        <span>Ruta sugerida:</span>
-        <strong>{goals[activeIdx].title}</strong>
-      </Suggestion>
+          <Suggestion>
+            <span>Ruta sugerida:</span>
+            <strong>{goals[activeIdx].title}</strong>
+          </Suggestion>
+        </Body>
+      </Panel>
 
-      <Footer>
-        <p className="note">
-          <strong>Tu siguiente paso comienza aquí.</strong>
-          Te guiamos según tu objetivo.
-        </p>
-        <Cta to="/bootcamps" aria-label="Ver todas las opciones de Kodigo">
+      <MiniCard role="complementary" aria-label="Tu siguiente paso en Kodigo">
+        <div className="note">
+          <span className="dot" aria-hidden="true">
+            <Sparkles size={18} />
+          </span>
+          <span className="text">
+            <strong>Tu siguiente paso comienza aquí.</strong>
+            <span>Te guiamos según tu meta.</span>
+          </span>
+        </div>
+        <CtaMini to="/bootcamps" aria-label="Ver todas las opciones de Kodigo">
           Ver opciones
           <ArrowUpRight size={16} />
-        </Cta>
-      </Footer>
-    </Panel>
+        </CtaMini>
+      </MiniCard>
+    </Wrapper>
   );
 };
