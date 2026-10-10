@@ -7,6 +7,7 @@ import { ButtonLink } from "../ui/Button";
 import { Float } from "../ui/Float";
 import { Container } from "../ui/Container";
 import { BookOpen } from "../ui/Icons";
+import { GoalsCard } from "./GoalsCard";
 
 // Carrusel del banner de Eduhall (Home 3): foto a pantalla completa con degradado azul marino de izquierda a derecha.
 // Cada 6 s la diapositiva actual sale hacia la izquierda y entra la siguiente. Al cargar la página y en cada cambio,
@@ -381,6 +382,8 @@ const SlideView = ({ slide, mode }: SlideViewProps) => {
           </Actions>
         </Content>
       </Container>
+      {/* Tarjeta flotante "Encuentra tu punto de partida" — solo visible en ≥ md (se apila en el flujo en móvil). */}
+      {animated ? <GoalsCard /> : null}
     </Slide>
   );
 };

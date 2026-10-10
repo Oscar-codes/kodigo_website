@@ -1,0 +1,389 @@
+import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { media } from "@/styles/theme";
+import { ArrowUpRight, Compass, Sparkles, TrendUp, Users } from "../ui/Icons";
+
+// "Encuentra tu punto de partida": tarjeta flotante que aparece en el carrusel del Hero (solo en
+// ≥ lg) y comunica los beneficios/resultados de estudiar en Kodigo. Cada opción es una pequeña row
+// con icono + título + subtítulo + flecha; el CTA inferior es la fuga principal hacia todas las rutas.
+
+interface Goal {
+  icon: ReactNode;
+  title: string;
+  text: string;
+  to: string;
+  highlighted?: boolean;
+}
+
+// Las rutas y destacados alinean con la sección `GoalPaths`. La última opción queda activa por defecto
+// (estilo Eduhall) para anclar el "B2B Kodigo" del resto de la página.
+const goals: Goal[] = [
+  {
+    icon: <Compass size={20} />,
+    title: "Iniciar en tecnología",
+    text: "Tu primer paso en el mundo tech.",
+    to: "/bootcamps",
+  },
+  {
+    icon: <TrendUp size={20} />,
+    title: "Potenciar mi carrera",
+    text: "Sube de nivel con nuevas habilidades.",
+    to: "/bootcamps",
+  },
+  {
+    icon: <Sparkles size={20} />,
+    title: "Aplicar inteligencia artificial",
+    text: "Lleva la IA a tu trabajo.",
+    to: "/bootcamps",
+  },
+  {
+    icon: <Users size={20} />,
+    title: "Capacitar a mi equipo",
+    text: "Formación estratégica para tu organización.",
+    to: "/profesional/alianzas",
+    highlighted: true,
+  },
+];
+
+// === SHELL DE LA TARJETA ===
+const Panel = styled.aside`
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space(5)};
+  padding: ${({ theme }) => `${theme.space(7)} ${theme.space(6)} ${theme.space(6)}`};
+  border-radius: ${({ theme }) => theme.radii.xl};
+  background:
+    radial-gradient(80% 80% at 100% 0%, rgba(75, 74, 241, 0.35), transparent 65%),
+    linear-gradient(180deg, ${({ theme }) => theme.colors.navy} 0%, ${({ theme }) => theme.colors.navyMid} 100%);
+  border: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+  box-shadow: ${({ theme }) => theme.shadows.lift};
+  color: ${({ theme }) => theme.colors.white};
+
+  /* Solo flota sobre el hero en desktop/tablet. En móvil se renderiza dentro del flujo del slide. */
+  ${media.down("md")} {
+    margin-top: ${({ theme }) => theme.space(6)};
+  }
+
+  ${media.up("md")} {
+    position: absolute;
+    top: 50%;
+    right: ${({ theme }) => theme.space(6)};
+    transform: translateY(-50%);
+    width: 380px;
+  }
+
+  ${media.up("lg")} {
+    right: ${({ theme }) => theme.space(10)};
+    width: 400px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: cardIn 700ms ${({ theme }) => theme.motion.easing} both;
+  }
+
+  @keyframes cardIn {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(calc(-50% - 0px));
+    }
+  }
+`;
+
+// Decoración: monigote violeta "código" en la esquina superior derecha (anclaje visual sin tocar contenido).
+const CodeMark = styled.span`
+  position: absolute;
+  top: -1.25rem;
+  right: -1rem;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.white};
+  transform: rotate(8deg);
+  box-shadow: 0 18px 36px rgba(75, 74, 241, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  font-size: 1.5rem;
+  font-weight: ${({ theme }) => theme.weights.bold};
+  pointer-events: none;
+
+  ${media.up("md")} {
+    top: -1.75rem;
+    right: -1.5rem;
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+    font-size: 1.875rem;
+  }
+
+  > svg {
+    width: 60%;
+    height: 60%;
+  }
+`;
+
+// === CABECERA ===
+const Head = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space(2)};
+`;
+
+const Eyebrow = styled.span`
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: ${({ theme }) => `0 ${theme.space(3)}`};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  border: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+  background: rgba(255, 255, 255, 0.04);
+  color: ${({ theme }) => theme.colors.lilac};
+  font-size: 0.6875rem;
+  font-weight: ${({ theme }) => theme.weights.bold};
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  height: 26px;
+`;
+
+const Title = styled.h2`
+  font-size: 1.5rem;
+  font-weight: ${({ theme }) => theme.weights.bold};
+  line-height: 1.2;
+  color: ${({ theme }) => theme.colors.white};
+  letter-spacing: -0.005em;
+
+  ${media.up("md")} {
+    font-size: 1.625rem;
+  }
+`;
+
+const Sub = styled.p`
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.onNavy};
+  line-height: 1.4;
+`;
+
+// === LISTA DE OPCIONES ===
+const List = styled.ul`
+  display: grid;
+  gap: ${({ theme }) => theme.space(2)};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`;
+
+const Row = styled.li<{ $active?: boolean }>`
+  a {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: ${({ theme }) => theme.space(3)};
+    padding: ${({ theme }) => theme.space(3)};
+    border-radius: ${({ theme }) => theme.radii.md};
+    border: 1px solid
+      ${({ $active, theme }) => ($active ? theme.colors.main : theme.colors.borderOnNavy)};
+    background: ${({ $active }) =>
+      $active ? "rgba(75, 74, 241, 0.18)" : "rgba(255, 255, 255, 0.04)"};
+    color: ${({ theme }) => theme.colors.white};
+    text-decoration: none;
+    min-height: 56px;
+    transition:
+      background-color ${({ theme }) => theme.motion.duration.hover} linear,
+      border-color ${({ theme }) => theme.motion.duration.hover} linear,
+      transform ${({ theme }) => theme.motion.duration.hover} ease;
+  }
+
+  a:hover {
+    background: rgba(75, 74, 241, 0.22);
+    border-color: ${({ theme }) => theme.colors.main};
+    transform: translateX(2px);
+  }
+
+  a:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.yellow};
+    outline-offset: 3px;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: ${({ $active, theme }) => ($active ? theme.colors.white : theme.colors.lilac)};
+    background: ${({ $active }) =>
+      $active ? "rgba(255, 255, 255, 0.18)" : "rgba(255, 255, 255, 0.06)"};
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .title {
+    font-size: 0.9375rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    color: ${({ theme }) => theme.colors.white};
+    /* Permite truncar títulos largos sin desbordes. */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .text {
+    font-size: 0.75rem;
+    color: ${({ theme }) => theme.colors.onNavy};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .arrow {
+    color: ${({ $active, theme }) => ($active ? theme.colors.white : theme.colors.lilac)};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+// === PIE: ruta sugerida + CTA ===
+const Suggestion = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: ${({ theme }) => theme.space(2)};
+  font-size: 0.8125rem;
+  color: ${({ theme }) => theme.colors.onNavy};
+
+  strong {
+    color: ${({ theme }) => theme.colors.main};
+    font-weight: ${({ theme }) => theme.weights.semibold};
+  }
+`;
+
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.space(3)};
+  padding-top: ${({ theme }) => theme.space(3)};
+  border-top: 1px dashed ${({ theme }) => theme.colors.borderOnNavy};
+
+  .note {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: ${({ theme }) => theme.colors.onNavy};
+  }
+
+  .note strong {
+    display: block;
+    color: ${({ theme }) => theme.colors.white};
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    font-size: 0.8125rem;
+  }
+`;
+
+const Cta = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(2)};
+  height: 44px;
+  padding: ${({ theme }) => `0 ${theme.space(5)}`};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 0.875rem;
+  font-weight: ${({ theme }) => theme.weights.semibold};
+  text-decoration: none;
+  transition:
+    background-color ${({ theme }) => theme.motion.duration.hover} linear,
+    transform ${({ theme }) => theme.motion.duration.hover} ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.mainHover};
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.yellow};
+    outline-offset: 3px;
+  }
+`;
+
+interface Props {
+  /** Indica la opción a destacar (key del array). Si no, la última opción marcada `highlighted`. */
+  highlightIndex?: number;
+}
+
+export const GoalsCard = ({ highlightIndex }: Props) => {
+  // Si pasan highlightIndex, úsalo; si no, usa el primer `highlighted:true` del array.
+  const activeIdx = highlightIndex ?? Math.max(
+    0,
+    goals.findIndex((g) => g.highlighted),
+  );
+
+  return (
+    <Panel aria-label="Encuentra tu punto de partida">
+      <CodeMark aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 8 4 12 9 16" />
+          <polyline points="15 8 20 12 15 16" />
+        </svg>
+      </CodeMark>
+
+      <Head>
+        <Eyebrow>Encuentra tu punto de partida</Eyebrow>
+        <Title>¿Qué quieres lograr?</Title>
+        <Sub>Selecciona tu objetivo y descubre por dónde empezar.</Sub>
+      </Head>
+
+      <List>
+        {goals.map((g, i) => (
+          <Row key={g.title} $active={i === activeIdx}>
+            <Link to={g.to} aria-label={`${g.title}: ${g.text}`}>
+              <span className="icon" aria-hidden="true">
+                {g.icon}
+              </span>
+              <span className="body">
+                <span className="title">{g.title}</span>
+                <span className="text">{g.text}</span>
+              </span>
+              <span className="arrow" aria-hidden="true">
+                <ArrowUpRight size={16} />
+              </span>
+            </Link>
+          </Row>
+        ))}
+      </List>
+
+      <Suggestion>
+        <span>Ruta sugerida:</span>
+        <strong>{goals[activeIdx].title}</strong>
+      </Suggestion>
+
+      <Footer>
+        <p className="note">
+          <strong>Tu siguiente paso comienza aquí.</strong>
+          Te guiamos según tu objetivo.
+        </p>
+        <Cta to="/bootcamps" aria-label="Ver todas las opciones de Kodigo">
+          Ver opciones
+          <ArrowUpRight size={16} />
+        </Cta>
+      </Footer>
+    </Panel>
+  );
+};
