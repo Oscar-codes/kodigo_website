@@ -8,6 +8,7 @@ import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
 import { ChevronDown, Phone } from "../ui/Icons";
+import { ScrollProgress } from "../ui/ScrollProgress";
 
 // Header de Kodigo: barra blanca, logo a color, menú en mayúsculas con texto morado
 // y botón "Contáctanos" con borde morado. theme.colors.purple (#5B2EA6) sobre blanco cumple contraste AA.
@@ -323,6 +324,10 @@ export const Header = () => {
 
   return (
     <Bar $scrolled={scrolled}>
+      {/* Indicador de progreso de scroll: pegado al borde inferior del Header
+          (que cambia de 84 a 64 px) gracias a position: absolute; bottom: 0.
+          Solo aparece en la home; las páginas internas no lo necesitan. */}
+      <ScrollProgress />
       <Inner $scrolled={scrolled}>
         <Brand to="/" $scrolled={scrolled} aria-label={`${siteConfig.name} - Inicio`}>
           <img src={logoDark} alt={siteConfig.name} width={brand.logoDark.width} height={brand.logoDark.height} />
