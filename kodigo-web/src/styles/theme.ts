@@ -74,9 +74,12 @@ bgTranslucent: "rgba(255, 255, 255, 0.97)",
     headerHeight: "84px",
     /** Altura del Header sticky una vez desplazada la página (compactado). */
     headerHeightScrolled: "64px",
-    /** Header/logo altura inicial; el logo se reduce a la mitad cuando va scrolled. */
+    /** Altura del cuadro del logo en Header (fija; el escalado visual al
+        scrollear se aplica con transform, no con height). */
     logoHeight: "36px",
-    logoHeightScrolled: "28px",
+    /** Ratio de escalado del logo cuando el header esta en modo 'scrolled'.
+        28/36 ≈ 0.7778, se aplica via transform: scale() para no forzar reflow. */
+    logoHeightScrolledRatio: 28 / 36,
   },
   type: {
     display: "clamp(2.5rem, 1rem + 5.2vw, 5rem)", // h1 del banner: 80/96 px en escritorio

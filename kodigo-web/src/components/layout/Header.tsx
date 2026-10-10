@@ -24,7 +24,7 @@ const scrollToTop = (e: MouseEvent) => {
 // Header de Kodigo: TRANSPARENTE al inicio (z-index superior sobre el hero para que la foto pase por
 // detrás) y translúcido 'frosted glass' al desplazarse. El backdrop-filter blur + saturate revela la
 // marca cuando cruza el umbral de scroll. Para que el efecto sea visualmente perceptible sin tapar
-// el contenido usamos alpha 0.78 + blur(32px) saturate(2) — más opaco que un glass de marketing pero
+// el contenido usamos alpha 0.55 + blur(32px) saturate(2.2) - más aire que un glass de marketing pero
 // sin llegar a ser solido.
 const Bar = styled.header<{ $scrolled: boolean }>`
   position: sticky;
@@ -54,10 +54,6 @@ const Inner = styled(Container)<{ $scrolled: boolean }>`
   gap: ${({ theme }) => theme.space(6)};
   min-height: ${({ theme, $scrolled }) =>
     $scrolled ? theme.layout.headerHeightScrolled : theme.layout.headerHeight};
-  /* Stacking context explicito: el Brand (logo) va a z-index 0 y los Item del menu
-     a 1 para que, si llegan a solaparse en algun breakpoint, el menu siempre
-     pinte sobre el logo (regla ui-ux: jerarquia visual estable y determinante). */
-  isolation: isolate;
   transition:
     min-height ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing};
 `;
@@ -78,11 +74,19 @@ const Brand = styled(Link)<{ $scrolled: boolean }>`
 
   img {
     display: block;
-    height: ${({ theme, $scrolled }) =>
-      $scrolled ? theme.layout.logoHeightScrolled : theme.layout.logoHeight};
+    /* Altura del cuadro fija (el maximo: 36 px). Cambiamos la 'altura visual'
+       del logo con transform: scale en vez de cambiar la altura del <img>;
+       asi el layout (ancho del Brand, posicion del Menu) no se ve afectado
+       y los items no se desplazan hacia la izquierda al scrollear.
+       Regla review-animations: animar transform (GPU) en vez de height
+       (layout) siempre que se pueda. */
+    height: ${({ theme }) => theme.layout.logoHeight};
     width: auto;
-    transition:
-      height ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing};
+    transform: scale(${({ theme, $scrolled }) =>
+      $scrolled ? theme.layout.logoHeightScrolledRatio : 1});
+    transform-origin: left center;
+    transition: transform ${({ theme }) => theme.motion.duration.base}
+      ${({ theme }) => theme.motion.easing};
   }
 `;
 
@@ -134,7 +138,7 @@ const Item = styled.li`
     padding: ${({ theme }) => `${theme.space(2)} ${theme.space(3.5)}`};
     /* line-height: 1 controla la altura de la linea del texto y, combinado
        con los 8 px de padding-top/bottom, da una altura total ~30 px.
-       El logo mide 36 -> 28 px; con align-items: center del Inner el menu
+       El logo mide 36 px (cuadro fijo); con align-items: center del Inner el menu
        queda dentro de 1-2 px de diferencia y se ve 'encima' del logo. */
     line-height: 1;
     border-radius: ${({ theme }) => theme.radii.pill};
@@ -194,14 +198,6 @@ const Item = styled.li`
     > button[data-cta="true"]:hover {
       transform: translateY(-2px);
     }
-  }
-
-  > button svg {
-    transition: transform ${({ theme }) => theme.motion.duration.hover} linear;
-  }
-
-  > button[aria-expanded="true"] svg {
-    transform: rotate(180deg);
   }
 `;
 
