@@ -18,15 +18,19 @@ const Bar = styled.header<{ $scrolled: boolean }>`
   position: sticky;
   top: 0;
   z-index: 50;
-  background: ${({ theme, $scrolled }) => ($scrolled ? theme.colors.headerGlass : theme.colors.white)};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.main100};
+  background: ${({ theme, $scrolled }) => ($scrolled ? theme.colors.headerGlass : "transparent")};
+  border-bottom: 1px solid
+    ${({ theme, $scrolled }) => ($scrolled ? theme.colors.main100 : "transparent")};
   box-shadow: ${({ theme, $scrolled }) => ($scrolled ? theme.shadows.float : "0 0 0 rgba(7, 20, 49, 0)")};
   color: ${({ theme }) => theme.colors.purple};
   -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(28px) saturate(1.8)" : "none")};
   backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(28px) saturate(1.8)" : "none")};
   transition:
     background-color ${({ theme }) => theme.motion.duration.base} linear,
-    box-shadow ${({ theme }) => theme.motion.duration.base} linear;
+    border-color ${({ theme }) => theme.motion.duration.base} linear,
+    box-shadow ${({ theme }) => theme.motion.duration.base} linear,
+    -webkit-backdrop-filter ${({ theme }) => theme.motion.duration.base} linear,
+    backdrop-filter ${({ theme }) => theme.motion.duration.base} linear;
 `;
 
 /** Distancia de scroll (px) a partir de la cual la cabecera pasa de sólida a translúcida. */
