@@ -51,9 +51,14 @@ const Inner = styled(Container)<{ $scrolled: boolean }>`
 `;
 
 const Brand = styled(Link)<{ $scrolled: boolean }>`
-  display: inline-flex;
+  display: flex;
   align-items: center;
   flex: none;
+  /* Sin padding ni line-height externo, el <a> del Brand mide lo mismo que el
+     <img> interno (36 -> 28 px). Asi el menu flex-row con align-items: center
+     ve dos cajas de la misma altura y los items quedan sobre la misma linea
+     que el logo. */
+  line-height: 0;
   /* El logo queda detras del menu. Con position + z-index 0, su orden de pila
      queda anclado a esta capa inferior del stacking context del Inner. */
   position: relative;
@@ -109,11 +114,17 @@ const Item = styled.li`
 
   > a,
   > button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     width: 100%;
-    padding: ${({ theme }) => `${theme.space(2.5)} ${theme.space(3.5)}`};
+    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(3.5)}`};
+    /* line-height: 1 controla la altura de la linea del texto y, combinado
+       con los 8 px de padding-top/bottom, da una altura total ~30 px.
+       El logo mide 36 -> 28 px; con align-items: center del Inner el menu
+       queda dentro de 1-2 px de diferencia y se ve 'encima' del logo. */
+    line-height: 1;
     border-radius: ${({ theme }) => theme.radii.pill};
     font-size: 0.875rem;
     /* Manrope primero; cae al system stack si no esta cargada. Mantenemos el
