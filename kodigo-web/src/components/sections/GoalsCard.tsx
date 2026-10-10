@@ -48,10 +48,13 @@ const goals: Goal[] = [
 
 // === WRAPPER: agrupa el panel + la mini-card flotante y los posiciona juntos sobre el slide ===
 const Wrapper = styled.div`
-  /* Móvil (predeterminado): tarjeta centrada, ancho fijo como la de escritorio para no estirarse al 100% de viewport. */
-  width: 100%;
-  max-width: 380px;
+  /* Móvil: ancho fijo (sin "100%"), protegido del slide flex y centrado. */
+  box-sizing: border-box;
+  width: 380px;
+  max-width: 100%;
   margin: ${({ theme }) => `${theme.space(6)} auto 0`};
+  align-self: center;
+  flex: 0 0 auto;
 
   /* Tablet en adelante: flotante a la derecha, centrada verticalmente. */
   ${media.up("md")} {
