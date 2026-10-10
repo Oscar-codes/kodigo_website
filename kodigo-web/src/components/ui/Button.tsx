@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { ArrowRight, ArrowUpRight } from "./Icons";
 
-// Variantes: primary (violeta relleno), outline (borde violeta), light (blanco, para fondos oscuros o violeta),
-// outlineLight (borde blanco, para el banner oscuro).
+// Variantes: primary (gradient institucional 100deg purpleLight -> purpleDeep), outline (borde violeta),
+// light (blanco, para fondos oscuros o violeta), outlineLight (borde blanco, para el banner oscuro).
 type Variant = "primary" | "outline" | "light" | "outlineLight";
 
 const buttonStyles = css<{ $variant: Variant }>`
@@ -19,18 +19,26 @@ const buttonStyles = css<{ $variant: Variant }>`
   line-height: 1.2;
   transition: background-color ${({ theme }) => theme.motion.duration.base} ease,
     color ${({ theme }) => theme.motion.duration.base} ease,
-    border-color ${({ theme }) => theme.motion.duration.base} ease;
+    border-color ${({ theme }) => theme.motion.duration.base} ease,
+    filter ${({ theme }) => theme.motion.duration.base} ease,
+    box-shadow ${({ theme }) => theme.motion.duration.base} ease;
 
   ${({ $variant, theme }) => {
     switch ($variant) {
       case "primary":
         return css`
-          background: ${theme.colors.main};
-          border-color: ${theme.colors.main};
+          /* Ticket 2.1: el boton de primer nivel usa el degradado institucional
+             (purpleLight -> purpleDeep) en lugar del main solido. Border
+             transparente porque el degradado llena la caja. Sombra del
+             gradient. En hover, un filter: brightness(1.06) y sombra mas
+             profunda para mantener el affordance sin cambiar el recurso. */
+          background: ${theme.colors.gradientCta};
+          border-color: transparent;
           color: ${theme.colors.white};
+          box-shadow: 0 8px 22px rgba(117, 87, 250, 0.32);
           &:hover {
-            background: ${theme.colors.mainHover};
-            border-color: ${theme.colors.mainHover};
+            filter: brightness(1.06);
+            box-shadow: 0 14px 32px rgba(117, 87, 250, 0.45);
           }
         `;
       case "outline":
