@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 // navegación. Rellena de izquierda a derecha según la posición real del scroll
 // (0 al inicio del documento, 1 al final). Solo decorativo: aria-hidden.
 
-const BAR_HEIGHT = "3px";
+const BAR_HEIGHT = "1px";
 
 // Etiquetas CSS custom: dejamos que el navegador interpole el progreso via
 // transform: scaleX() en lugar de width, así animamos solo GPU (regla #7 del

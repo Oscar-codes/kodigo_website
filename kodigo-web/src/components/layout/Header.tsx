@@ -122,18 +122,32 @@ const Item = styled.li`
     padding: ${({ theme }) => `${theme.space(2.5)} ${theme.space(3.5)}`};
     border-radius: ${({ theme }) => theme.radii.pill};
     font-size: 0.875rem;
-    font-weight: ${({ theme }) => theme.weights.bold};
+    /* Manrope primero; cae al system stack si no esta cargada. Sin negrita por
+       defecto para que el menu se sienta ligero: el bold solo se activa en
+       hover/expanded (regla review-animations: hover gated por hover/pointer). */
+    font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: ${({ theme }) => theme.weights.medium};
     letter-spacing: 0.01em;
     /* Capitalize: solo la primera letra en mayúsculas. Mantiene "FAQ" intacto si viene
        del dato y respeta "Bootcamps", "Nosotros", etc. */
     text-transform: capitalize;
     color: ${({ theme }) => theme.colors.purple};
-    transition: color ${({ theme }) => theme.motion.duration.hover} linear;
+    transition:
+      color ${({ theme }) => theme.motion.duration.hover} linear,
+      font-weight ${({ theme }) => theme.motion.duration.hover} linear;
+
+    /* Activar bold al pasar el cursor o cuando el dropdown ya esta abierto.
+       Solo en dispositivos con hover real (evita bold permanente en tactiles). */
+    @media (hover: hover) and (pointer: fine) {
+      &:hover,
+      &[aria-expanded="true"] {
+        font-weight: ${({ theme }) => theme.weights.bold};
+      }
+    }
   }
 
-  /* Sin resaltado de ítem activo ni sombreado: solo el texto se oscurece al pasar el cursor. */
+  /* Color de hover/expanded sin dispositivo de hover (touch). */
   > a:hover,
-  > button:hover,
   > button[aria-expanded="true"] {
     color: ${({ theme }) => theme.colors.purpleDark};
   }
