@@ -55,6 +55,10 @@ const Wrapper = styled.div`
   margin: ${({ theme }) => `${theme.space(6)} auto 0`};
   align-self: center;
   flex: 0 0 auto;
+  /* Aisla el subtree del cálculo de layout del slide y previene que cualquier
+     fallo del contexto flex/grid del hero estire o comprima la tarjeta. */
+  contain: layout paint;
+  isolation: isolate;
 
   /* Tablet en adelante: flotante a la derecha, centrada verticalmente. */
   ${media.up("md")} {
@@ -86,6 +90,12 @@ const Panel = styled.div`
   position: relative;
   z-index: 2;
   width: 100%;
+  /* Doble seguro: aunque un cambio futuro del Wrapper o del context flex del
+     slide intente expandir el panel, este tope garantiza que las cards de
+     objetivos nunca excedan los 400px (que es lo que muestra el mockup en
+     cualquier navegador). */
+  max-width: 400px;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.space(4)};
@@ -97,7 +107,11 @@ const Panel = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
   box-shadow: ${({ theme }) => theme.shadows.lift};
   color: ${({ theme }) => theme.colors.white};
+  /* Recorta cualquier hijo que intentase desbordar (incluye el CodeMark en >= md). */
   overflow: hidden;
+  /* Evita que estilos globales animados o cambios de layout propaguen dentro
+     del Panel y muevan el contenido de las cards. */
+  contain: layout style;
 `;
 
 // Sello "Kodigo" violeta con el monigote '</>'. Flota sobre la esquina superior derecha del panel
