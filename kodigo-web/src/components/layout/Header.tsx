@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import logoDark from "@/assets/brand/kodigo-logo-dark.webp";
@@ -9,6 +9,17 @@ import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
 import { ChevronDown } from "../ui/Icons";
 import { ScrollProgress } from "../ui/ScrollProgress";
+
+// Sube al top de la pagina con scroll suave cuando se hace click en el logo o
+// en el menu "Inicio". Funciona en cualquier ruta, incluido cuando ya estamos
+// en "/": React Router ignora navegaciones a la misma ruta (no se dispara el
+// useEffect del Layout), asi que este handler es el que garantiza el
+// comportamiento en todos los casos. Respeta teclas de modificador (Ctrl / Cmd /
+// Shift / Alt) para que el usuario pueda abrir el destino en nueva pestana.
+const scrollToTop = (e: MouseEvent) => {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+};
 
 // Header de Kodigo: TRANSPARENTE al inicio (z-index superior sobre el hero para que la foto pase por
 // detrás) y translúcido 'frosted glass' al desplazarse. El backdrop-filter blur + saturate revela la
@@ -243,7 +254,7 @@ const Dropdown = ({ item }: { item: NavItem }) => {
   // Cierra al hacer clic fuera del elemento.
   useEffect(() => {
     if (!open) return;
-    const onPointerDown = (e: MouseEvent) => {
+    const onPointerDown = (e: globalThis.MouseEvent) => {
       if (!itemRef.current?.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("mousedown", onPointerDown);
@@ -342,7 +353,12 @@ export const Header = () => {
           Solo aparece en la home; las páginas internas no lo necesitan. */}
       <ScrollProgress />
       <Inner $scrolled={scrolled}>
-        <Brand to="/" $scrolled={scrolled} aria-label={`${siteConfig.name} - Inicio`}>
+        <Brand
+          to="/"
+          $scrolled={scrolled}
+          aria-label={`${siteConfig.name} - Inicio`}
+          onClick={scrollToTop}
+        >
           <img src={logoDark} alt={siteConfig.name} width={brand.logoDark.width} height={brand.logoDark.height} />
         </Brand>
         <Toggle
@@ -361,7 +377,16 @@ export const Header = () => {
                 <Dropdown key={item.to} item={item} />
               ) : (
                 <Item key={item.to}>
-                  <NavLink to={item.to} end={item.to === "/"} className={({ isActive }) => (isActive ? "active" : "")}>
+                  {/* Para "Inicio" (to === "/") añadimos onClick de scroll-to-top:
+                      React Router ignora navegaciones a la misma ruta, asi que el
+                      handler fuerza el scroll incluso cuando ya estamos en /. El
+                      bloque {behavior: "smooth"} respeta el scroll-behavior CSS. */}
+                  <NavLink
+                    to={item.to}
+                    end={item.to === "/"}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    onClick={item.to === "/" ? scrollToTop : undefined}
+                  >
                     {item.label}
                   </NavLink>
                 </Item>
