@@ -6,7 +6,7 @@ import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
 import { Float } from "../ui/Float";
 import { Container } from "../ui/Container";
-import { BookOpen } from "../ui/Icons";
+import { BookOpen, Check } from "../ui/Icons";
 import { GoalsCard } from "./GoalsCard";
 
 // Carrusel del banner de Eduhall (Home 3): foto a pantalla completa con degradado azul marino de izquierda a derecha.
@@ -31,6 +31,8 @@ interface SlideData {
   lead: string;
   primary: { text: string; to: string };
   secondary: { text: string; to: string };
+  /** Bullets que se muestran debajo de los botones (mockup del hero). */
+  benefits: string[];
   image: string;
   imageSmall: string;
 }
@@ -38,20 +40,22 @@ interface SlideData {
 // Mismo mensaje en ambas diapositivas hasta tener contenido y foto distintos para la segunda.
 const SLIDES: SlideData[] = [
   {
-    label: "Bootcamps de tecnología e IA",
+    label: "Futuro digital · Kodigo 2026",
     title: ["El futuro no\nse espera.\n", { em: "Se construye." }],
     lead: "Transforma tu potencial en habilidades reales. Aprende desarrollo de software, datos e inteligencia artificial con formación práctica y enfoque profesional.",
     primary: { text: "Explorar bootcamps", to: "/bootcamps" },
-    secondary: { text: "Conoce Kodigo", to: "/nosotros/" },
+    secondary: { text: "Descubrir mi ruta", to: "#goals-title" },
+    benefits: ["Programas orientados a la práctica", "Opciones según tu perfil"],
     image: heroImage,
     imageSmall: heroImageSmall,
   },
   {
-    label: "Bootcamps de tecnología e IA",
+    label: "Futuro digital · Kodigo 2026",
     title: ["El futuro no\nse espera.\n", { em: "Se construye." }],
     lead: "Transforma tu potencial en habilidades reales. Aprende desarrollo de software, datos e inteligencia artificial con formación práctica y enfoque profesional.",
     primary: { text: "Explorar bootcamps", to: "/bootcamps" },
-    secondary: { text: "Conoce Kodigo", to: "/nosotros/" },
+    secondary: { text: "Descubrir mi ruta", to: "#goals-title" },
+    benefits: ["Programas orientados a la práctica", "Opciones según tu perfil"],
     image: heroImage,
     imageSmall: heroImageSmall,
   },
@@ -176,13 +180,18 @@ const Label = styled.p`
 const Title = styled.h1`
   margin-bottom: ${({ theme }) => theme.space(6)};
   font-size: ${({ theme }) => theme.type.display};
-  font-weight: ${({ theme }) => theme.weights.medium};
-  line-height: 1.2;
+  font-weight: ${({ theme }) => theme.weights.bold};
+  line-height: 1.05;
   color: ${({ theme }) => theme.colors.white};
 
   em {
+    /* Gradiente lila -> cian sobre la parte enfatizada, replicando el mockup. */
     font-style: normal;
-    color: ${({ theme }) => theme.colors.yellow};
+    background-image: linear-gradient(180deg, #c7b0ff 0%, #adf3e6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 `;
 
@@ -200,6 +209,28 @@ const Actions = styled.div<{ $delay: number }>`
 
   @media (prefers-reduced-motion: no-preference) {
     animation: ${fadeUp} 700ms ${({ theme }) => theme.motion.easing} ${({ $delay }) => $delay}ms backwards;
+  }
+`;
+
+const Checks = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => `${theme.space(2)} ${theme.space(6)}`};
+  margin: ${({ theme }) => theme.space(6)} 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.space(2)};
+    color: ${({ theme }) => theme.colors.white};
+    font-size: 0.9375rem;
+    font-weight: ${({ theme }) => theme.weights.medium};
+  }
+
+  li svg {
+    color: ${({ theme }) => theme.colors.green};
   }
 `;
 
@@ -376,10 +407,18 @@ const SlideView = ({ slide, mode }: SlideViewProps) => {
             <ButtonLink to={slide.primary.to} arrow>
               {slide.primary.text}
             </ButtonLink>
-            <ButtonLink to={slide.secondary.to} variant="outlineLight">
+            <ButtonLink to={slide.secondary.to} variant="outlineLight" arrow>
               {slide.secondary.text}
             </ButtonLink>
           </Actions>
+          <Checks aria-label="Beneficios del programa">
+            {slide.benefits.map((b) => (
+              <li key={b}>
+                <Check size={18} aria-hidden="true" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </Checks>
         </Content>
       </Container>
       {/* Tarjeta flotante "Encuentra tu punto de partida" — solo visible en ≥ md (se apila en el flujo en móvil). */}
