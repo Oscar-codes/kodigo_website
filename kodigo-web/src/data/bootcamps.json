@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "gen-ai-to-agents",
+    "name": "Gen AI to Agents",
+    "area": "IA",
+    "summary": "Explora el uso de IA generativa y evoluciona hacia soluciones y agentes aplicados a objetivos concretos."
+  },
+  {
+    "slug": "ai-for-teachers",
+    "name": "AI for Teachers",
+    "area": "Educación",
+    "summary": "Inteligencia artificial aplicada a la docencia."
+  },
+  {
+    "slug": "ai-agents-essentials",
+    "name": "AI Agents Essentials",
+    "area": "IA",
+    "summary": "Conoce los conceptos fundamentales para diseñar asistentes y agentes de IA con casos de uso prácticos."
+  },
+  {
+    "slug": "ai-data-trainee",
+    "name": "AI Data Trainee",
+    "area": "Datos",
+    "summary": "Desarrolla capacidades de análisis de información y empieza a utilizar IA en tareas relacionadas con datos."
+  },
+  {
+    "slug": "bi-analyst-ai",
+    "name": "BI Analyst AI",
+    "area": "Datos",
+    "summary": "Convierte información en tableros e indicadores que apoyen la toma de decisiones de negocio."
+  },
+  {
+    "slug": "python-analyst",
+    "name": "Python Analyst",
+    "area": "Datos",
+    "summary": "Usa Python para transformar datos, explorar patrones y desarrollar análisis reproducibles."
+  },
+  {
+    "slug": "sql-ai",
+    "name": "SQL AI",
+    "area": "Datos",
+    "summary": "Aprende a consultar, organizar y analizar información almacenada en bases de datos relacionales."
+  },
+  {
+    "slug": "ai-machine-learning",
+    "name": "AI Machine Learning",
+    "area": "IA",
+    "summary": "Fundamentos y práctica de machine learning."
+  },
+  {
+    "slug": "web-developer-frontend",
+    "name": "Web Developer Frontend",
+    "area": "Desarrollo",
+    "summary": "Crea interfaces y experiencias digitales modernas, incorporando herramientas de IA a tu flujo de desarrollo."
+  },
+  {
+    "slug": "full-stack-jr",
+    "name": "Full Stack Jr / Full Stack AI Jr",
+    "area": "Desarrollo",
+    "summary": "Conecta frontend, lógica del servidor y datos para construir soluciones web de extremo a extremo."
+  }
+]

@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Los runners de GitHub ya traen Google Chrome: no se descarga ningún navegador.
+      E2E_BROWSER_CHANNEL: chrome
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc -b
+      - run: npm run content:check
+
+      # Importador + build + servidor de producción (`serve`, igual que Railway) + pruebas de navegador.
+      - run: npm test

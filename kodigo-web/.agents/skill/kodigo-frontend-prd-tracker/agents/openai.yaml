@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kodigo Frontend PRD Tracker"
+  short_description: "Track frontend tickets and maintain the living PRD of the Kodigo website."
+  brand_color: "#6D28D9"

@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dist-demo/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+
+# dependencias ignoradas al construir el sitio
+eduall/
+graphify-out/
+Recursos kodigo/
+Solicitud de insumos/
+
+# archivos del sistema operativo
+.DS_Store
+Thumbs.db

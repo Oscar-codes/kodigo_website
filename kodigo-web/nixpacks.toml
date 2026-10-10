@@ -1,0 +1,10 @@
+# Railway (Nixpacks). Las herramientas de build (vite, typescript) están en devDependencies,
+# por eso la instalación incluye dev aunque NODE_ENV sea production.
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"
