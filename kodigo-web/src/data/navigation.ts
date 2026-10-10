@@ -8,14 +8,27 @@ import { professionalSections } from "./professional";
 // que crearse para cubrir los criterios del cliente - ver descripcion abajo.
 //
 //   Inicio        -> /                          (Hero)
-//   Formaciones   -> /#bootcamps-title          (BootcampShowcase lista bootcamps)
-//   Beneficios    -> /#benefits-title           (Benefits describe empleabilidad)
-//   Respaldo      -> /#allies-title            (Allies - 'why Kodigo'. Falta seccion de
-//                                              acreditaciones / credenciales reales)
-//   Clientes      -> /#testimonials-title       (Testimonials = historias Kodigo. Falta
-//                                              seccion dedicada a testimonios de CEOs
-//                                              de empresas clientes)
-//   Saber mas     -> /#faq-title                (FAQ)
+//   Formaciones   -> /#bootcamps-title          (BootcampShowcase: 'Aprende con proposito /
+//                                              Encuentra el bootcamp que te llevara
+//                                              mas lejos'.)
+//   Beneficios    -> /#experience-title         (Experience: 'La experiencia Kodigo /
+//                                              No se trata solo de aprender. Se trata de
+//                                              ponerlo en practica. Un recorrido formativo
+//                                              claro...' + encabezado 'Metodologia Kodigo
+//                                              / El metodo detras de tu proxima carrera tech'.)
+//   Respaldo      -> /#career-path-title        (CareerPath: 'Por que Kodigo / Una formacion
+//                                              con proposito, una comunidad que acompana.' La
+//                                              pista 'Personas y conexiones / Las historias
+//                                              reales tienen el mayor impacto' sigue servida
+//                                              por el item de menu 'Clientes'.
+//                                              Pendiente crear una seccion 'Acreditaciones y
+//                                              ventajas competitivas' para que Respaldo tenga
+//                                              contenido propio.)
+//   Clientes      -> /#testimonials-title       (Testimonials: 'Personas y conexiones /
+//                                              Las historias reales tienen el mayor impacto.'.
+//                                              Falta seccion dedicada a CEOs/CTOs para
+//                                              diferenciarlo de Testimonials actuales.)
+//   Saber mas     -> /#faq-title                (FAQ: 'preguntas frecuentes'.)
 //   Nosotros      -> /nosotros + subitems
 //   Profesional    -> /profesional + subitems
 //   Aplicar       -> /#cta                      (CallToAction CTA generico. Falta un
@@ -50,22 +63,28 @@ export const navigation: NavItem[] = [
   // ATRAER: slide del Hero + GoalsCard. Atraer al usuario y mostrarle las rutas disponibles.
   { label: "Inicio", to: "/" },
 
-  // EXPLICAR: la lista de bootcamps disponibles ya existe en BootcampShowcase.
+  // EXPLICAR: BootcampShowcase lista los bootcamps disponibles con copy exacto
+  // 'Aprende con proposito' / 'Encuentra el bootcamp que te llevara mas lejos'.
   { label: "Formaciones", to: "/#bootcamps-title" },
 
-  // CONECTAR: el match natural. La seccion Benefits ya cubre estadisticas
-  // de empleabilidad, tendencias y casos de exito (segun 'demoContent.ts').
-  { label: "Beneficios", to: "/#benefits-title" },
+  // CONECTAR: Experience.tsx contiene el copy exacto ('La experiencia Kodigo /
+  // No se trata solo de aprender...') y Methodology.tsx contiene el siguiente
+  // encabezado de la lista del usuario ('Metodologia Kodigo / El metodo detras
+  // de tu proxima carrera tech'). Beneficios se enlaza a Experience, que es
+  // la primera seccion de las dos; Methodology viene a continuacion en el
+  // scroll. Si se quiere enlazar a Methodology hay que mover el anchor.
+  { label: "Beneficios", to: "/#experience-title" },
 
-  // GENERAR CONFIANZA: Allies muestra los logos de las empresas que caminan
-  // con nosotros. Pendiente crear una seccion de 'Acreditaciones y
-  // ventajas competitivas' que anada respaldo institucional (ministerios,
-  // universidades, premios).
-  { label: "Respaldo", to: "/#allies-title" },
+  // GENERAR CONFIANZA: CareerPath tiene el copy exacto 'Por que Kodigo / Una
+  // formacion con proposito, una comunidad que acompana.' (linea 397-399). El
+  // usuario anade 'Personas y conexiones' como pista narrativa pero ese copy
+  // vive en Testimonials (#testimonials-title); lo atiende Clientes en el menu.
+  // Falta una seccion dedicada a 'Acreditaciones / Ventajas competitivas' que
+  // justifique sola a Respaldo (se recomienda crearla para diferenciarse).
+  { label: "Respaldo", to: "/#career-path-title" },
 
-  // Tambien confianza: Testimonials sirve como anclaje aproximado hasta que
-  // se cree una seccion 'CEO testimonials' en la home. La pieza Allies +
-  // Testimonials cubre el 80% del feeling pedido.
+  // 'Personas y conexiones / Las historias reales tienen el mayor impacto.'
+  // es exactamente el titulo del Testimonials.tsx.
   { label: "Clientes", to: "/#testimonials-title" },
 
   // FAQ: match exacto a la seccion existente - respondemos las preguntas
