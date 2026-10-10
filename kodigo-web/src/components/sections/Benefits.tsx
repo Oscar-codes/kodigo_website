@@ -45,6 +45,10 @@ const Section = styled.section`
   z-index: 2;
   margin-top: -1.5rem; /* = PANEL_OVERLAP de Hero.tsx */
   padding-bottom: ${({ theme }) => theme.section.y};
+  /* El H2 con id='benefits-title' vive dentro del bloque; el scroll-margin
+     deja el contenido visible bajo el Header sticky cuando el menu
+     'Beneficios' lleva al usuario aqui. */
+  scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeight} + 8px);
 `;
 
 const Panel = styled.ul`
