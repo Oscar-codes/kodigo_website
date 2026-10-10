@@ -195,7 +195,7 @@ const Label = styled.p`
   margin-bottom: ${({ theme }) => theme.space(4)};
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.weights.medium};
-  color: ${({ theme }) => theme.colors.yellow};
+  color: ${({ theme }) => theme.colors.accentOnDark};
 `;
 
 const Title = styled.h1`

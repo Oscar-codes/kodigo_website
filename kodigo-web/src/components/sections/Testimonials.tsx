@@ -226,7 +226,7 @@ const Slide = styled.figure`
     align-items: center;
     gap: 4px;
     margin-bottom: ${({ theme }) => theme.space(3)};
-    color: ${({ theme }) => theme.colors.yellow};
+    color: ${({ theme }) => theme.colors.accentOnDark};
   }
 
   .stars .last {

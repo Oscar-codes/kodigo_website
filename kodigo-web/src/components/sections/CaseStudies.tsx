@@ -96,7 +96,7 @@ const Head = styled.div<{ $visible: boolean }>`
 
   h2 strong {
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.yellow};
+    color: ${({ theme }) => theme.colors.accentOnDark};
   }
 
   p.lead {

@@ -72,7 +72,7 @@ const Eyebrow = styled.h1`
   font-size: 1.125rem;
   font-weight: ${({ theme }) => theme.weights.bold};
   letter-spacing: 0.08em;
-  color: ${({ theme }) => theme.colors.yellow};
+  color: ${({ theme }) => theme.colors.accentOnDark};
 `;
 
 const Question = styled.p`
