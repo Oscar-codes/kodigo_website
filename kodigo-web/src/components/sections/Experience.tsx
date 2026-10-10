@@ -219,7 +219,7 @@ const Tab = styled.button`
   &[aria-selected="true"] .num {
     border-color: ${({ theme }) => theme.colors.white};
     background: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   &:focus-visible {
@@ -340,7 +340,7 @@ const Card = styled.div<{ $tone: Tone }>`
     font-weight: ${({ theme }) => theme.weights.bold};
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   h3 {

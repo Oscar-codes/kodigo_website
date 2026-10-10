@@ -302,7 +302,7 @@ const Controls = styled.div`
 
   .toggle:hover {
     background: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.mainHover};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .toggle:focus-visible {

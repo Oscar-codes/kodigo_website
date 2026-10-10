@@ -149,7 +149,7 @@ const Label = styled.span`
   margin-bottom: ${({ theme }) => theme.space(4)};
   font-size: 1.0625rem;
   font-weight: ${({ theme }) => theme.weights.bold};
-  color: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.accentOnLight};
 `;
 
 const Heading = styled.h2`
@@ -162,7 +162,7 @@ const Heading = styled.h2`
 
   em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 
@@ -215,7 +215,7 @@ const Item = styled.details`
     background: ${({ theme }) => theme.colors.main50};
     font-size: 1.4rem;
     line-height: 1;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   &[open] {
@@ -230,7 +230,7 @@ const Item = styled.details`
   &[open] summary::after {
     content: "−";
     background: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   > p {

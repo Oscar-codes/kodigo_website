@@ -38,7 +38,7 @@ const Item = styled(Reveal)`
     font-size: clamp(2.75rem, 2rem + 3vw, 4rem);
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.1;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .label {

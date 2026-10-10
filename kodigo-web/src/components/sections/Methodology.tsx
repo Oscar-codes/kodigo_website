@@ -208,7 +208,7 @@ const Copy = styled.div`
     margin-bottom: ${({ theme }) => theme.space(4)};
     font-size: 1.0625rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
 
     &::before {
       content: "";
@@ -227,7 +227,7 @@ const Copy = styled.div`
 
   h2 em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   > p.lead {
@@ -252,7 +252,7 @@ const Feature = styled(Reveal)`
     height: 56px;
     border-radius: 50%;
     background: ${({ theme }) => theme.colors.main50};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   h3 {

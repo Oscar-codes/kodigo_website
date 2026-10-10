@@ -116,7 +116,7 @@ const QuoteBadge = styled.span`
   height: 56px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.lilac};
-  color: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.accentOnLight};
   box-shadow: ${({ theme }) => theme.shadows.float};
 
   svg {
@@ -140,7 +140,7 @@ const Heading = styled.div`
     margin-bottom: ${({ theme }) => theme.space(4)};
     font-size: 1.0625rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
 
     &::before {
       content: "";
@@ -159,7 +159,7 @@ const Heading = styled.div`
 
   h2 em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   > p {
@@ -193,7 +193,7 @@ const Tab = styled.button<{ $active: boolean }>`
     border-color ${({ theme }) => theme.motion.duration.hover} linear;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.main};
+    border-color: ${({ theme }) => theme.colors.accentOnLight};
     color: ${({ $active, theme }) => ($active ? theme.colors.white : theme.colors.main)};
   }
 
@@ -298,7 +298,7 @@ const Controls = styled.div`
 
   button:hover {
     background: ${({ theme }) => theme.colors.main};
-    border-color: ${({ theme }) => theme.colors.main};
+    border-color: ${({ theme }) => theme.colors.accentOnLight};
     color: ${({ theme }) => theme.colors.white};
     transform: translateY(-2px);
   }

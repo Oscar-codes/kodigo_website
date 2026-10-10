@@ -87,7 +87,7 @@ const Heading = styled.h2`
 
   em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 
@@ -131,7 +131,7 @@ const CountRow = styled.div`
     font-weight: ${({ theme }) => theme.weights.medium};
 
     svg {
-      color: ${({ theme }) => theme.colors.main};
+      color: ${({ theme }) => theme.colors.accentOnLight};
     }
   }
 `;
@@ -155,7 +155,7 @@ const Logo = styled.span`
 
   &:hover {
     transform: translateY(-2px);
-    border-color: ${({ theme }) => theme.colors.main};
+    border-color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   img {
@@ -216,7 +216,7 @@ const CtaSecondaryAlt = styled(Link)`
   border-radius: ${({ theme }) => theme.radii.pill};
   background: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  color: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.accentOnLight};
   font-weight: ${({ theme }) => theme.weights.semibold};
   transition:
     background-color ${({ theme }) => theme.motion.duration.hover} linear,
@@ -225,7 +225,7 @@ const CtaSecondaryAlt = styled(Link)`
 
   &:hover {
     background: ${({ theme }) => theme.colors.main50};
-    border-color: ${({ theme }) => theme.colors.main};
+    border-color: ${({ theme }) => theme.colors.accentOnLight};
     transform: translateY(-2px);
   }
 

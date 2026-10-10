@@ -17,7 +17,7 @@ const Wrap = styled.div<{ $align: "center" | "left"; $visible: boolean }>`
     margin-bottom: ${({ theme }) => theme.space(3)};
     font-size: 1.125rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   h2 {
@@ -27,7 +27,7 @@ const Wrap = styled.div<{ $align: "center" | "left"; $visible: boolean }>`
 
   h2 em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   p.lead {

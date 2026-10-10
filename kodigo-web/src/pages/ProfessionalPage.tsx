@@ -51,7 +51,7 @@ const SectionCard = styled(Card)`
     gap: ${({ theme }) => theme.space(1)};
     margin-top: auto;
     font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 

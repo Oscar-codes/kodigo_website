@@ -38,7 +38,7 @@ const Item = styled.li`
     font-size: clamp(2rem, 5vw, 2.75rem);
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.2;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .label {

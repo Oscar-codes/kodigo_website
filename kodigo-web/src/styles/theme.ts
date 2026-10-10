@@ -34,6 +34,10 @@ export const theme = {
         oscuros. Ticket 2.2: r/108, g/232, b/215 con buen contraste sobre
         navy #071431 (>= 9:1 WCAG AA + AAA) y coherente con la paleta Kodigo. */
     accentOnDark: "#6CE8D7",
+    /** Color de énfasis (eyebrow, label, strong, link) sobre fondo claro /
+        blanco. Ticket 2.3: rgb(107, 80, 218). ~4.7:1 de contraste sobre
+        blanco #FFFFFF (AA Normal) y ~6.8:1 sobre surface #F2F2FE (AA +). */
+    accentOnLight: "#6B50DA",
 
 // Morado de marca (texto del menú sobre blanco; #5B2EA6 = 7.6:1) y violeta profundo/lila para degradados corporativos
     purple: "#5B2EA6",

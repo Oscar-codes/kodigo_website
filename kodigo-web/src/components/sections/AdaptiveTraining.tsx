@@ -107,7 +107,7 @@ const Collage = styled.div<{ $visible: boolean }>`
       height: 48px;
       border-radius: 50%;
       background: ${({ theme }) => theme.colors.white};
-      color: ${({ theme }) => theme.colors.main};
+      color: ${({ theme }) => theme.colors.accentOnLight};
     }
 
     strong {
@@ -149,7 +149,7 @@ const Text = styled.div<{ $visible: boolean }>`
     margin-bottom: ${({ theme }) => theme.space(3)};
     font-size: 1.125rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   h2 {
@@ -225,7 +225,7 @@ const Feature = styled(Reveal)`
   }
 
   &:hover h3 {
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   p {

@@ -47,7 +47,7 @@ const More = styled.p`
   text-align: center;
 
   a {
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     font-weight: ${({ theme }) => theme.weights.semibold};
     text-decoration: underline;
     text-underline-offset: 4px;

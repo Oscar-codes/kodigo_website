@@ -42,7 +42,7 @@ const Event = styled(Card)`
 
   .date {
     flex: none;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     min-width: 72px;
     text-align: center;
   }
@@ -52,7 +52,7 @@ const Event = styled(Card)`
     font-size: 2.75rem;
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .month {
@@ -146,7 +146,7 @@ const Soon = styled.span`
   border: 1px dashed ${({ theme }) => theme.colors.main};
   border-radius: ${({ theme }) => theme.radii.pill};
   font-weight: ${({ theme }) => theme.weights.semibold};
-  color: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.accentOnLight};
 `;
 
 export const UpcomingWorkshops = () => (

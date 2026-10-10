@@ -63,7 +63,7 @@ const StepCard = styled(Reveal)`
     border-radius: 50%;
     font-size: 1.75rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     transition: transform ${({ theme }) => theme.motion.duration.base} ease;
   }
 

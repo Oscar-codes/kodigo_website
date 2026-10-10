@@ -70,7 +70,7 @@ const Copy = styled.div`
     margin-bottom: ${({ theme }) => theme.space(4)};
     font-size: 1.0625rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
 
     &::before {
       content: "";
@@ -89,7 +89,7 @@ const Copy = styled.div`
 
   h2 em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   > p.lead {
@@ -120,7 +120,7 @@ const Checks = styled.ul`
     width: 22px;
     height: 22px;
     margin-top: 2px;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 
@@ -338,7 +338,7 @@ const StudentsCard = styled.div`
   .text strong {
     font-size: 0.9375rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .text small {

@@ -58,7 +58,7 @@ const Header = styled.div`
     gap: ${({ theme }) => theme.space(2)};
     margin-top: ${({ theme }) => theme.space(5)};
     font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .side a:hover {

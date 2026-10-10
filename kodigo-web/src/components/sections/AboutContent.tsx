@@ -14,7 +14,7 @@ const Body = styled.div`
     margin-bottom: ${({ theme }) => theme.space(3)};
     font-size: 1.125rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   h2 {

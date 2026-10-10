@@ -43,10 +43,10 @@ const buttonStyles = css<{ $variant: Variant }>`
         `;
       case "outline":
         return css`
-          border-color: ${theme.colors.main};
-          color: ${theme.colors.main};
+          border-color: ${theme.colors.accentOnLight};
+          color: ${theme.colors.accentOnLight};
           &:hover {
-            background: ${theme.colors.main};
+            background: ${theme.colors.accentOnLight};
             color: ${theme.colors.white};
           }
         `;
@@ -54,7 +54,7 @@ const buttonStyles = css<{ $variant: Variant }>`
         return css`
           background: ${theme.colors.white};
           border-color: ${theme.colors.white};
-          color: ${theme.colors.main};
+          color: ${theme.colors.accentOnLight};
           &:hover {
             background: ${theme.colors.yellow};
             border-color: ${theme.colors.yellow};

@@ -134,7 +134,7 @@ const Chips = styled.div<{ $area: Bootcamp["area"] }>`
     padding: ${({ theme }) => `${theme.space(1.5)} ${theme.space(3.5)}`};
     border-radius: ${({ theme }) => theme.radii.pill};
     background: ${({ theme }) => theme.colors.main50};
-    color: ${({ theme }) => theme.colors.mainHover};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     font-size: 0.8125rem;
     font-weight: ${({ theme }) => theme.weights.medium};
   }
@@ -215,7 +215,7 @@ const Item = styled(Card)`
     display: inline-flex;
     align-items: center;
     gap: ${({ theme }) => theme.space(1.5)};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   .more svg {

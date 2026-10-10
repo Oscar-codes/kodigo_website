@@ -272,7 +272,7 @@ const Row = styled.li<{ $active?: boolean }>`
 
   a:hover {
     background: rgba(75, 74, 241, 0.22);
-    border-color: ${({ theme }) => theme.colors.main};
+    border-color: ${({ theme }) => theme.colors.accentOnLight};
     transform: translateX(2px);
   }
 
@@ -334,7 +334,7 @@ const Suggestion = styled.div`
   color: ${({ theme }) => theme.colors.onNavy};
 
   strong {
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     font-weight: ${({ theme }) => theme.weights.semibold};
   }
 `;

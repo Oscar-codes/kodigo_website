@@ -94,7 +94,7 @@ const ProfileLink = styled.a`
   border-radius: ${({ theme }) => theme.radii.pill};
   font-size: 0.9375rem;
   font-weight: ${({ theme }) => theme.weights.semibold};
-  color: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.accentOnLight};
   transition: background-color ${({ theme }) => theme.motion.duration.hover} linear,
     color ${({ theme }) => theme.motion.duration.hover} linear;
 

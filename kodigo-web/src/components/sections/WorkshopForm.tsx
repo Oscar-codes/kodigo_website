@@ -61,7 +61,7 @@ const Form = styled.form`
 
     &:focus-visible {
       outline: none;
-      border-color: ${({ theme }) => theme.colors.main};
+      border-color: ${({ theme }) => theme.colors.accentOnLight};
       box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.main100};
     }
 

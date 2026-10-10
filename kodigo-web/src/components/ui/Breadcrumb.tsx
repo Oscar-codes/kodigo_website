@@ -23,7 +23,7 @@ const List = styled.ol`
   }
 
   a:hover {
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     text-decoration: underline;
   }
 

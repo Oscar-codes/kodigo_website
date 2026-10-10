@@ -102,7 +102,7 @@ const Card = styled(Reveal)`
     height: 100%;
     border: 1px dashed ${({ theme }) => theme.colors.main};
     border-radius: 50%;
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     transition: transform ${({ theme }) => theme.motion.duration.base} ease;
   }
 
@@ -149,7 +149,7 @@ const Card = styled(Reveal)`
     gap: ${({ theme }) => theme.space(2)};
     font-size: 0.9375rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
     transition: color ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
@@ -181,7 +181,7 @@ const Card = styled(Reveal)`
 
   &:hover .circle::after {
     background: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   &:hover .ring {

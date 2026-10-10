@@ -98,7 +98,7 @@ const Modules = styled.ol`
 
   h3::before {
     content: counter(module) ". ";
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 
   ul {
@@ -108,7 +108,7 @@ const Modules = styled.ol`
   }
 
   ul li::marker {
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 
@@ -117,7 +117,7 @@ const Requirements = styled.ul`
   list-style: disc;
 
   li::marker {
-    color: ${({ theme }) => theme.colors.main};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 
