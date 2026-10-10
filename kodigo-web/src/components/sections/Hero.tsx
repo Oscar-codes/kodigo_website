@@ -95,12 +95,6 @@ const Wrap = styled.section`
   position: relative;
   isolation: isolate;
   background-color: ${({ theme }) => theme.colors.navy};
-  /* Tiramos el Hero hacia arriba por el alto del Header sticky para que la
-     foto del banner rellene el area que de otro modo es body-color blanco.
-     El padding-top compensa el contenido textual para que no se solape con
-     la cabecera flotante. */
-  margin-top: calc(-1 * ${({ theme }) => theme.layout.headerHeight});
-  padding-top: calc(${({ theme }) => theme.layout.headerHeight} + ${({ theme }) => theme.space(10)});
 `;
 
 // Todas las diapositivas ocupan la misma celda: el alto lo fija la más alta (las "sizer" invisibles).
@@ -122,20 +116,15 @@ const Slide = styled.div<SlideProps>`
   /* El banner ocupa casi todo el alto visible (cabecera + banner + borde del panel) con el contenido centrado,
      como el Home 3 de Eduhall. El panel de rutas solo se superpone un poco al banner.
      En >= md: el GoalsCard se vuelve position: absolute y queda al lado del texto.
-     En <= md: ambos hijos se apilan verticalmente para no pelearse el ancho.
-     Ya no restamos headerHeight del alto: el Wrap del Hero se tira hacia
-     arriba por headerHeight para que la foto pase por detras del Header
-     sticky. Asi el bar aparece como cristal sobre el banner. */
+     En <= md: ambos hijos se apilan verticalmente para no pelearse el ancho. */
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
   gap: ${({ theme }) => theme.space(8)};
-  min-height: clamp(34rem, 100svh, 62rem);
-  /* Deja libre la fila de controles (44 px) bajo el contenido y suma el alto
-     del Header para que el contenido de texto respete el area visible
-     bajo la barra flotante. */
-  padding-block: calc(${({ theme }) => theme.layout.headerHeight} + 3rem) calc(${PANEL_OVERLAP} + 5.5rem);
+  min-height: clamp(34rem, calc(100svh - ${({ theme }) => theme.layout.headerHeight} - 3.5rem), 62rem);
+  /* Deja libre la fila de controles (44 px) bajo el contenido. */
+  padding-block: 3rem calc(${PANEL_OVERLAP} + 5.5rem);
 
   ${media.up("md")} {
     flex-direction: row;
