@@ -42,6 +42,10 @@ const Inner = styled(Container)<{ $scrolled: boolean }>`
   gap: ${({ theme }) => theme.space(6)};
   min-height: ${({ theme, $scrolled }) =>
     $scrolled ? theme.layout.headerHeightScrolled : theme.layout.headerHeight};
+  /* Stacking context explicito: el Brand (logo) va a z-index 0 y los Item del menu
+     a 1 para que, si llegan a solaparse en algun breakpoint, el menu siempre
+     pinte sobre el logo (regla ui-ux: jerarquia visual estable y determinante). */
+  isolation: isolate;
   transition:
     min-height ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing};
 `;
@@ -50,6 +54,10 @@ const Brand = styled(Link)<{ $scrolled: boolean }>`
   display: inline-flex;
   align-items: center;
   flex: none;
+  /* El logo queda detras del menu. Con position + z-index 0, su orden de pila
+     queda anclado a esta capa inferior del stacking context del Inner. */
+  position: relative;
+  z-index: 0;
 
   img {
     display: block;
@@ -64,7 +72,9 @@ const Brand = styled(Link)<{ $scrolled: boolean }>`
 const Menu = styled.nav<{ $open: boolean }>`
   ${media.up("lg")} {
     flex: 1;
-    margin-left: ${({ theme }) => theme.space(4)};
+    margin-left: ${({ theme }) => theme.space(2)};
+    position: relative;
+    z-index: 1;
   }
 
   ${media.down("lg")} {
@@ -93,6 +103,9 @@ const Menu = styled.nav<{ $open: boolean }>`
 
 const Item = styled.li`
   position: relative;
+  /* Cada item se posiciona a la misma capa que el nav (z-index 1 del Menu) para
+     que cualquier hover activo, focus ring o chevron se pinte sobre el logo. */
+  z-index: 1;
 
   > a,
   > button {
