@@ -49,7 +49,7 @@ export const theme = {
     dangerSoft: "#FEF3F2",
 bgTranslucent: "rgba(255, 255, 255, 0.97)",
     /** Cabecera al hacer scroll: blanco translúcido sobre el contenido (con desenfoque). */
-    headerGlass: "rgba(255, 255, 255, 0.55)",
+    headerGlass: "rgba(255, 255, 255, 0.78)",
   },
   fonts: {
     body: `"Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`,

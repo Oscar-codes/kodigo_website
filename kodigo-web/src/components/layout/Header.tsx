@@ -10,10 +10,11 @@ import { Container } from "../ui/Container";
 import { ChevronDown } from "../ui/Icons";
 import { ScrollProgress } from "../ui/ScrollProgress";
 
-// Header de Kodigo: barra blanca, logo a color, menú en mayúsculas con texto morado
-// y botón "Contáctanos" con borde morado. theme.colors.purple (#5B2EA6) sobre blanco cumple contraste AA.
-// Como el header "fixed-header" de Eduhall: sólido arriba y, al bajar, translúcido con desenfoque y sombra suave.
-// Solo cambian colores y sombra (sin movimiento), así que también se aplica con movimiento reducido.
+// Header de Kodigo: TRANSPARENTE al inicio (z-index superior sobre el hero para que la foto pase por
+// detrás) y translúcido 'frosted glass' al desplazarse. El backdrop-filter blur + saturate revela la
+// marca cuando cruza el umbral de scroll. Para que el efecto sea visualmente perceptible sin tapar
+// el contenido usamos alpha 0.78 + blur(32px) saturate(2) — más opaco que un glass de marketing pero
+// sin llegar a ser solido.
 const Bar = styled.header<{ $scrolled: boolean }>`
   position: sticky;
   top: 0;
@@ -23,8 +24,8 @@ const Bar = styled.header<{ $scrolled: boolean }>`
     ${({ theme, $scrolled }) => ($scrolled ? theme.colors.main100 : "transparent")};
   box-shadow: ${({ theme, $scrolled }) => ($scrolled ? theme.shadows.float : "0 0 0 rgba(7, 20, 49, 0)")};
   color: ${({ theme }) => theme.colors.purple};
-  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(28px) saturate(1.8)" : "none")};
-  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(28px) saturate(1.8)" : "none")};
+  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(32px) saturate(2)" : "none")};
+  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(32px) saturate(2)" : "none")};
   transition:
     background-color ${({ theme }) => theme.motion.duration.base} linear,
     border-color ${({ theme }) => theme.motion.duration.base} linear,
