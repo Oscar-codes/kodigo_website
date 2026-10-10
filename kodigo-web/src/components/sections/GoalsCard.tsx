@@ -100,6 +100,41 @@ const Panel = styled.div`
   overflow: hidden;
 `;
 
+// Sello "Kodigo" violeta con el monigote '</>'. Flota sobre la esquina superior derecha del panel
+// replicando el badge oficial del proyecto en Hero, Methodology, etc.
+const CodeMark = styled.span`
+  position: absolute;
+  top: -1.25rem;
+  right: -0.75rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: ${({ theme }) => theme.colors.main};
+  color: ${({ theme }) => theme.colors.white};
+  transform: rotate(8deg);
+  box-shadow:
+    0 14px 32px rgba(75, 74, 241, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  pointer-events: none;
+
+  ${media.up("md")} {
+    top: -1.75rem;
+    right: -1.5rem;
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+  }
+
+  > svg {
+    width: 60%;
+    height: 60%;
+  }
+`;
+
 // === BARRA TIPO MACOS (3 puntos + breadcrumb) ===
 const WindowBar = styled.div`
   display: flex;
@@ -406,6 +441,12 @@ export const GoalsCard = ({ highlightIndex }: Props) => {
   return (
     <Wrapper aria-labelledby="goals-card-title">
       <Panel>
+        <CodeMark aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 8 4 12 9 16" />
+            <polyline points="15 8 20 12 15 16" />
+          </svg>
+        </CodeMark>
         <WindowBar aria-hidden="true">
           <span className="dots">
             <span className="dot red" />
@@ -415,7 +456,7 @@ export const GoalsCard = ({ highlightIndex }: Props) => {
           <span className="crumb">
             tu_ruta <span aria-hidden="true">/</span> <strong>kodigo</strong>
           </span>
-          <span style={{ width: 50 }} />
+          <span aria-hidden="true" style={{ width: 60 }} />
         </WindowBar>
 
         <Body>
