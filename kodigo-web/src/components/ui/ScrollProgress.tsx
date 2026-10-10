@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 
 // "Indicador de progreso de scroll" del Hero: una línea fina de gradiente
-// (cian → azul → magenta → violeta) pegada al borde inferior de la barra de
+// (cian → azul → violeta) pegada al borde inferior de la barra de
 // navegación. Rellena de izquierda a derecha según la posición real del scroll
 // (0 al inicio del documento, 1 al final). Solo decorativo: aria-hidden.
 
@@ -23,8 +23,7 @@ const Bar = styled.div.attrs({ "aria-hidden": true })`
     linear-gradient(
       90deg,
       #06b6d4 0%,
-      #3b82f6 33%,
-      #e91e63 66%,
+      #3b82f6 50%,
       #8b5cf6 100%
     );
   transform: scaleX(var(--scroll-progress, 0));
