@@ -48,18 +48,20 @@ const goals: Goal[] = [
 
 // === WRAPPER: agrupa el panel + la mini-card flotante y los posiciona juntos sobre el slide ===
 const Wrapper = styled.div`
-  /* En móvil se renderiza dentro del flujo (debajo del Content del Hero). */
+  /* Móvil (predeterminado): tarjeta centrada, ancho fijo como la de escritorio para no estirarse al 100% de viewport. */
   width: 100%;
-  margin-top: ${({ theme }) => theme.space(6)};
+  max-width: 380px;
+  margin: ${({ theme }) => `${theme.space(6)} auto 0`};
 
-  /* En ≥ md flota a la derecha, centrado vertical. */
+  /* Tablet en adelante: flotante a la derecha, centrada verticalmente. */
   ${media.up("md")} {
     position: absolute;
     top: 50%;
     right: ${({ theme }) => theme.space(6)};
     transform: translateY(-50%);
     width: 400px;
-    margin-top: 0;
+    max-width: none;
+    margin: 0;
 
     @media (prefers-reduced-motion: no-preference) {
       animation: cardWrapIn 700ms ${({ theme }) => theme.motion.easing} both;
@@ -290,31 +292,38 @@ const MiniCard = styled.div`
   position: relative;
   z-index: 3;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.space(4)};
-  padding: ${({ theme }) => `${theme.space(4)} ${theme.space(5)}`};
+  gap: ${({ theme }) => theme.space(3)};
+  padding: ${({ theme }) => `${theme.space(3)} ${theme.space(4)}`};
   border-radius: ${({ theme }) => theme.radii.xl};
   background: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${({ theme }) => theme.shadows.float};
   color: ${({ theme }) => theme.colors.heading};
-
-  /* En móvil queda debajo del panel; en ≥ md se sale por la esquina inferior-izquierda del Wrapper. */
-  margin-top: ${({ theme }) => theme.space(3)};
+  margin-top: ${({ theme }) => theme.space(4)};
 
   ${media.up("md")} {
     position: absolute;
     left: -2rem;
-    bottom: -1.5rem;
+    bottom: -1.75rem;
     margin-top: 0;
     width: clamp(320px, 75%, 420px);
+    flex-wrap: nowrap;
+    padding: ${({ theme }) => `${theme.space(4)} ${theme.space(5)}`};
+  }
+
+  ${media.up("lg")} {
+    left: -3rem;
   }
 
   .note {
     display: flex;
     align-items: center;
     gap: ${({ theme }) => theme.space(3)};
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .note .dot {
