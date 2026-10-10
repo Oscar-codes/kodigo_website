@@ -24,7 +24,7 @@ for (const [w, h] of [[1280, 800], [360, 740]]) {
   const page = await (await browser.newContext({ viewport: { width: w, height: h } })).newPage();
   for (const r of routes) { await page.goto(base + r); await page.waitForTimeout(250); await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await page.waitForTimeout(900); await scan(page, `${w}${r}`); }
   await page.goto(base + "/"); await page.waitForTimeout(250);
-  if (w >= 992) { await page.getByRole("button", { name: /Bootcamps/ }).hover(); await page.waitForTimeout(200); await scan(page, `${w}/ (submenu abierto)`); }
+  if (w >= 992) { await page.getByRole("button", { name: /Profesional/ }).hover(); await page.waitForTimeout(200); await scan(page, `${w}/ (submenu abierto)`); }
   else { await page.getByRole("button", { name: /menú/i }).click(); await scan(page, `${w}/ (menu movil abierto)`); }
   await page.close();
 }

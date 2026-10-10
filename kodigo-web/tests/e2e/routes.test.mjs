@@ -24,11 +24,9 @@ t("listado: 10 tarjetas", (await page.locator("main ul > li").count()) === 10, `
 const hrefs = await page.locator("main ul > li a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
 t("listado: enlaces == datos", JSON.stringify(hrefs) === JSON.stringify(bootcamps.map((b) => `/bootcamps/${b.slug}`)));
 await page.goto(base + "/");
-await page.getByRole("button", { name: /Bootcamps/ }).hover();
-const menuLinks = await page.locator("#submenu-bootcamps a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
-t("menu: Ver todo + 10 bootcamps", menuLinks.length === 11 && menuLinks[0] === "/bootcamps", `(${menuLinks.length})`);
-await page.getByRole("link", { name: "Conoce Kodigo" }).click({ force: true });
-t("CTA Conoce Kodigo -> /nosotros/", page.url().endsWith("/nosotros/"));
+await page.getByRole("button", { name: /Profesional/ }).hover();
+const menuLinks = await page.locator("#submenu-profesional a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
+t("menu: Profesional tiene Ver todo + 2 secciones", menuLinks.length === 3 && menuLinks[0] === "/profesional", `(${menuLinks.length})`);
 await page.goBack(); await page.goForward();
 t("back/forward funcionan", page.url().endsWith("/nosotros/") && (await h1()) === "Nosotros");
 await page.goto(base + "/bootcamps/sql-ai"); await page.getByRole("navigation", { name: "Migas de pan" }).getByRole("link", { name: "Bootcamps" }).click();
