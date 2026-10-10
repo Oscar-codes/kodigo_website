@@ -31,9 +31,14 @@ export const theme = {
     yellowSoft: "#FFF6D1",
     yellowText: "#6B5000",
 
-    // Morado de marca (texto del menú sobre blanco; #5B2EA6 = 7.6:1) y violeta profundo/lila para degradados corporativos
+// Morado de marca (texto del menú sobre blanco; #5B2EA6 = 7.6:1) y violeta profundo/lila para degradados corporativos
     purple: "#5B2EA6",
     purpleDark: "#3B1F78",
+    /** Tonos auxiliares del CTA "Aplicar" del header (linear-gradient 100deg purpleLight -> purpleDeep). */
+    purpleLight: "#A678FF",
+    purpleDeep: "#7557FA",
+    /** Degradado oficial del CTA "Aplicar" (boton blanco sobre morado). Usado en Header > Item[data-cta]. */
+    gradientCta: "linear-gradient(100deg, #A678FF, #7557FA)",
     violetDeep: "#1E1B6E",
     lilac: "#AF94F8",
 

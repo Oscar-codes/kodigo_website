@@ -150,7 +150,10 @@ const Item = styled.li`
        del dato y respeta "Bootcamps", "Nosotros", etc. */
     text-transform: capitalize;
     color: ${({ theme }) => theme.colors.purple};
-    transition: color ${({ theme }) => theme.motion.duration.hover} linear;
+    transition:
+      color ${({ theme }) => theme.motion.duration.hover} linear,
+      transform ${({ theme }) => theme.motion.duration.hover} ${({ theme }) => theme.motion.easing},
+      box-shadow ${({ theme }) => theme.motion.duration.hover} ${({ theme }) => theme.motion.easing};
   }
 
   /* En hover/expanded no cambiamos font-weight: la pista visual viene del
@@ -160,6 +163,37 @@ const Item = styled.li`
   > button:hover,
   > button[aria-expanded="true"] {
     color: ${({ theme }) => theme.colors.purpleDark};
+  }
+
+  /* CTA "Aplicar" (ultima opcion del menu): boton pill con degradado
+     purpleLight->purpleDeep, texto blanco y sombra suave. En hover, lift
+     translateY(-2px) para llamar la atencion + sombra mas profunda. El
+     bloque se escribe al final del rule para ganar en cascada frente a
+     los selectores simples (regla ui-ux-pro-max: jerarquia de
+     interacciones). */
+  > a[data-cta="true"],
+  > button[data-cta="true"] {
+    color: ${({ theme }) => theme.colors.white};
+    background: ${({ theme }) => theme.colors.gradientCta};
+    box-shadow: 0 8px 20px rgba(117, 87, 250, 0.32);
+  }
+
+  > a[data-cta="true"]:hover,
+  > a[data-cta="true"]:focus-visible,
+  > button[data-cta="true"]:hover,
+  > button[data-cta="true"]:focus-visible,
+  > button[data-cta="true"][aria-expanded="true"] {
+    /* Mantener el color blanco sin importar el purpleDark del hover general. */
+    color: ${({ theme }) => theme.colors.white};
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(117, 87, 250, 0.45);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    > a[data-cta="true"]:hover,
+    > button[data-cta="true"]:hover {
+      transform: translateY(-2px);
+    }
   }
 
   > button svg {
@@ -380,10 +414,13 @@ export const Header = () => {
                   {/* Para "Inicio" (to === "/") añadimos onClick de scroll-to-top:
                       React Router ignora navegaciones a la misma ruta, asi que el
                       handler fuerza el scroll incluso cuando ya estamos en /. El
-                      bloque {behavior: "smooth"} respeta el scroll-behavior CSS. */}
+                      bloque {behavior: "smooth"} respeta el scroll-behavior CSS.
+                      "Aplicar" es el CTA final del menu: pill con gradient
+                      purpleLight->purpleDeep, texto blanco y lift en hover. */}
                   <NavLink
                     to={item.to}
                     end={item.to === "/"}
+                    data-cta={item.label === "Aplicar" ? "true" : undefined}
                     className={({ isActive }) => (isActive ? "active" : "")}
                     onClick={item.to === "/" ? scrollToTop : undefined}
                   >
