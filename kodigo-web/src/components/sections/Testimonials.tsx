@@ -5,9 +5,13 @@ import autoPhoto from "@/assets/photos/experience-automation.webp";
 import trainingPhoto from "@/assets/photos/training.webp";
 import heroPhoto from "@/assets/photos/hero.webp";
 import type { Testimonial } from "@/data/content";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
-import { ArrowLeft, ArrowRight, QuoteMark, Star } from "../ui/Icons";
+import { ArrowLeft, ArrowRight, Community, QuoteMark, Star, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
+import { Reveal } from "../ui/Reveal";
+import { VisuallyHidden } from "../ui/VisuallyHidden";
 
 // "Personas y conexiones": rediseño del bloque Eduhall `TestimonialsOne.jsx` aplicado al brief
 // "Las historias reales tienen el mayor impacto. Estudiantes, proyectos, graduados y experiencias
@@ -411,6 +415,87 @@ const fallbackStories: Story[] = [
 
 const plural = (n: number) => (n === 1 ? "1 historia" : `${n} historias`);
 
+// === BLOQUE DE CONTADORES (estilo Eduhall CounterOne) ===
+// Tarjetas de "KPI" en la parte SUPERIOR de la seccion Beneficios (= Testimonials). Mismo lenguaje
+// visual que el componente de la plantilla Eduhall: icono en circulo blanco + numero grande + etiqueta.
+// Los valores son PROVISIONALES hasta que Kodigo entregue las cifras oficiales con su fuente
+// (regla del proyecto: no se publican cifras sin respaldo). El hook useCountUp anima un entero;
+// para mostrar "1.6K" almacenamos 1600 y dividimos por 1000 al formatear.
+type Tone = "main" | "orange";
+const counterCards: { icon: React.ReactNode; tone: Tone; value: number; label: string }[] = [
+  { icon: <Users />, tone: "main", value: 1600, label: "Successfully Trained" },
+  { icon: <VideoCamera />, tone: "orange", value: 16500, label: "Courses Completed" },
+  { icon: <ThumbsUp />, tone: "main", value: 45800, label: "Satisfaction Rate" },
+  { icon: <Community />, tone: "orange", value: 55600, label: "Students Community" },
+];
+
+const counterTones: Record<Tone, { bg: "main50" | "orangeSoft"; icon: "main" | "orangeText" }> = {
+  main: { bg: "main50", icon: "main" },
+  orange: { bg: "orangeSoft", icon: "orangeText" },
+};
+
+const CounterGrid = styled.ul`
+  display: grid;
+  gap: ${({ theme }) => theme.space(5)};
+  margin-bottom: ${({ theme }) => theme.space(14)};
+
+  ${media.up("sm")} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  ${media.up("lg")} {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+`;
+
+const CounterItem = styled(Reveal)<{ $tone: Tone }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(4)};
+  padding: ${({ theme }) => `${theme.space(9)} ${theme.space(5)}`};
+  text-align: center;
+  background: ${({ theme, $tone }) => theme.colors[counterTones[$tone].bg]};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.lg};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  transition:
+    border-color ${({ theme }) => theme.motion.duration.hover} linear,
+    box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.main200};
+    box-shadow: ${({ theme }) => theme.shadows.lift};
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.white};
+    color: ${({ theme, $tone }) => theme.colors[counterTones[$tone].icon]};
+    box-shadow: ${({ theme }) => theme.shadows.card};
+  }
+
+  .number {
+    font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem);
+    font-weight: ${({ theme }) => theme.weights.bold};
+    line-height: 1.1;
+    color: ${({ theme }) => theme.colors.heading};
+    letter-spacing: -0.01em;
+  }
+
+  .label {
+    font-size: 0.9375rem;
+    color: ${({ theme }) => theme.colors.text};
+  }
+`;
+
+/** Formatea el contador como "X.XK" (un decimal + sufijo K). */
+const formatK = (n: number) => `${(n / 1000).toFixed(1)}K`;
+
 export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
   // Mezcla los testimonios oficiales (si llegan) con los editoriales de respaldo. Codigo real gana.
   const stories: Story[] = (() => {
@@ -460,10 +545,44 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
 
   const photo = active?.image ?? photoPool[index % photoPool.length];
 
+  const [counterRef, counterVisible] = useInView<HTMLUListElement>("0px 0px 200px 0px");
+
   return (
     <Wrap aria-labelledby="testimonials-title">
       <DotGrid $size={120} $color="#F37739" $gap="14px" $radius="2.5px" className="left" aria-hidden="true" />
       <DotGrid $size={110} $color="#F37739" $gap="12px" $radius="2.2px" className="right" aria-hidden="true" />
+      {/* Bloque superior de contadores (estilo Eduhall CounterOne): vive en la MISMA sección
+         "Beneficios" y aparece encima del bloque narrativo "Personas y conexiones". */}
+      <Container>
+        <VisuallyHidden as="h2">Cifras clave de Kodigo</VisuallyHidden>
+        <CounterGrid ref={counterRef}>
+          {counterCards.map((c, i) => {
+            const shown = useCountUp(c.value, counterVisible);
+            const labelId = `counter-${i}`;
+            return (
+              <CounterItem
+                key={c.label}
+                tag="li"
+                index={i}
+                direction={i === 0 ? "right" : i === 3 ? "left" : "up"}
+                $tone={c.tone}
+                aria-labelledby={labelId}
+              >
+                <span className="icon" aria-hidden="true">
+                  {c.icon}
+                </span>
+                <span className="number" aria-hidden="true">
+                  {formatK(shown)}
+                </span>
+                <VisuallyHidden>{formatK(c.value)}</VisuallyHidden>
+                <span id={labelId} className="label">
+                  {c.label}
+                </span>
+              </CounterItem>
+            );
+          })}
+        </CounterGrid>
+      </Container>
       <Container>
         <Grid>
           <div style={{ position: "relative" }}>

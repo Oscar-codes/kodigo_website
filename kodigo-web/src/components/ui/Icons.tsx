@@ -199,3 +199,31 @@ export const ArrowLeft = ({ size = 16 }: { size?: number }) => (
     <path d="M14 6l-6 6 6 6" />
   </svg>
 );
+
+/** Cámara de video: cursos completados. */
+export const VideoCamera = ({ size = 32 }: { size?: number }) => (
+  <svg {...base} width={size} height={size}>
+    <path d="M3 7h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3z" />
+    <path d="M16 10l5-3v10l-5-3z" />
+  </svg>
+);
+
+/** Pulgar arriba: tasa de satisfacción. */
+export const ThumbsUp = ({ size = 32 }: { size?: number }) => (
+  <svg {...base} width={size} height={size}>
+    <path d="M7 10v11" />
+    <path d="M7 10l4-7c1.3 0 2.3 1 2.3 2.3V10H19a2 2 0 0 1 2 2.3l-1.3 6.5A2 2 0 0 1 17.7 21H7" />
+  </svg>
+);
+
+/** Grupo grande de personas: comunidad de estudiantes. */
+export const Community = ({ size = 32 }: { size?: number }) => (
+  <svg {...base} width={size} height={size}>
+    <circle cx="7" cy="8" r="2.5" />
+    <circle cx="17" cy="8" r="2.5" />
+    <circle cx="12" cy="6.5" r="2.8" />
+    <path d="M2.5 19c0-2.8 2-5 4.5-5s4.5 2.2 4.5 5" />
+    <path d="M12.5 19c0-2.8 2-5 4.5-5s4.5 2.2 4.5 5" />
+    <path d="M7.5 14c0-2.2 2-4 4.5-4s4.5 1.8 4.5 4" />
+  </svg>
+);
