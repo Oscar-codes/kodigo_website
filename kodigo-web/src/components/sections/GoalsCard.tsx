@@ -65,8 +65,8 @@ const Wrapper = styled.div`
      del slide y no choque contra el borde. */
   ${media.up("md")} {
     position: absolute;
-    /* Centrada en la parte visible del banner: sube la mitad de lo que la marquesina de logos se monta (100 px). */
-    top: calc(50% - 50px);
+    /* Centrada en la parte visible del banner: sube la mitad de lo que la marquesina de logos se monta (15 px). */
+    top: calc(50% - 7.5px);
     right: calc(${({ theme }) => theme.space(6)} + 200px);
     transform: translateY(-50%);
     width: 400px;

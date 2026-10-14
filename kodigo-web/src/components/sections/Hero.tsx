@@ -18,7 +18,7 @@ import { GoalsCard } from "./GoalsCard";
 /** Cuánto se superpone el panel de rutas (Benefits) sobre el banner; debe coincidir con Benefits.tsx. */
 const PANEL_OVERLAP = "1.5rem";
 /** Cuánto sube la marquesina de logos (BrandMarquee) sobre el borde inferior del banner; debe coincidir con BrandMarquee.tsx. */
-const MARQUEE_RISE = "100px";
+const MARQUEE_RISE = "15px";
 const INTERVAL_MS = 6000;
 const TRANSITION_MS = 900;
 const CHAR_STAGGER_MS = 14;

@@ -24,13 +24,13 @@ const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  /* Foto de reunión de fondo bajo un velo claro (blanco -> surface) que la deja casi imperceptible: se adivina la
-     textura sin competir con los contadores ni con el panel de testimonios. Los extremos son opacos para que
-     la sección se funda con las vecinas sin escalón. */
+  /* Foto de reunión de fondo bajo un velo azul de marca (navy -> violeta) con opacidad media: la foto se lee con claridad
+     pero queda por detrás de los contadores y del panel. Arriba parte del navy de la marquesina de logos (sin escalón)
+     y abajo se funde con el tono surface de la sección siguiente. */
   background:
-    linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 20%, rgba(242, 242, 254, 0.88) 80%, ${({ theme }) => theme.colors.surface} 100%),
+    linear-gradient(180deg, rgba(19, 30, 75, 0.92) 0%, rgba(30, 40, 130, 0.62) 30%, rgba(60, 70, 205, 0.5) 72%, ${({ theme }) => theme.colors.surface} 100%),
     url(${benefitsBg}) center / cover no-repeat,
-    ${({ theme }) => theme.colors.white};
+    ${({ theme }) => theme.colors.navy};
 `;
 
 // Panel tintado (fondo `surface` de Eduhall) que contiene el bloque de testimonios. Va dentro del contenedor y con

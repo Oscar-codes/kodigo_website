@@ -13,14 +13,14 @@ const Wrap = styled.section`
   position: relative;
   z-index: 2;
   isolation: isolate;
-  /* Franja navy de 110 px de alto que sube 100 px sobre la parte inferior del Hero (se monta sobre el banner).
+  /* Franja navy de 110 px de alto que sube 15 px sobre la parte inferior del Hero (se monta ligeramente sobre el banner).
      El Hero reserva ese espacio con más relleno inferior y sube sus controles y la tarjeta de objetivos,
      para que la franja no tape contenido. La separación con la siguiente sección sigue yendo en el padding-top
      de la siguiente. */
   display: flex;
   align-items: center;
   height: 110px;
-  margin-top: -100px;
+  margin-top: -15px;
   background: #131e4b;
   box-shadow: 0 -12px 32px rgba(7, 20, 49, 0.35);
 
