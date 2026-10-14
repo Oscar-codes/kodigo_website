@@ -25,18 +25,14 @@ const Wrap = styled.footer`
   overflow: hidden;
 `;
 
-// Mapa mundial punteado de fondo: imagen que cubre todo el footer, anclada arriba.
-// Va detras del contenido (z-index negativo sobre el Wrap con isolation).
-const Map = styled.img`
+// Mapa mundial punteado de fondo: imagen a tamano natural que se repite (mosaico)
+// en lugar de estirarse. Va detras del contenido (z-index negativo sobre el Wrap con isolation).
+const Map = styled.div`
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  background: url(${worldMap}) repeat left top;
   z-index: -1;
   pointer-events: none;
-  user-select: none;
 `;
 
 const Grid = styled(Container)`
@@ -90,7 +86,7 @@ const FEATURED = 5; // bootcamps listados en el pie
 
 export const Footer = () => (
   <Wrap>
-    <Map src={worldMap} alt="" aria-hidden="true" />
+    <Map aria-hidden="true" />
     <Grid>
       <div>
         <img className="logo" src={logoWhite} alt={siteConfig.name} width={brand.logoWhite.width} height={brand.logoWhite.height} />
