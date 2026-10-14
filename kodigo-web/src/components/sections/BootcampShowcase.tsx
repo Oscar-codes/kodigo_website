@@ -15,10 +15,11 @@ import { BootcampGrid } from "./BootcampGrid";
 // barra blanca de filtros en píldora y cuadrícula de tarjetas. Copy de Kodigo: "Aprende con propósito".
 type Area = Bootcamp["area"];
 const FILTERS: { label: string; area: Area | null }[] = [
+  { label: "Rutas formativas", area: null },
+  { label: "Programación", area: "Desarrollo" },
+  { label: "Data análisis", area: "Datos" },
+  { label: "IA", area: "IA" },
   { label: "Todos", area: null },
-  { label: "Desarrollo", area: "Desarrollo" },
-  { label: "Datos", area: "Datos" },
-  { label: "Inteligencia artificial", area: "IA" },
 ];
 
 // Orden de "Todos": primero Desarrollo, luego IA, Educación y Datos.
