@@ -3,9 +3,18 @@ import { impactStats } from "@/data/alliances";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
+import { HERO_OVERLAP } from "./AlliancesHero";
 import { Container, Section } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
+
+// Las cifras se montan sobre el borde inferior del banner (como el panel de rutas en Inicio).
+const Overlap = styled(Section)`
+  position: relative;
+  z-index: 2;
+  padding-top: 0;
+  margin-top: calc(${HERO_OVERLAP} * -1);
+`;
 
 const Grid = styled.ul`
   display: grid;
@@ -24,7 +33,7 @@ const Item = styled(Reveal)`
   background: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.lg};
-  box-shadow: ${({ theme }) => theme.shadows.card};
+  box-shadow: ${({ theme }) => theme.shadows.lift};
   transition: border-color ${({ theme }) => theme.motion.duration.hover} linear,
     box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
 
@@ -72,7 +81,7 @@ const Stat = ({ value, label, active, index }: { value: number; label: string; a
 export const ImpactStats = () => {
   const [ref, visible] = useInView<HTMLUListElement>();
   return (
-    <Section $compact aria-labelledby="impact-title">
+    <Overlap $compact aria-labelledby="impact-title">
       <Container>
         <VisuallyHidden as="h2" id="impact-title">
           Impacto de Kodigo en empresas
@@ -83,6 +92,6 @@ export const ImpactStats = () => {
           ))}
         </Grid>
       </Container>
-    </Section>
+    </Overlap>
   );
 };

@@ -108,7 +108,7 @@ export const ProfessionalPage = () => {
         <CaseStudies />
         <AdaptiveTraining />
         <TeamBlock />
-        {content.partners?.length ? <Partners items={content.partners} variant="grid" /> : null}
+        {content.partners?.length ? <Partners items={content.partners} variant="grid" surface /> : null}
       </>
     );
   }

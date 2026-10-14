@@ -32,7 +32,7 @@ const Event = styled(Card)`
   flex-direction: column;
   gap: ${({ theme }) => theme.space(5)};
   padding: ${({ theme }) => theme.space(5)};
-  background: ${({ theme }) => theme.colors.surface};
+  background: ${({ theme }) => theme.colors.white};
 
   ${media.up("md")} {
     flex-direction: row;
@@ -109,7 +109,7 @@ const Visual = styled.div`
 
   ${media.up("lg")} {
     align-self: stretch;
-    min-height: 520px;
+    min-height: 400px;
   }
 
   .play {
@@ -150,7 +150,7 @@ const Soon = styled.span`
 `;
 
 export const UpcomingWorkshops = () => (
-  <Section aria-labelledby="events-title">
+  <Section $surface aria-labelledby="events-title">
     <Container>
       <Layout>
         <div>
