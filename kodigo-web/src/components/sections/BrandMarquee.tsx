@@ -6,9 +6,9 @@ import { media } from "@/styles/theme";
 import { Marquee } from "../ui/Marquee";
 
 // Franja de aliados en desplazamiento continuo, ubicada justo bajo el Hero (donde antes estaba el panel de
-// rutas). Inspirada en `BrandOne.jsx` de la plantilla Eduhall: cabecera corta + marquesina horizontal a
-// todo lo ancho. Se diferencia de la sección "Aliados" (panel tintado con grid) en que aquí solo se
-// exhiben los logos, sin enlace al directorio, para no duplicar contenido.
+// rutas). Inspirada en `BrandOne.jsx` de la plantilla Eduhall: marquesina horizontal a todo lo ancho con
+// los logos en color. Se diferencia de la sección "Aliados" (panel tintado con grid) en que aquí solo
+// se exhiben los logos, sin enlace al directorio, para no duplicar contenido.
 
 const Wrap = styled.section`
   position: relative;
@@ -22,23 +22,6 @@ const Wrap = styled.section`
   ${media.up("md")} {
     padding-block: ${({ theme }) => theme.space(10)};
   }
-`;
-
-const Head = styled.div`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.space(6)};
-
-  ${media.up("md")} {
-    margin-bottom: ${({ theme }) => theme.space(8)};
-  }
-`;
-
-const Title = styled.h2`
-  font-size: clamp(0.875rem, 0.7rem + 0.6vw, 1rem);
-  font-weight: ${({ theme }) => theme.weights.semibold};
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: ${({ theme }) => theme.colors.white};
 `;
 
 // Pista con máscara de desvanecimiento en los extremos (igual que la sección Aliados) para que
@@ -104,11 +87,7 @@ export const BrandMarquee = ({ items }: BrandMarqueeProps) => {
   const total = items.length;
 
   return (
-    <Wrap aria-labelledby="brand-marquee-title">
-      <Head>
-        <Title id="brand-marquee-title">Las personas y empresas que caminan con nosotros</Title>
-      </Head>
-
+    <Wrap aria-label="Logos de aliados en marquesina">
       <Track ref={liveRef}>
         <div ref={marqueeRef}>
           {near ? (
