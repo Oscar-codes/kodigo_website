@@ -34,12 +34,12 @@ export const HomePage = () => {
     { id: "bootcamps", tone: "surface", show: true },
     { id: "testimonials", tone: "white", show: true },
     { id: "goalPaths", tone: "surface", show: true },
+    { id: "allies", tone: "white", show: true },
     { id: "experience", tone: "white", show: true },
     { id: "methodology", tone: "surface", show: true },
     { id: "careerPath", tone: "white", show: true },
     { id: "steps", tone: "surface", show: Boolean(steps) },
     { id: "organizations", tone: "surface", show: true },
-    { id: "allies", tone: "white", show: true },
     { id: "faq", tone: "surface", show: true },
     { id: "cta", tone: "white", show: true },
   ].filter((s) => s.show) as { id: string; tone: Tone; show: boolean }[];
@@ -57,13 +57,14 @@ export const HomePage = () => {
          hace de sección "Beneficios" en el menú (ver data/navigation.ts). */}
       {testimonials ? <Testimonials items={testimonials} /> : <Testimonials />}
       <GoalPaths />
+      {/* "Clientes" (red de aliados estratégicos) va justo después de "Respaldo", igual que en el menú. */}
+      <Allies items={allies ?? []} />
       <Experience />
       <Methodology />
       <CareerPath />
       {/* Cada sección solo aparece si Kodigo entregó su contenido (ver src/data/content.ts). */}
       {steps ? <Steps items={steps} /> : null}
       <Organizations />
-      <Allies items={allies ?? []} />
       <Faq items={faq} flushTop={flush("faq")} />
       <CallToAction flushTop={flush("cta")} />
     </>

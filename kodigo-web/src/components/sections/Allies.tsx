@@ -52,6 +52,8 @@ const Intro = styled.div`
   }
 
   h2 {
+    /* Al llegar por el menú, el título queda visible bajo la cabecera sticky. */
+    scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeightScrolled} + 5.5rem);
     max-width: 24ch;
     font-size: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
     font-weight: ${({ theme }) => theme.weights.bold};

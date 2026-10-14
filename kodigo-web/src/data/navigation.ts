@@ -16,10 +16,8 @@ import { professionalSections } from "./professional";
 //                                              Formaciones y cumple el rol narrativo de Beneficios.)
 //   Respaldo      -> /#goals-title              (GoalPaths: 'Respaldo / Una formación con respaldo'
 //                                              con las 4 tarjetas de alianzas y liderazgo.)
-//   Clientes      -> /#testimonials-title       (Apunta al mismo anchor que Beneficios por
-//                                              compatibilidad con el menu previo; revisar si
-//                                              se mantiene ahora que Beneficios ya cubre
-//                                              ese contenido.)
+//   Clientes      -> /#allies-title             (Allies: 'Clientes / Formamos parte de una red de
+//                                              aliados estratégicos'; va justo después de Respaldo.)
 //   Saber mas     -> /#faq-title                (FAQ: 'preguntas frecuentes'.)
 //   Nosotros      -> /nosotros + subitems
 //   Profesional    -> /profesional + subitems
@@ -68,9 +66,9 @@ export const navigation: NavItem[] = [
   // primera academia de IA y formaciones virtuales. Su título tiene id="goals-title".
   { label: "Respaldo", to: "/#goals-title" },
 
-  // 'Personas y conexiones / Las historias reales tienen el mayor impacto.'
-  // es exactamente el titulo del Testimonials.tsx.
-  { label: "Clientes", to: "/#testimonials-title" },
+  // CLIENTES: lleva a la sección "Clientes / Formamos parte de una red de aliados estratégicos" (Allies), que va justo
+  // después de Respaldo. Su título tiene id="allies-title".
+  { label: "Clientes", to: "/#allies-title" },
 
   // FAQ: match exacto a la seccion existente - respondemos las preguntas
   // frecuentes del usuario.
