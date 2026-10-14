@@ -7,6 +7,7 @@ import { navigation } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
+import { WorldMapDots } from "./WorldMapDots";
 
 // El Header ya muestra la navegacion completa. En el Footer evitamos esos
 // enlaces para no duplicarlos visualmente (Bug del ticket: 'Saber mas' y
@@ -16,9 +17,29 @@ const FOOTER_EXCLUDED = new Set(["Saber más", "Clientes"]);
 
 // Footer azul marino de Eduhall (neutral-900): columnas de enlaces y barra inferior.
 const Wrap = styled.footer`
+  position: relative;
+  isolation: isolate;
   background: ${({ theme }) => theme.colors.navy};
   color: ${({ theme }) => theme.colors.onNavy};
   padding-top: ${({ theme }) => theme.space(20)};
+  overflow: hidden;
+`;
+
+// Mapa mundial punteado de fondo: ocupa todo el ancho y se centra vertical.
+// Va detras del contenido (z-index negativo sobre el Wrap con isolation).
+const Map = styled(WorldMapDots)`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  /* En pantallas muy anchas el mapa se queda pequeno; permitimos que crezca hasta cubrir
+     el alto del footer sin deformarse demasiado. */
+  ${media.up("md")} {
+    width: 140%;
+    left: -20%;
+  }
 `;
 
 const Grid = styled(Container)`
@@ -72,6 +93,7 @@ const FEATURED = 5; // bootcamps listados en el pie
 
 export const Footer = () => (
   <Wrap>
+    <Map />
     <Grid>
       <div>
         <img className="logo" src={logoWhite} alt={siteConfig.name} width={brand.logoWhite.width} height={brand.logoWhite.height} />
