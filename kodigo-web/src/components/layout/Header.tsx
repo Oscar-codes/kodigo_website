@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import logoDark from "@/assets/brand/kodigo-logo-dark.webp";
+import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
 import brand from "@/assets/brand/brand.json";
 import { navigation, type NavItem } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
@@ -20,6 +21,142 @@ const scrollToTop = (e: MouseEvent) => {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 };
+
+// Variante de la plantilla AIvent (solo página de Alianzas): barra índigo oscura, logo blanco, menú en blanco con subrayado
+// violeta en el activo/hover, "Aplicar" como botón rectangular violeta en mayúsculas con espaciado y submenús oscuros.
+// Se escribe con el atributo [data-variant] para ganar en especificidad sin tocar el estilo del resto del sitio.
+const aiventSkin = css`
+  &[data-variant="aivent"] {
+    background: ${({ theme }) => theme.colors.aiventDark};
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+    color: ${({ theme }) => theme.colors.white};
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  &[data-variant="aivent"][data-scrolled="true"] {
+    background: rgba(16, 20, 53, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  &[data-variant="aivent"] li > a,
+  &[data-variant="aivent"] li > button {
+    position: relative;
+    border-radius: 0;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  &[data-variant="aivent"] li > a:hover,
+  &[data-variant="aivent"] li > button:hover,
+  &[data-variant="aivent"] li > button[aria-expanded="true"] {
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  &[data-variant="aivent"] li > a::after,
+  &[data-variant="aivent"] li > button::after {
+    content: "";
+    position: absolute;
+    left: ${({ theme }) => theme.space(3.5)};
+    right: ${({ theme }) => theme.space(3.5)};
+    bottom: 0;
+    height: 2px;
+    background: ${({ theme }) => theme.colors.aiventViolet};
+    transform: scaleX(0);
+    transition: transform ${({ theme }) => theme.motion.duration.base} ease;
+  }
+
+  &[data-variant="aivent"] li > a:hover::after,
+  &[data-variant="aivent"] li > a.active::after,
+  &[data-variant="aivent"] li > button:hover::after,
+  &[data-variant="aivent"] li > button.active::after,
+  &[data-variant="aivent"] li > button[aria-expanded="true"]::after {
+    transform: scaleX(1);
+  }
+
+  &[data-variant="aivent"] li > a:focus-visible,
+  &[data-variant="aivent"] li > button:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.white};
+    outline-offset: 2px;
+  }
+
+  /* CTA: rectángulo violeta en mayúsculas (BUY TICKETS de AIvent). Sin subrayado. */
+  &[data-variant="aivent"] li > a[data-cta="true"] {
+    margin-left: ${({ theme }) => theme.space(2)};
+    padding: ${({ theme }) => `${theme.space(3)} ${theme.space(5)}`};
+    border-radius: ${({ theme }) => theme.radii.sm};
+    background: ${({ theme }) => theme.colors.aiventViolet};
+    box-shadow: none;
+    font-size: 0.8125rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  &[data-variant="aivent"] li > a[data-cta="true"]::after {
+    display: none;
+  }
+
+  /* Entre 992 y 1199 px el menú completo + CTA en mayúsculas no cabe: se compactan espaciados. */
+  ${media.up("lg")} {
+    ${media.down("xl")} {
+      &[data-variant="aivent"] li > a,
+      &[data-variant="aivent"] li > button {
+        padding-inline: ${({ theme }) => theme.space(2.5)};
+      }
+
+      &[data-variant="aivent"] li > a[data-cta="true"] {
+        margin-left: 0;
+        padding-inline: ${({ theme }) => theme.space(3.5)};
+        letter-spacing: 0.06em;
+      }
+    }
+  }
+
+  &[data-variant="aivent"] li > a[data-cta="true"]:hover,
+  &[data-variant="aivent"] li > a[data-cta="true"]:focus-visible {
+    background: #8a66ff;
+    box-shadow: 0 10px 24px rgba(118, 77, 240, 0.45);
+  }
+
+  /* Submenús y panel móvil oscuros. */
+  &[data-variant="aivent"] li > ul {
+    background: ${({ theme }) => theme.colors.aiventDark2};
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &[data-variant="aivent"] li > ul a,
+  &[data-variant="aivent"] li > ul li > a {
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  &[data-variant="aivent"] li > ul a:hover {
+    background: rgba(118, 77, 240, 0.28);
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  &[data-variant="aivent"] li > ul a::after {
+    display: none;
+  }
+
+  &[data-variant="aivent"] .group-title {
+    color: ${({ theme }) => theme.colors.lilac};
+  }
+
+  &[data-variant="aivent"] nav#main-menu {
+    ${media.down("lg")} {
+      background: ${({ theme }) => theme.colors.aiventDark2};
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &[data-variant="aivent"] button[aria-label="Abrir menú"] {
+    color: ${({ theme }) => theme.colors.white};
+  }
+`;
 
 // Header de Kodigo: TRANSPARENTE al inicio (z-index superior sobre el hero para que la foto pase por
 // detrás) y translúcido 'frosted glass' al desplazarse. El backdrop-filter blur + saturate revela la
@@ -43,6 +180,8 @@ const Bar = styled.header<{ $scrolled: boolean }>`
     box-shadow ${({ theme }) => theme.motion.duration.base} linear,
     -webkit-backdrop-filter ${({ theme }) => theme.motion.duration.base} linear,
     backdrop-filter ${({ theme }) => theme.motion.duration.base} linear;
+
+  ${aiventSkin}
 `;
 
 /** Distancia de scroll (px) a partir de la cual la cabecera pasa de sólida a translúcida. */
@@ -355,6 +494,8 @@ export const Header = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
+  // Solo la página de Alianzas usa la variante AIvent (barra oscura y logo blanco).
+  const aivent = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
 
   useEffect(() => {
     setOpen(false);
@@ -377,7 +518,7 @@ export const Header = () => {
   }, [open]);
 
   return (
-    <Bar $scrolled={scrolled}>
+    <Bar $scrolled={scrolled} data-variant={aivent ? "aivent" : undefined} data-scrolled={scrolled}>
       {/* Indicador de progreso de scroll: pegado al borde inferior del Header
           (que cambia de 84 a 64 px) gracias a position: absolute; bottom: 0.
           Solo aparece en la home; las páginas internas no lo necesitan. */}
@@ -389,7 +530,12 @@ export const Header = () => {
           aria-label={`${siteConfig.name} - Inicio`}
           onClick={scrollToTop}
         >
-          <img src={logoDark} alt={siteConfig.name} width={brand.logoDark.width} height={brand.logoDark.height} />
+          <img
+            src={aivent ? logoWhite : logoDark}
+            alt={siteConfig.name}
+            width={aivent ? brand.logoWhite.width : brand.logoDark.width}
+            height={aivent ? brand.logoWhite.height : brand.logoDark.height}
+          />
         </Brand>
         <Toggle
           type="button"

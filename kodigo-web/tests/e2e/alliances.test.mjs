@@ -90,7 +90,7 @@ const open = async (width) => {
   const cs = p.locator("section[aria-labelledby=cases-title]");
   t("casos: título exacto con énfasis", (await cs.locator("#cases-title").innerText()).replace(/\s+/g, " ").trim() === "Empresas que llevan la formación a resultado" && (await cs.locator("#cases-title strong").innerText()) === "la formación a resultado");
   t("casos: 5 casos y 5 pestañas con el logo de cada empresa", (await cs.locator("[role=tabpanel]").count()) === 5 && JSON.stringify(await cs.locator("[role=tab]").evaluateAll((l) => l.map((e) => e.getAttribute("aria-label")))) === JSON.stringify(["Coderland", "Vidri", "CBC", "Telus", "Casa Muñoz"]));
-  t("casos: el fondo usa el degradado violeta de Kodigo (no el gris)", /gradient/.test(await cs.locator("#cases-title").evaluate((e) => getComputedStyle(e.closest("section").firstElementChild.firstElementChild).backgroundImage)));
+  t("casos: fondo oscuro de AIvent con resplandor violeta", /gradient/.test(await cs.locator("#cases-title").evaluate((e) => getComputedStyle(e.closest("section")).backgroundImage)));
   const visibleCase = async () => cs.locator("[role=tabpanel]").evaluateAll((l) => l.filter((e) => getComputedStyle(e).visibility === "visible").map((e) => e.querySelector(".badge").textContent));
   t("casos: arranca en Coderland con una sola diapositiva visible", JSON.stringify(await visibleCase()) === JSON.stringify(["CODERLAND - PANAMÁ"]));
   await cs.getByRole("tab", { name: "Vidri" }).click(); await sleep(700);
@@ -110,7 +110,7 @@ const open = async (width) => {
   await p.mouse.move(5, 5); await cs.getByRole("tab", { name: "Coderland" }).click(); await p.mouse.move(5, 5); await sleep(7800);
   t("casos: avanza solo tras ~7 s (carrusel automático)", JSON.stringify(await visibleCase()) === JSON.stringify(["VIDRI - EL SALVADOR"]), JSON.stringify(await visibleCase()));
   t("casos: va después de los próximos workshops", await p.evaluate(() => document.querySelector("section[aria-labelledby=events-title]").nextElementSibling === document.querySelector("section[aria-labelledby=cases-title]")));
-  t("casos: aros animados (upDown) con movimiento", (await cs.locator(".ring.a").evaluate((e) => getComputedStyle(e).animationName)) !== "none");
+  t("casos: resultados con cifra destacada como tarjeta (+40, 8, 30, 13, 3)", (await cs.locator(".stat").count()) === 5 && (await cs.locator(".stat b").allTextContents()).join("|") === "+40|8|30|13|3");
 
   // ---- 7. Nos adaptamos a tu operación
   const ad = p.locator("section[aria-labelledby=adaptive-title]");
