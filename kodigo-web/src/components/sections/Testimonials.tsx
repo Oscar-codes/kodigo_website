@@ -414,29 +414,11 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
     transform ${({ theme }) => theme.motion.duration.hover} ease,
     box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
 
-  /* Misma capa cromatica que el .zoom de BootcampGrid (lila + main sobre navy/violetDeep).
-     Se aplica a TODO el fondo de la tarjeta para que las 4 cards de contadores
-     compartan el efecto visual de las cards de formaciones. */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(55% 130% at 92% -15%, ${({ theme }) => theme.colors.lilac}, transparent 62%),
-      radial-gradient(45% 100% at 0% 125%, ${({ theme }) => theme.colors.main}, transparent 70%),
-      linear-gradient(120deg, ${({ theme }) => theme.colors.navy} 0%, ${({ theme }) => theme.colors.violetDeep} 55%, ${({ theme }) => theme.colors.main} 100%);
-  }
-
-  /* Linea diagonal fina que cruza la tarjeta (mismo detalle que las cards de formaciones). */
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(105deg, transparent 58.6%, rgba(255, 255, 255, 0.18) 58.8%, transparent 59.1%);
-    pointer-events: none;
-  }
+  /* Tarjeta blanca translúcida (efecto vidrio): deja ver la foto de fondo de la sección, con desenfoque. */
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.65);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
 
   &:hover {
     transform: translateY(-2px);
@@ -452,7 +434,7 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
     border-radius: 50%;
     background: ${({ theme }) => theme.colors.white};
     color: ${({ theme, $tone }) => theme.colors[counterTones[$tone].icon]};
-    box-shadow: ${({ theme }) => theme.shadows.card};
+    box-shadow: 0 6px 18px rgba(31, 56, 100, 0.18);
   }
 
   /* Efecto "animation-item" de Eduhall (animate__wobble de animate.css): el icono
@@ -470,14 +452,14 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
     font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem);
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.1;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.kpiText};
     letter-spacing: -0.01em;
   }
 
   .label {
     font-size: 0.9375rem;
-    color: ${({ theme }) => theme.colors.white};
-    opacity: 0.9;
+    font-weight: ${({ theme }) => theme.weights.medium};
+    color: ${({ theme }) => theme.colors.kpiText};
   }
 `;
 

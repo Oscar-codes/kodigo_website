@@ -60,6 +60,8 @@ export const theme = {
         #576070 = 6.3:1 y #7748e4 = 5.5:1 sobre blanco (AA). */
     menuText: "#576070",
     menuActive: "#7748e4",
+    /** Texto de las tarjetas de cifras (KPI) de Beneficios, sobre blanco translúcido (11:1 sobre blanco). */
+    kpiText: "#1F3864",
 
     // Azul marino (banner y footer)
     navy: "#071431",
