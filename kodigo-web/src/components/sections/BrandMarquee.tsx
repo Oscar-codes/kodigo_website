@@ -2,7 +2,6 @@ import { useRef } from "react";
 import styled from "styled-components";
 import type { Partner } from "@/data/content";
 import { useInView } from "@/hooks/useInView";
-import { media } from "@/styles/theme";
 import { Marquee } from "../ui/Marquee";
 
 // Franja de aliados en desplazamiento continuo, ubicada justo bajo el Hero (donde antes estaba el panel de
@@ -12,17 +11,28 @@ import { Marquee } from "../ui/Marquee";
 
 const Wrap = styled.section`
   position: relative;
+  z-index: 2;
   isolation: isolate;
-  /* Banda navy que sella visualmente la portada (Hero) por debajo: la franja va pegada
-     a continuación, sin sangría superior, y cierra el bloque del banner. La separación
-     con la siguiente sección se gestiona desde el padding-top de la siguiente, no
-     desde aquí, para que el fondo navy no se prolongue hacia abajo. */
-  margin-top: -1.5rem;
+  /* Franja navy de 110 px de alto que sube 100 px sobre la parte inferior del Hero (se monta sobre el banner).
+     El Hero reserva ese espacio con más relleno inferior y sube sus controles y la tarjeta de objetivos,
+     para que la franja no tape contenido. La separación con la siguiente sección sigue yendo en el padding-top
+     de la siguiente. */
+  display: flex;
+  align-items: center;
+  height: 110px;
+  margin-top: -100px;
   background: #131e4b;
-  padding-block: ${({ theme }) => theme.space(8)};
+  box-shadow: 0 -12px 32px rgba(7, 20, 49, 0.35);
 
-  ${media.up("md")} {
-    padding-block: ${({ theme }) => theme.space(10)};
+  > * {
+    width: 100%;
+  }
+
+  /* Con movimiento reducido la marquesina es una rejilla estática que puede ocupar varias filas: el alto pasa a ser mínimo. */
+  @media (prefers-reduced-motion: reduce) {
+    height: auto;
+    min-height: 110px;
+    padding-block: ${({ theme }) => theme.space(4)};
   }
 `;
 
@@ -37,9 +47,9 @@ const LogoBox = styled.span`
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 180px;
-  height: 88px;
-  padding: ${({ theme }) => `${theme.space(3)} ${theme.space(4)}`};
+  width: 164px;
+  height: 76px;
+  padding: ${({ theme }) => `${theme.space(2.5)} ${theme.space(4)}`};
   background: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.md};

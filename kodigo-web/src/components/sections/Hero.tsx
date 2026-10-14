@@ -17,6 +17,8 @@ import { GoalsCard } from "./GoalsCard";
 
 /** Cuánto se superpone el panel de rutas (Benefits) sobre el banner; debe coincidir con Benefits.tsx. */
 const PANEL_OVERLAP = "1.5rem";
+/** Cuánto sube la marquesina de logos (BrandMarquee) sobre el borde inferior del banner; debe coincidir con BrandMarquee.tsx. */
+const MARQUEE_RISE = "100px";
 const INTERVAL_MS = 6000;
 const TRANSITION_MS = 900;
 const CHAR_STAGGER_MS = 14;
@@ -128,7 +130,7 @@ const Slide = styled.div<SlideProps>`
   gap: ${({ theme }) => theme.space(8)};
   min-height: clamp(34rem, calc(100svh - ${({ theme }) => theme.layout.headerHeight} - 3.5rem), 62rem);
   /* Deja libre la fila de controles (44 px) bajo el contenido. */
-  padding-block: 3rem calc(${PANEL_OVERLAP} + 5.5rem);
+  padding-block: 3rem calc(${PANEL_OVERLAP} + 5.5rem + ${MARQUEE_RISE});
 
   ${media.up("md")} {
     flex-direction: row;
@@ -277,24 +279,42 @@ const Char = styled.span`
 `;
 
 /** Formas decorativas flotantes de Eduhall sobre la foto: un anillo y un círculo translúcido, lejos del texto. */
+/* Formas decorativas: viven en la franja libre a la derecha de la tarjeta de objetivos (la tarjeta se ancla a
+   224-240 px del borde derecho), así que no quedan encima de ningún elemento. Con la tarjeta apilada (< md) se ocultan. */
 const Ring = styled(Float)`
   z-index: 1;
+  top: 10%;
+  right: 12px;
+  width: 190px;
+  height: 190px;
   border: 2px solid rgba(255, 255, 255, 0.22);
   border-radius: 50%;
+
+  ${media.down("md")} {
+    display: none;
+  }
 `;
 
 const Orb = styled(Float)`
   z-index: 1;
+  right: 84px;
+  bottom: calc(${PANEL_OVERLAP} + 8rem + ${MARQUEE_RISE});
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.lilac};
   opacity: 0.35;
+
+  ${media.down("md")} {
+    display: none;
+  }
 `;
 
 const Controls = styled(Container)`
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(${PANEL_OVERLAP} + 1.25rem);
+  bottom: calc(${PANEL_OVERLAP} + 1.25rem + ${MARQUEE_RISE});
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.space(3)};
@@ -502,8 +522,8 @@ export const Hero = () => {
         {leaving !== null && <SlideView key={`s-${leaving}`} slide={SLIDES[leaving % total]} mode="leaving" />}
         <SlideView key={`s-${tick}`} slide={SLIDES[current]} mode={tick === 0 ? "current" : "entering"} />
       </Stage>
-      <Ring style={{ width: 220, height: 220, right: "7%", top: "12%" }} $range={14} />
-      <Orb style={{ width: 84, height: 84, right: "24%", bottom: "26%" }} $range={18} $delay={-2} />
+      <Ring $range={14} />
+      <Orb $range={18} $delay={-2} />
       <Controls>
         {SLIDES.map((_, i) => (
           <Dot
