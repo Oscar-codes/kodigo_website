@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import isotype from "@/assets/brand/isotype-white.webp";
 import type { Bootcamp } from "@/data/bootcamps";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
 import { Float } from "../ui/Float";
-import { ArrowRight, BarChart, CodeBrackets, Sparkles } from "../ui/Icons";
+import { ArrowRight } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
 import { SectionTitle } from "../ui/SectionTitle";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
-import { BootcampGrid } from "./BootcampGrid";
+import { areaCardStyle, BootcampGrid, Chips, Item, Name, Seal, Visual, VisualWrap } from "./BootcampGrid";
 
 // Bloque "cursos populares" de Eduhall (ExploreCourseOne): título a la izquierda, texto y enlace "ver todos" a la derecha,
 // barra blanca de filtros en píldora y cuadrícula de tarjetas. Copy de Kodigo: "Aprende con propósito".
@@ -26,25 +27,23 @@ const FILTERS: { label: string; area: Area | null }[] = [
 const AREA_ORDER: Area[] = ["Programación", "IA", "Educación", "Datos"];
 const byArea = (a: Bootcamp, b: Bootcamp) => AREA_ORDER.indexOf(a.area) - AREA_ORDER.indexOf(b.area);
 
-// === RUTAS FORMATIVAS: 3 tarjetas que resumen cada ruta (Programación, Datos, IA). ===
+// === RUTAS FORMATIVAS: 3 tarjetas con el mismo lenguaje visual que las cards de bootcamps. ===
 // Se muestran cuando el filtro activo es "Rutas formativas" (index 0). Cada tarjeta alude
-// a su ruta con icono, título, copy y CTA que lleva al listado filtrado por área.
-const routeCards: { icon: React.ReactNode; area: Area; title: string; text: string }[] = [
+// a su ruta con el visual (gradiente + glyph + pill) y el body (chips + título + copy + CTA)
+// idénticos a los de BootcampGrid, para que se lean como parte de la misma familia.
+const routeCards: { area: Area; title: string; text: string }[] = [
   {
     area: "Programación",
-    icon: <CodeBrackets />,
     title: "Ruta de Programación",
     text: "Construye aplicaciones web desde el frontend hasta el full stack con proyectos reales.",
   },
   {
     area: "Datos",
-    icon: <BarChart />,
     title: "Ruta de Data análisis",
     text: "Analiza, visualiza e interpreta datos para tomar mejores decisiones de negocio.",
   },
   {
     area: "IA",
-    icon: <Sparkles />,
     title: "Ruta de IA",
     text: "De la IA generativa a los agentes inteligentes: aprende a usarla y a crear soluciones con ella.",
   },
@@ -55,66 +54,10 @@ const RouteGrid = styled.ul`
   gap: ${({ theme }) => theme.space(6)};
 
   ${media.up("md")} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  ${media.up("lg")} {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-`;
-
-const RouteCard = styled.li`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.space(4)};
-  padding: ${({ theme }) => theme.space(7)};
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
-  box-shadow: ${({ theme }) => theme.shadows.card};
-  transition:
-    transform ${({ theme }) => theme.motion.duration.hover} ease,
-    border-color ${({ theme }) => theme.motion.duration.hover} linear,
-    box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
-
-  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    &:hover {
-      transform: translateY(-4px);
-      border-color: ${({ theme }) => theme.colors.accentOnLight};
-      box-shadow: ${({ theme }) => theme.shadows.lift};
-    }
-  }
-
-  .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.main50};
-    color: ${({ theme }) => theme.colors.main};
-  }
-
-  h3 {
-    font-size: 1.25rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    line-height: 1.25;
-    color: ${({ theme }) => theme.colors.heading};
-  }
-
-  p {
-    color: ${({ theme }) => theme.colors.text};
-    line-height: 1.5;
-  }
-
-  a {
-    margin-top: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.space(2)};
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.accentOnLight};
-  }
-
-  a:hover {
-    text-decoration: underline;
   }
 `;
 
@@ -214,6 +157,9 @@ export const BootcampShowcase = ({ items, flushTop = true }: { items: Bootcamp[]
       aria-labelledby="bootcamps-title"
       style={{
         position: "relative",
+        /* Fondo lila institucional Kodigo solicitado. Se aplica inline para ganar al $surface
+           del Section sin tocar el Container genérico. */
+        background: "#E5E5FD",
         /* flushTop quita el padding superior para que el bloque se "pegue" al anterior
            (caso típico: el panel navy de Organizations que ya tiene su propio padding).
            Aun así dejamos un padding-top generoso para que el titulo no quede pegado
@@ -266,20 +212,39 @@ export const BootcampShowcase = ({ items, flushTop = true }: { items: Bootcamp[]
         </VisuallyHidden>
         {isRutas ? (
           <RouteGrid>
-            {routeCards.map((r, i) => (
-              <Reveal key={r.title} tag="li" index={i} direction={i === 0 ? "right" : i === 2 ? "left" : "up"}>
-                <RouteCard>
-                  <span className="icon" aria-hidden="true">
-                    {r.icon}
-                  </span>
-                  <h3>{r.title}</h3>
-                  <p>{r.text}</p>
-                  <Link to={`/bootcamps?area=${r.area}`}>
-                    Explorar ruta <ArrowRight />
-                  </Link>
-                </RouteCard>
-              </Reveal>
-            ))}
+            {routeCards.map((r, i) => {
+              const copy = areaCardStyle[r.area];
+              return (
+                <Reveal key={r.title} tag="li" index={i % 3} direction={i % 3 === 0 ? "right" : i % 3 === 2 ? "left" : "up"}>
+                  <Item>
+                    <VisualWrap aria-hidden="true">
+                      <Visual $area={r.area}>
+                        <div className="zoom" />
+                        <span className="glyph">{copy.glyph}</span>
+                        <span className="pill">{copy.badge}</span>
+                      </Visual>
+                      <Seal>
+                        <img src={isotype} alt="" width={22} height={22} />
+                      </Seal>
+                    </VisualWrap>
+                    <div className="body">
+                      <Chips $area={r.area}>
+                        <span>{copy.chip}</span>
+                        <span>Ruta práctica</span>
+                      </Chips>
+                      <Name as="h3">{r.title}</Name>
+                      <p>{r.text}</p>
+                      <Link to={`/bootcamps?area=${r.area}`} className="more" aria-label={`Explorar ${r.title}`}>
+                        <span className="sheet">Ver ruta completa</span>
+                        <span className="go">
+                          Explorar ruta <ArrowRight />
+                        </span>
+                      </Link>
+                    </div>
+                  </Item>
+                </Reveal>
+              );
+            })}
           </RouteGrid>
         ) : (
           <BootcampGrid items={shown} headingLevel="h3" />

@@ -31,12 +31,15 @@ const areaStyle = {
   Educación: { badge: "Educación", glyph: "A+", chip: "Educación", soft: "yellowSoft", text: "yellowText" },
 } as const;
 
-const VisualWrap = styled.div`
+/** Estilo por área: se reutiliza también desde las tarjetas de "Rutas formativas". */
+export const areaCardStyle = areaStyle;
+
+export const VisualWrap = styled.div`
   position: relative;
   margin-bottom: ${({ theme }) => theme.space(7)};
 `;
 
-const Visual = styled.div<{ $area: Bootcamp["area"] }>`
+export const Visual = styled.div<{ $area: Bootcamp["area"] }>`
   position: relative;
   overflow: hidden;
   border-radius: ${({ theme }) => theme.radii.md};
@@ -91,7 +94,7 @@ const Visual = styled.div<{ $area: Bootcamp["area"] }>`
 `;
 
 /** Círculo sobre la esquina inferior del visual (el avatar del docente en Eduhall): isotipo de Kodigo sobre tile oscuro. */
-const Seal = styled.span`
+export const Seal = styled.span`
   position: absolute;
   right: ${({ theme }) => theme.space(3)};
   bottom: -24px;
@@ -111,7 +114,7 @@ const Seal = styled.span`
   }
 `;
 
-const Name = styled.h2`
+export const Name = styled.h2`
   margin-bottom: ${({ theme }) => theme.space(3)};
   font-size: 1.375rem;
   font-weight: ${({ theme }) => theme.weights.bold};
@@ -124,7 +127,7 @@ const Name = styled.h2`
   }
 `;
 
-const Chips = styled.div<{ $area: Bootcamp["area"] }>`
+export const Chips = styled.div<{ $area: Bootcamp["area"] }>`
   display: flex;
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.space(2)};
@@ -161,7 +164,7 @@ const Meta = styled.ul`
   }
 `;
 
-const Item = styled(Card)`
+export const Item = styled(Card)`
   position: relative;
   display: flex;
   flex-direction: column;
