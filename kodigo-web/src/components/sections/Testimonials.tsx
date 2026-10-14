@@ -507,10 +507,13 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
   }
 
   /* Efecto "animation-item" de Eduhall (animate__wobble de animate.css): el icono
-     se tambalea al pasar el cursor por la tarjeta. Se anula con movimiento reducido. */
+     (svg) se tambalea al pasar el cursor por la tarjeta. La animación se aplica
+     al <svg> y no al span contenedor para que solo el icono se mueva, no el
+     círculo blanco de fondo. Se anula con movimiento reducido. */
   @media (prefers-reduced-motion: no-preference) {
-    &:hover .icon {
+    &:hover .icon svg {
       animation: ${wobble} 1s ease-in-out;
+      transform-origin: center;
     }
   }
 
