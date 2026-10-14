@@ -11,16 +11,11 @@ import { professionalSections } from "./professional";
 //   Formaciones   -> /#bootcamps-title          (BootcampShowcase: 'Aprende con proposito /
 //                                              Encuentra la formacion que te llevara
 //                                              mas lejos'.)
-//   Beneficios    -> /#testimonials-title       (Testimonials: 'Personas y conexiones /
-//                                              Las historias reales tienen el mayor impacto.'.
-//                                              Esta seccion se reubico justo despues de
-//                                              Formaciones y ahora cumple el rol narrativo
-//                                              de Beneficios.)
-//   Respaldo      -> /#career-path-title        (CareerPath: 'Por que Kodigo / Una formacion
-//                                              con proposito, una comunidad que acompana.'.
-//                                              Pendiente crear una seccion 'Acreditaciones y
-//                                              ventajas competitivas' para que Respaldo tenga
-//                                              contenido propio.)
+//   Beneficios    -> /#beneficios               (Testimonials: inicio del bloque, en las tarjetas de
+//                                              cifras; la sección vive justo después de
+//                                              Formaciones y cumple el rol narrativo de Beneficios.)
+//   Respaldo      -> /#goals-title              (GoalPaths: 'Tu objetivo, tu ruta / No todos
+//                                              comienzan igual. ¿Qué estás buscando?'.)
 //   Clientes      -> /#testimonials-title       (Apunta al mismo anchor que Beneficios por
 //                                              compatibilidad con el menu previo; revisar si
 //                                              se mantiene ahora que Beneficios ya cubre
@@ -64,18 +59,14 @@ export const navigation: NavItem[] = [
   // 'Aprende con proposito' / 'Encuentra el bootcamp que te llevara mas lejos'.
   { label: "Formaciones", to: "/#bootcamps-title" },
 
-  // CONECTAR: la sección "Beneficios" del menú apunta a Testimonials
-  // ("Personas y conexiones / Las historias reales tienen el mayor impacto"),
-  // que ahora vive justo después de Formaciones (BootcampShowcase) en la home.
-  { label: "Beneficios", to: "/#testimonials-title" },
+  // CONECTAR: la sección "Beneficios" del menú apunta a Testimonials, pero al inicio del bloque (id="beneficios",
+  // las tarjetas de cifras) y no al título del panel de historias, para que se vean las cards desde el principio.
+  // Vive justo después de Formaciones (BootcampShowcase) en la home.
+  { label: "Beneficios", to: "/#beneficios" },
 
-  // GENERAR CONFIANZA: CareerPath tiene el copy exacto 'Por que Kodigo / Una
-  // formacion con proposito, una comunidad que acompana.' (linea 397-399). El
-  // usuario anade 'Personas y conexiones' como pista narrativa pero ese copy
-  // vive en Testimonials (#testimonials-title); lo atiende Clientes en el menu.
-  // Falta una seccion dedicada a 'Acreditaciones / Ventajas competitivas' que
-  // justifique sola a Respaldo (se recomienda crearla para diferenciarse).
-  { label: "Respaldo", to: "/#career-path-title" },
+  // RESPALDO: lleva a la sección GoalPaths ("Tu objetivo, tu ruta / No todos comienzan igual. ¿Qué estás buscando?"),
+  // las cuatro rutas por objetivo, cuyo título tiene id="goals-title".
+  { label: "Respaldo", to: "/#goals-title" },
 
   // 'Personas y conexiones / Las historias reales tienen el mayor impacto.'
   // es exactamente el titulo del Testimonials.tsx.

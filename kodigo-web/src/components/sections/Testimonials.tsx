@@ -381,6 +381,8 @@ const counterTones: Record<Tone, { bg: "main50" | "orangeSoft"; icon: "main" | "
 };
 
 const CounterGrid = styled.ul`
+  /* Ancla del menú "Beneficios": aterriza con las tarjetas de cifras justo bajo la cabecera sticky. */
+  scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeightScrolled} + 3rem);
   display: grid;
   gap: ${({ theme }) => theme.space(5)};
   margin-bottom: ${({ theme }) => theme.space(14)};
@@ -561,7 +563,7 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
          "Beneficios" y aparece encima del bloque de testimonios. */}
       <Container>
         <VisuallyHidden as="h2">Cifras clave de Kodigo</VisuallyHidden>
-        <CounterGrid ref={counterRef}>
+        <CounterGrid id="beneficios" ref={counterRef}>
           {counterCards.map((c, i) => (
             <CounterCard key={c.label} card={c} index={i} visible={counterVisible} />
           ))}

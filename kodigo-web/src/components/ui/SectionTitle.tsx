@@ -24,6 +24,8 @@ const Wrap = styled.div<{ $align: "center" | "left"; $visible: boolean; $dark: b
   h2 {
     font-size: ${({ theme }) => theme.type.h2};
     line-height: 1.2;
+    /* Al llegar por un ancla (menú) el título no queda bajo la cabecera sticky y se alcanza a ver la etiqueta de arriba. */
+    scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeightScrolled} + 5.5rem);
   }
 
   h2 em {

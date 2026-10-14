@@ -19,6 +19,8 @@ import { GoalsCard } from "./GoalsCard";
 const PANEL_OVERLAP = "1.5rem";
 /** Cuánto sube la marquesina de logos (BrandMarquee) sobre el borde inferior del banner; debe coincidir con BrandMarquee.tsx. */
 const MARQUEE_RISE = "15px";
+/** Alto de la marquesina de logos (BrandMarquee). El banner se acorta para que la franja completa quepa en la primera pantalla. */
+const MARQUEE_HEIGHT = "110px";
 const INTERVAL_MS = 6000;
 const TRANSITION_MS = 900;
 const CHAR_STAGGER_MS = 14;
@@ -128,9 +130,13 @@ const Slide = styled.div<SlideProps>`
   flex-direction: column;
   justify-content: center;
   gap: ${({ theme }) => theme.space(8)};
-  min-height: clamp(34rem, calc(100svh - ${({ theme }) => theme.layout.headerHeight} - 3.5rem), 62rem);
+  min-height: clamp(
+    34rem,
+    calc(100svh - ${({ theme }) => theme.layout.headerHeight} - ${MARQUEE_HEIGHT} + ${MARQUEE_RISE} - 0.3rem),
+    62rem
+  );
   /* Deja libre la fila de controles (44 px) bajo el contenido. */
-  padding-block: 3rem calc(${PANEL_OVERLAP} + 5.5rem + ${MARQUEE_RISE});
+  padding-block: 2.25rem calc(${PANEL_OVERLAP} + 4.25rem + ${MARQUEE_RISE});
 
   ${media.up("md")} {
     flex-direction: row;
@@ -207,8 +213,14 @@ const Label = styled.p`
 `;
 
 const Title = styled.h1`
-  margin-bottom: ${({ theme }) => theme.space(6)};
+  margin-bottom: ${({ theme }) => theme.space(5)};
   font-size: ${({ theme }) => theme.type.display};
+
+  /* En escritorio el título también se limita por el alto de la ventana, para que el banner entero y la marquesina
+     de logos quepan en la primera pantalla en portátiles de poca altura. */
+  ${media.up("md")} {
+    font-size: min(${({ theme }) => theme.type.display}, 8svh);
+  }
   font-weight: ${({ theme }) => theme.weights.bold};
   line-height: 1.05;
   color: ${({ theme }) => theme.colors.white};
@@ -226,7 +238,7 @@ const Title = styled.h1`
 
 const Lead = styled.p`
   max-width: 56ch;
-  margin-bottom: ${({ theme }) => theme.space(10)};
+  margin-bottom: ${({ theme }) => theme.space(8)};
   color: ${({ theme }) => theme.colors.white};
 `;
 
