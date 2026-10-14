@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import benefitsBg from "@/assets/photos/benefits-bg.webp";
 import type { Testimonial } from "@/data/content";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "@/hooks/useInView";
@@ -23,6 +24,13 @@ const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  /* Foto de reunión de fondo bajo un velo claro (blanco -> surface) que la deja casi imperceptible: se adivina la
+     textura sin competir con los contadores ni con el panel de testimonios. Los extremos son opacos para que
+     la sección se funda con las vecinas sin escalón. */
+  background:
+    linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 20%, rgba(242, 242, 254, 0.88) 80%, ${({ theme }) => theme.colors.surface} 100%),
+    url(${benefitsBg}) center / cover no-repeat,
+    ${({ theme }) => theme.colors.white};
 `;
 
 // Panel tintado (fondo `surface` de Eduhall) que contiene el bloque de testimonios. Va dentro del contenedor y con
@@ -162,7 +170,8 @@ const Card = styled.figure`
     display: inline-flex;
     gap: 4px;
     margin-bottom: ${({ theme }) => theme.space(3)};
-    color: ${({ theme }) => theme.colors.orange};
+    /* Color de énfasis de la marca: rgb(108, 232, 215) = #6ce8d7 (theme.colors.accentOnDark). */
+    color: ${({ theme }) => theme.colors.accentOnDark};
   }
 
   figcaption {
