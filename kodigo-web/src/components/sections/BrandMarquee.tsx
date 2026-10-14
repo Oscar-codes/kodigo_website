@@ -14,17 +14,15 @@ const Wrap = styled.section`
   position: relative;
   isolation: isolate;
   /* Banda navy que sella visualmente la portada (Hero) por debajo: la franja va pegada
-     a continuación, sin sangría superior, y cierra el bloque del banner. Se añade
-     margin-bottom generoso para separar la cinta de logos de la siguiente sección
-     (BootcampShowcase) y evitar que se lean como un único bloque. */
+     a continuación, sin sangría superior, y cierra el bloque del banner. La separación
+     con la siguiente sección se gestiona desde el padding-top de la siguiente, no
+     desde aquí, para que el fondo navy no se prolongue hacia abajo. */
   margin-top: -1.5rem;
-  margin-bottom: ${({ theme }) => theme.space(10)};
   background: #131e4b;
   padding-block: ${({ theme }) => theme.space(8)};
 
   ${media.up("md")} {
     padding-block: ${({ theme }) => theme.space(10)};
-    margin-bottom: ${({ theme }) => theme.space(16)};
   }
 `;
 

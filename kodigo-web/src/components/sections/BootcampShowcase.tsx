@@ -114,7 +114,14 @@ export const BootcampShowcase = ({ items, flushTop = true }: { items: Bootcamp[]
     <Section
       $surface
       aria-labelledby="bootcamps-title"
-      style={{ position: "relative", ...(flushTop ? { paddingTop: 0 } : null) }}
+      style={{
+        position: "relative",
+        /* flushTop quita el padding superior para que el bloque se "pegue" al anterior
+           (caso típico: el panel navy de Organizations que ya tiene su propio padding).
+           Aun así dejamos un padding-top generoso para que el titulo no quede pegado
+           a la seccion de encima (p. ej. la cinta de logos de aliados). */
+        ...(flushTop ? { paddingTop: "3rem" } : null),
+      }}
     >
       <Shape style={{ width: 160, height: 160, right: "4%", top: "6%" }} $range={14} />
       <Shape style={{ width: 90, height: 90, left: "3%", bottom: "10%" }} $range={12} $delay={-3} />
