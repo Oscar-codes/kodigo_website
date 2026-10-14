@@ -2,6 +2,7 @@ import { useRef } from "react";
 import styled from "styled-components";
 import type { Partner } from "@/data/content";
 import { useInView } from "@/hooks/useInView";
+import { media } from "@/styles/theme";
 import { Marquee } from "../ui/Marquee";
 
 // Franja de aliados en desplazamiento continuo, ubicada justo bajo el Hero (donde antes estaba el panel de
@@ -14,13 +15,14 @@ const Wrap = styled.section`
   position: relative;
   isolation: isolate;
   /* Banda navy que sella visualmente la portada (Hero) por debajo: la franja va pegada
-     a continuación, sin sangría superior, y cierra el bloque del banner. Altura fija
-     para que la marquesina se lea como una cinta consistente en todos los viewports. */
+     a continuación, sin sangría superior, y cierra el bloque del banner. */
   margin-top: -1.5rem;
   background: #131e4b;
-  height: 200px;
-  display: flex;
-  align-items: center;
+  padding-block: ${({ theme }) => theme.space(8)};
+
+  ${media.up("md")} {
+    padding-block: ${({ theme }) => theme.space(10)};
+  }
 `;
 
 // Pista con máscara de desvanecimiento en los extremos (igual que la sección Aliados) para que
