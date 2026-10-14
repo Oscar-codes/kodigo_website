@@ -10,7 +10,7 @@
 //   src/assets/partners/<slug>.webp + src/data/partners.json   (logos de aliados, recortados y normalizados)
 //   src/assets/brand/kodigo-logo-{white,dark}.webp + brand.json (logo para fondo oscuro / claro)
 //   src/assets/photos/hero.webp + hero-768.webp                 (foto del banner de Inicio, FOTOS/SCC1; versión móvil)
-//   public/favicon-32.png, favicon-48.png, apple-touch-icon.png (a partir del isotipo)
+//   public/favicon-32.png, favicon-48.png, favicon-192.png, apple-touch-icon.png (la "K" a color recortada del logo oscuro)
 //   src/assets/icons/*.png                                      (iconos de trazo fino)
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -103,21 +103,39 @@ const buildBrand = async () => {
     logoWhite: { width: white.info.width, height: white.info.height },
     logoDark: { width: dark.info.width, height: dark.info.height },
   }, null, 2) + "\n");
-  // Favicons desde el isotipo (violeta sobre transparente)
+  // Favicons con la "K" a color de Kodigo: se recorta del logo oscuro (la marca queda a la izquierda, separada del texto
+  // por un hueco amplio; se detecta por columnas con píxeles opacos) y se centra en lienzos cuadrados transparentes.
   const mark = findFile(el, "Recurso 5element 4.png");
   const pub = join(ROOT, "public");
-  for (const size of [32, 48]) {
-    await sharp(mark).resize(size, size, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png({ compressionLevel: 9 }).toFile(join(pub, `favicon-${size}.png`));
-  }
+  const kMark = async () => {
+    const src = findFile(el, "KODIGO Logo- Oscuro.png");
+    const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const filled = (x) => { for (let y = 0; y < info.height; y++) if (data[(y * info.width + x) * 4 + 3] > 40) return true; return false; };
+    let end = 0, gap = 0;
+    for (let x = 0; x < info.width; x++) {
+      if (filled(x)) { end = x; gap = 0; } else if (++gap > 300) break;
+    }
+    const left = await sharp(src).extract({ left: 0, top: 0, width: end + 1, height: info.height }).png().toBuffer();
+    return sharp(left).trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 5 }).png().toBuffer();
+  };
+  const k = await kMark();
+  const square = (size, pad, bg) => {
+    let img = sharp(k).resize(size - 2 * pad, size - 2 * pad, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .extend({ top: pad, bottom: pad, left: pad, right: pad, background: { r: 0, g: 0, b: 0, alpha: 0 } });
+    if (bg) img = img.flatten({ background: bg });
+    return img.png({ compressionLevel: 9 });
+  };
+  await square(32, 1).toFile(join(pub, "favicon-32.png"));
+  await square(48, 2).toFile(join(pub, "favicon-48.png"));
+  await square(192, 24).toFile(join(pub, "favicon-192.png"));
+  await square(180, 28, "#ffffff").toFile(join(pub, "apple-touch-icon.png"));
   // Isotipo en blanco (marca de agua de las tarjetas de bootcamps): un lienzo blanco al que se le aplica la forma del isotipo.
   const markPng = await sharp(mark).resize({ height: 240 }).png().toBuffer();
   const mm = await sharp(markPng).metadata();
   const markWhite = await sharp({ create: { width: mm.width, height: mm.height, channels: 4, background: "#ffffff" } })
     .composite([{ input: markPng, blend: "dest-in" }]).webp({ quality: 90, alphaQuality: 100, effort: 5 }).toBuffer();
   writeFileSync(join(outDir, "isotype-white.webp"), markWhite);
-  const tile = await sharp(mark).resize(112, 112, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
-  await sharp({ create: { width: 180, height: 180, channels: 4, background: "#2E3142" } }).composite([{ input: tile, gravity: "center" }]).png({ compressionLevel: 9 }).toFile(join(pub, "apple-touch-icon.png"));
-  console.log(`marca: logo blanco ${white.info.width}x${white.info.height} (${kb(white.data.length)}), logo oscuro ${dark.info.width}x${dark.info.height} (${kb(dark.data.length)}), favicon-32/48 y apple-touch-icon`);
+  console.log(`marca: logo blanco ${white.info.width}x${white.info.height} (${kb(white.data.length)}), logo oscuro ${dark.info.width}x${dark.info.height} (${kb(dark.data.length)}), favicon-32/48/192 y apple-touch-icon con la K a color`);
 };
 
 // ---------- Iconos ----------
