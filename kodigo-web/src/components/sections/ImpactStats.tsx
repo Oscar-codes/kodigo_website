@@ -4,6 +4,7 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { HERO_OVERLAP } from "./AlliancesHero";
+import { silverText } from "../ui/AiventKit";
 import { Container, Section } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
@@ -14,6 +15,7 @@ const Overlap = styled(Section)`
   z-index: 2;
   padding-top: 0;
   margin-top: calc(${HERO_OVERLAP} * -1);
+  background: linear-gradient(180deg, transparent ${HERO_OVERLAP}, ${({ theme }) => theme.colors.aiventDark} ${HERO_OVERLAP});
 `;
 
 const Grid = styled.ul`
@@ -30,16 +32,16 @@ const Item = styled(Reveal)`
   height: 100%;
   padding: ${({ theme }) => `${theme.space(9)} ${theme.space(5)}`};
   text-align: center;
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.aiventDark2};
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: ${({ theme }) => theme.radii.lg};
-  box-shadow: ${({ theme }) => theme.shadows.lift};
+  box-shadow: 0 14px 36px rgba(7, 20, 49, 0.45);
   transition: border-color ${({ theme }) => theme.motion.duration.hover} linear,
     box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.main200};
-    box-shadow: ${({ theme }) => theme.shadows.lift};
+    border-color: ${({ theme }) => theme.colors.aiventViolet};
+    box-shadow: 0 14px 36px rgba(118, 77, 240, 0.35);
   }
 
   .number {
@@ -47,7 +49,7 @@ const Item = styled(Reveal)`
     font-size: clamp(2.75rem, 2rem + 3vw, 4rem);
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.1;
-    color: ${({ theme }) => theme.colors.accentOnLight};
+    ${silverText}
   }
 
   .label {
@@ -57,7 +59,7 @@ const Item = styled(Reveal)`
     font-weight: ${({ theme }) => theme.weights.semibold};
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.heading};
+    color: ${({ theme }) => theme.colors.accentOnDark};
   }
 `;
 

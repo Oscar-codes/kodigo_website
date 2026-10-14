@@ -26,99 +26,121 @@ const Grid = styled.ul`
   }
 `;
 
+const Block = styled(Section)`
+  background: ${({ theme }) => theme.colors.aiventDark};
+`;
+
+// Tarjetas de "Speakers" de AIvent: foto a todo el cuadro, caption de vidrio esmerilado abajo y, al pasar el cursor,
+// zoom de la foto y resplandor violeta radial en los bordes.
 const Member = styled.article`
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  isolation: isolate;
   height: 100%;
-  padding: ${({ theme }) => theme.space(3)};
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
-  box-shadow: ${({ theme }) => theme.shadows.card};
-  transition: border-color ${({ theme }) => theme.motion.duration.hover} linear,
-    box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.main200};
-    box-shadow: ${({ theme }) => theme.shadows.lift};
-  }
-
-  .photo {
-    overflow: hidden;
-    border-radius: ${({ theme }) => theme.radii.md};
-    background: ${({ theme }) => theme.colors.surface};
-  }
+  overflow: hidden;
+  border-radius: ${({ theme }) => theme.radii.md};
+  background: ${({ theme }) => theme.colors.aiventDark2};
 
   .photo img {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    transition: transform ${({ theme }) => theme.motion.duration.hover} linear;
+    transition: transform 0.6s ${({ theme }) => theme.motion.easing};
   }
 
   &:hover .photo img {
-    transform: scale(1.1);
+    transform: scale(1.08);
   }
 
-  .body {
+  .glow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(118, 77, 240, 0) 50%, rgba(118, 77, 240, 1) 100%);
+    transition: opacity ${({ theme }) => theme.motion.duration.base} ease;
+  }
+
+  &:hover .glow,
+  &:focus-within .glow {
+    opacity: 1;
+  }
+
+  .caption-wrap {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 2;
+    padding-top: ${({ theme }) => theme.space(16)};
+    background: linear-gradient(0deg, rgba(16, 20, 53, 0.85) 0%, rgba(16, 20, 53, 0) 100%);
+  }
+
+  .caption {
     display: flex;
-    flex: 1;
     flex-direction: column;
-    padding: ${({ theme }) => `${theme.space(5)} ${theme.space(3)} ${theme.space(3)}`};
+    align-items: center;
+    gap: ${({ theme }) => theme.space(1)};
+    margin: ${({ theme }) => theme.space(4)};
+    padding: ${({ theme }) => theme.space(4)};
+    border-radius: ${({ theme }) => theme.radii.sm};
+    text-align: center;
+    color: ${({ theme }) => theme.colors.white};
+    background: rgba(0, 0, 0, 0.18);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
 
   h3 {
-    margin-bottom: ${({ theme }) => theme.space(2)};
-    font-size: 1.25rem;
+    font-size: 1.1875rem;
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.3;
+    color: ${({ theme }) => theme.colors.white};
   }
 
   .role {
-    margin-bottom: ${({ theme }) => theme.space(5)};
-    font-size: 0.9375rem;
-    line-height: 1.5;
+    margin-bottom: ${({ theme }) => theme.space(2)};
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
 
-// Botón de perfil: píldora con borde violeta que se rellena al pasar el cursor. Sin URL se muestra deshabilitado.
+// Botón de perfil: píldora clara con borde que se rellena al pasar el cursor. Sin URL se muestra deshabilitado.
 const ProfileLink = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.space(2)};
-  margin-top: auto;
-  padding: 11px 20px;
-  border: 1px solid ${({ theme }) => theme.colors.main};
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: ${({ theme }) => theme.radii.pill};
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: ${({ theme }) => theme.weights.semibold};
-  color: ${({ theme }) => theme.colors.accentOnLight};
+  color: ${({ theme }) => theme.colors.white};
   transition: background-color ${({ theme }) => theme.motion.duration.hover} linear,
     color ${({ theme }) => theme.motion.duration.hover} linear;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.main};
-    color: ${({ theme }) => theme.colors.white};
+    background: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.navy};
   }
 
   &:not([href]) {
-    border-color: ${({ theme }) => theme.colors.borderStrong};
-    color: ${({ theme }) => theme.colors.textMuted};
+    border-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.75);
     cursor: not-allowed;
   }
 
   &:not([href]):hover {
     background: transparent;
-    color: ${({ theme }) => theme.colors.textMuted};
+    color: rgba(255, 255, 255, 0.75);
   }
 `;
 
 export const TeamBlock = () => (
-  <Section aria-labelledby="team-title">
+  <Block aria-labelledby="team-title">
     <Container>
-      <SectionTitle id="team-title" label={team.label} title={team.title} lead={team.lead} />
+      <SectionTitle id="team-title" tone="dark" label={team.label} title={team.title} lead={team.lead} />
       <Grid>
         {team.members.map((m, i) => (
           <Reveal key={m.name} tag="li" index={i} direction="up">
@@ -126,9 +148,11 @@ export const TeamBlock = () => (
               <div className="photo">
                 <img src={photoOf(m.photo)} alt={`Retrato de ${m.name}`} width={480} height={600} loading="lazy" />
               </div>
-              <div className="body">
-                <h3>{m.name}</h3>
-                <p className="role">{m.role}</p>
+              <span className="glow" aria-hidden="true" />
+              <div className="caption-wrap">
+                <div className="caption">
+                  <h3>{m.name}</h3>
+                  <p className="role">{m.role}</p>
                 <ProfileLink
                   {...(m.linkedin
                     ? { href: m.linkedin, target: "_blank", rel: "noopener noreferrer", "aria-label": `${team.linkedinCta}: ${m.name}` }
@@ -137,11 +161,12 @@ export const TeamBlock = () => (
                   <LinkedIn />
                   {team.linkedinCta}
                 </ProfileLink>
+                </div>
               </div>
             </Member>
           </Reveal>
         ))}
       </Grid>
     </Container>
-  </Section>
+  </Block>
 );

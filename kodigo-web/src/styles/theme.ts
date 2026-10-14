@@ -50,6 +50,12 @@ export const theme = {
     violetDeep: "#1E1B6E",
     lilac: "#AF94F8",
 
+    // Paleta de la plantilla AIvent (demo slider-text) para la página de Alianzas: fondos índigo oscuro y violeta.
+    aiventDark: "#101435",
+    aiventDark2: "#1A1E42",
+    aiventViolet: "#764DF0",
+    aiventVioletDeep: "#442490",
+
     // Azul marino (banner y footer)
     navy: "#071431",
     navyMid: "#13203B",
@@ -61,8 +67,8 @@ export const theme = {
     danger: "#B42318",
     dangerSoft: "#FEF3F2",
 bgTranslucent: "rgba(255, 255, 255, 0.97)",
-    /** Cabecera al hacer scroll: blanco translúcido al 0.55 + blur + saturate en Header.tsx. */
-    headerGlass: "rgba(255, 255, 255, 0.55)",
+    /** Cabecera al hacer scroll: blanco translúcido al 0.82 (sube desde 0.55 para mantener contraste AA sobre secciones oscuras) + blur + saturate en Header.tsx. */
+    headerGlass: "rgba(255, 255, 255, 0.82)",
   },
   fonts: {
     body: `"Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`,

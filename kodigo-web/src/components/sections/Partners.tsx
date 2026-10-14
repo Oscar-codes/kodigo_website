@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import type { Partner } from "@/data/content";
 import { useInView } from "@/hooks/useInView";
-import { media } from "@/styles/theme";
+import { media, theme } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
 import { Marquee } from "../ui/Marquee";
 import { SectionTitle } from "../ui/SectionTitle";
@@ -90,19 +90,19 @@ interface PartnersProps {
   variant?: "marquee" | "grid";
   /** Sin relleno superior: cuando la sección anterior ya es blanca y aporta su propio relleno inferior. */
   flushTop?: boolean;
-  /** Fondo tintado (alterna con la sección anterior). */
-  surface?: boolean;
+  /** Fondo índigo oscuro (estilo AIvent) con título plateado. */
+  dark?: boolean;
 }
 
-export const Partners = ({ items, variant = "marquee", flushTop = false, surface = false }: PartnersProps) => {
+export const Partners = ({ items, variant = "marquee", flushTop = false, dark = false }: PartnersProps) => {
   // La franja solo se monta al acercarse a la pantalla: sus logos se cargan de golpe (eager) y no deben
   // competir con el contenido inicial de la página.
   const [ref, near] = useInView<HTMLDivElement>("0px 0px 200px 0px");
 
   return (
-    <Section $surface={surface} aria-labelledby="partners-title" $compact={variant === "marquee"} style={flushTop ? { paddingTop: 0 } : undefined}>
+    <Section aria-labelledby="partners-title" $compact={variant === "marquee"} style={{ ...(flushTop ? { paddingTop: 0 } : null), ...(dark ? { background: theme.colors.aiventDark2 } : null) }}>
       <Container>
-        <SectionTitle id="partners-title" label="Alianzas" title="Nuestros aliados" />
+        <SectionTitle id="partners-title" label="Alianzas" title="Nuestros aliados" tone={dark ? "dark" : "light"} />
       </Container>
       {variant === "grid" ? (
         <Container>

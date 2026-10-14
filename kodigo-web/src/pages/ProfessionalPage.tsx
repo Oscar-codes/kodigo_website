@@ -9,14 +9,19 @@ import { Partners } from "@/components/sections/Partners";
 import { TeamBlock } from "@/components/sections/TeamBlock";
 import { UpcomingWorkshops } from "@/components/sections/UpcomingWorkshops";
 import { Workshop } from "@/components/sections/Workshop";
+import { SkewBands } from "@/components/ui/AiventKit";
 import { Card } from "@/components/ui/Card";
 import { Container, Section } from "@/components/ui/Container";
 import { ArrowRight } from "@/components/ui/Icons";
+import { alliancesHero, impactStats } from "@/data/alliances";
 import { content } from "@/data/content";
 import { professionalSections } from "@/data/professional";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { media } from "@/styles/theme";
 import { NotFoundPage } from "./NotFoundPage";
+
+// Frases de las franjas inclinadas (AIvent): reutilizan textos que ya existen en la página.
+const bandPhrases = [alliancesHero.title, ...impactStats.map((s) => s.label)];
 
 const Cards = styled.ul`
   display: grid;
@@ -103,12 +108,13 @@ export const ProfessionalPage = () => {
       <>
         <AlliancesHero />
         <ImpactStats />
+        <SkewBands items={bandPhrases} />
         <Workshop />
         <UpcomingWorkshops />
         <CaseStudies />
         <AdaptiveTraining />
         <TeamBlock />
-        {content.partners?.length ? <Partners items={content.partners} variant="grid" surface /> : null}
+        {content.partners?.length ? <Partners items={content.partners} variant="grid" dark /> : null}
       </>
     );
   }

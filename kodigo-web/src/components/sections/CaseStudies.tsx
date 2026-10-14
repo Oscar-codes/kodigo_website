@@ -5,6 +5,7 @@ import { partners } from "@/data/partners";
 import { useInView } from "@/hooks/useInView";
 import { bounceIn, bounceInDown, bounceInUp, scalation, upDown } from "@/styles/effects";
 import { media } from "@/styles/theme";
+import { bracketLabel } from "../ui/AiventKit";
 import { Container, Section } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 
@@ -15,6 +16,10 @@ const logoOf = (name: string) => partners.find((p) => p.name === name);
 // decorativos de Eduhall (upDown / scalation), título con entrada bounce y los casos cambian solos con un fundido lateral.
 // Los logos de abajo son las pestañas del carrusel. Cumple WCAG 2.2.2: hay botón de pausa, se detiene al pasar el cursor
 // o enfocar, y con movimiento reducido no avanza solo.
+const Block = styled(Section)`
+  background: ${({ theme }) => theme.colors.aiventDark2};
+`;
+
 const Panel = styled.div`
   position: relative;
   isolation: isolate;
@@ -79,12 +84,11 @@ const Head = styled.div<{ $visible: boolean }>`
   text-align: center;
 
   .label {
-    display: block;
+    ${bracketLabel}
     margin-bottom: ${({ theme }) => theme.space(3)};
     font-size: 0.8125rem;
     font-weight: ${({ theme }) => theme.weights.bold};
     letter-spacing: 0.14em;
-    color: ${({ theme }) => theme.colors.white};
   }
 
   h2 {
@@ -361,7 +365,7 @@ export const CaseStudies = () => {
   };
 
   return (
-    <Section aria-labelledby="cases-title">
+    <Block aria-labelledby="cases-title">
       <Container>
         <Panel>
           <span className="ring a" aria-hidden="true" />
@@ -431,6 +435,6 @@ export const CaseStudies = () => {
           </Reveal>
         </Panel>
       </Container>
-    </Section>
+    </Block>
   );
 };

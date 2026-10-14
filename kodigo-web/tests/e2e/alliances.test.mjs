@@ -24,8 +24,8 @@ const open = async (width) => {
   const p = await open(1280);
   // ---- 1. Banner
   t("banner: h1 'KODIGO PARA EMPRESAS'", (await p.locator("h1").innerText()).trim() === "KODIGO PARA EMPRESAS" && (await p.locator("h1").count()) === 1);
-  t("banner: pregunta exacta", await p.getByText("¿Tu equipo está listo para aplicar IA en su trabajo?", { exact: true }).isVisible());
-  t("banner: subtítulo exacto", await p.getByText("Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.", { exact: true }).isVisible());
+  t("banner: pregunta exacta", (await p.getByText("¿Tu equipo está listo para aplicar IA en su trabajo?", { exact: true }).filter({ visible: true }).count()) === 1);
+  t("banner: subtítulo exacto", (await p.getByText("Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.", { exact: true }).filter({ visible: true }).count()) === 1);
   const cta = p.getByRole("link", { name: "Agendar una asesoría" }).first();
   t("banner: CTA 'Agendar una asesoría' con flecha (svg)", (await cta.isVisible()) && (await cta.locator("svg").count()) === 1);
   t("banner: el CTA baja a Contacto mientras no haya URL de agenda", (await cta.getAttribute("href")) === "#contacto");
@@ -50,7 +50,7 @@ const open = async (width) => {
   // ---- 4. Formulario (inmediatamente después de las tarjetas)
   const form = p.locator("section[aria-labelledby=workshop-title] form");
   t("formulario: está dentro de la banda del workshop, antes de los tres pasos", (await form.count()) === 1 && (await p.locator("section[aria-labelledby=workshop-title] ol").evaluate((ol) => !!(document.querySelector("section[aria-labelledby=workshop-title] form").compareDocumentPosition(ol) & Node.DOCUMENT_POSITION_FOLLOWING))));
-  t("banda: degradado de Kodigo con texto blanco", /gradient/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e).backgroundImage)) && (await p.locator("#workshop-title").evaluate((e) => getComputedStyle(e).color)) === "rgb(255, 255, 255)");
+  t("banda: fondo oscuro con degradado y título plateado (AIvent)", /gradient/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e).backgroundImage)) && /gradient/.test(await p.locator("#workshop-title").evaluate((e) => getComputedStyle(e).backgroundImage)));
   const email = p.getByLabel("Correo corporativo");
   const submit = p.getByRole("button", { name: "Registrarme al Workshop" });
   t("formulario: campo con etiqueta 'Correo corporativo' y botón 'Registrarme al Workshop'", (await email.isVisible()) && (await submit.isVisible()));
@@ -80,7 +80,7 @@ const open = async (width) => {
   const card = ev.locator("li").first();
   const ct = (await card.innerText()).replace(/\s+/g, " ");
   t("eventos: dos tarjetas, la segunda 'Próximamente'", (await ev.locator("li").count()) === 2 && (await ev.locator("li").nth(1).innerText()).includes("Próximamente"));
-  t("eventos: visual tipo video con botón de play", (await ev.locator(".play").count()) === 1 && (await ev.locator(".play").evaluate((e) => getComputedStyle(e).backgroundColor)) === "rgb(243, 119, 57)");
+  t("eventos: esfera decorativa de AIvent (aria-hidden, imagen cargada)", await ev.locator("[aria-hidden=true] img").evaluateAll((l) => l.length === 1 && l[0].alt === "" && l[0].complete && l[0].naturalWidth > 0));
   t("eventos: tarjeta con NOV 26, título y modalidad", /26/.test(ct) && /NOV/.test(ct) && ct.includes("AI para equipos comerciales") && ct.includes("Sesión Presencial INCAF"), ct);
   t("eventos: título como h3 y fecha destacada (>= 40 px)", (await card.locator("h3").innerText()) === "AI para equipos comerciales" && parseFloat(await card.locator(".day").evaluate((e) => getComputedStyle(e).fontSize)) >= 40);
   t("eventos: CTA 'Registrarme' lleva al registro", (await card.getByRole("link", { name: "Registrarme" }).getAttribute("href")) === "#workshop-title");
@@ -136,7 +136,7 @@ const open = async (width) => {
   t("equipo: cada persona tiene su botón de LinkedIn", (await tm.getByText("Ver perfil en LinkedIn").count()) === 4);
   t("equipo: sin URL el botón queda deshabilitado y con nombre accesible claro", (await tm.getByRole("link", { name: /Oscar Guzmán/ }).getAttribute("aria-disabled")) === "true" && (await tm.getByRole("link", { name: /Oscar Guzmán/ }).getAttribute("href")) === null);
   await people.first().hover(); await sleep(300);
-  t("equipo: al pasar el cursor la foto hace zoom y el borde se tiñe", (await people.first().locator("img").evaluate((e) => getComputedStyle(e).transform)) !== "none" && (await people.first().evaluate((e) => getComputedStyle(e).borderColor)) === "rgb(201, 201, 251)");
+  t("equipo: al pasar el cursor la foto hace zoom y aparece el resplandor violeta", (await people.first().locator("img").evaluate((e) => getComputedStyle(e).transform)) !== "none" && Number(await people.first().locator(".glow").evaluate((e) => getComputedStyle(e).opacity)) > 0);
   t("equipo: va justo después del bloque de adaptación", await p.evaluate(() => document.querySelector("section[aria-labelledby=adaptive-title]").nextElementSibling === document.querySelector("section[aria-labelledby=team-title]")));
 
   // orden de las secciones
