@@ -51,8 +51,8 @@ export const HomePage = () => {
     <>
       <Hero />
       {partners ? <BrandMarquee items={partners} /> : null}
-      <GoalPaths />
       <BootcampShowcase items={bootcamps} />
+      <GoalPaths />
       <Experience />
       <Methodology />
       <CareerPath />
