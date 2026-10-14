@@ -421,13 +421,21 @@ const plural = (n: number) => (n === 1 ? "1 historia" : `${n} historias`);
 // visual que el componente de la plantilla Eduhall: icono en circulo blanco + numero grande + etiqueta.
 // Los valores son PROVISIONALES hasta que Kodigo entregue las cifras oficiales con su fuente
 // (regla del proyecto: no se publican cifras sin respaldo). El hook useCountUp anima un entero;
-// para mostrar "1.6K" almacenamos 1600 y dividimos por 1000 al formatear.
+// el formato final aplica el prefijo y, si suffix es "K", divide entre 1000 con N decimales.
 type Tone = "main" | "orange";
-const counterCards: { icon: React.ReactNode; tone: Tone; value: number; label: string }[] = [
-  { icon: <Users />, tone: "main", value: 1600, label: "Successfully Trained" },
-  { icon: <VideoCamera />, tone: "orange", value: 16500, label: "Courses Completed" },
-  { icon: <ThumbsUp />, tone: "main", value: 45800, label: "Satisfaction Rate" },
-  { icon: <Community />, tone: "orange", value: 55600, label: "Students Community" },
+const counterCards: {
+  icon: React.ReactNode;
+  tone: Tone;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  label: string;
+}[] = [
+  { icon: <Users />, tone: "main", value: 428, label: "Personas empleadas" },
+  { icon: <VideoCamera />, tone: "orange", value: 4500, prefix: "+", suffix: "K", decimals: 1, label: "Personas formadas" },
+  { icon: <ThumbsUp />, tone: "main", value: 400, prefix: "+", label: "Personas certificadas" },
+  { icon: <Community />, tone: "orange", value: 162, label: "Empresas formadas" },
 ];
 
 const counterTones: Record<Tone, { bg: "main50" | "orangeSoft"; icon: "main" | "orangeText" }> = {
@@ -532,8 +540,16 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
   }
 `;
 
-/** Formatea el contador como "X.XK" (un decimal + sufijo K). */
-const formatK = (n: number) => `${(n / 1000).toFixed(1)}K`;
+/** Formatea el contador segun prefijo, sufijo y decimales del stat. */
+const formatStat = (
+  n: number,
+  prefix: string | undefined,
+  suffix: string | undefined,
+  decimals: number | undefined,
+) => {
+  const out = suffix === "K" ? (n / 1000).toFixed(decimals ?? 1) : n.toLocaleString("en-US");
+  return `${prefix ?? ""}${out}${suffix ?? ""}`;
+};
 
 export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
   // Mezcla los testimonios oficiales (si llegan) con los editoriales de respaldo. Codigo real gana.
@@ -611,9 +627,9 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
                   {c.icon}
                 </span>
                 <span className="number" aria-hidden="true">
-                  {formatK(shown)}
+                  {formatStat(shown, c.prefix, c.suffix, c.decimals)}
                 </span>
-                <VisuallyHidden>{formatK(c.value)}</VisuallyHidden>
+                <VisuallyHidden>{formatStat(c.value, c.prefix, c.suffix, c.decimals)}</VisuallyHidden>
                 <span id={labelId} className="label">
                   {c.label}
                 </span>
