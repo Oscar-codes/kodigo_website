@@ -1,6 +1,6 @@
 import { Allies } from "@/components/sections/Allies";
-import { Benefits } from "@/components/sections/Benefits";
 import { BootcampShowcase } from "@/components/sections/BootcampShowcase";
+import { BrandMarquee } from "@/components/sections/BrandMarquee";
 import { CallToAction } from "@/components/sections/CallToAction";
 import { CareerPath } from "@/components/sections/CareerPath";
 import { Experience } from "@/components/sections/Experience";
@@ -21,8 +21,9 @@ type Tone = "white" | "surface";
 
 export const HomePage = () => {
   usePageMeta();
-const steps = content.steps?.length ? content.steps : undefined;
+  const steps = content.steps?.length ? content.steps : undefined;
   const allies = content.partners?.length ? content.partners : undefined;
+  const partners = content.partners?.length ? content.partners : undefined;
   const testimonials = content.testimonials?.length ? content.testimonials : undefined;
   const faq = content.faq?.length ? content.faq : undefined;
 
@@ -49,7 +50,7 @@ const steps = content.steps?.length ? content.steps : undefined;
   return (
     <>
       <Hero />
-      <Benefits />
+      {partners ? <BrandMarquee items={partners} /> : null}
       <GoalPaths />
       <BootcampShowcase items={bootcamps} />
       <Experience />
