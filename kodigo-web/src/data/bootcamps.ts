@@ -8,7 +8,7 @@ export interface Bootcamp {
   name: string;
   /** Descripción PROVISIONAL: reemplazar con el contenido oficial. */
   summary: string;
-  area: "IA" | "Datos" | "Desarrollo" | "Educación";
+  area: "IA" | "Datos" | "Programación" | "Educación";
   // Detalle oficial (X-03). Todos opcionales: la página solo muestra lo que exista.
   duration?: string;
   modality?: string;

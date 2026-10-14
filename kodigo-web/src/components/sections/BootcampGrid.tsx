@@ -27,7 +27,7 @@ const Grid = styled.ul`
 const areaStyle = {
   IA: { badge: "Inteligencia artificial", glyph: "AI", chip: "Inteligencia artificial", soft: "main50", text: "mainHover" },
   Datos: { badge: "Data & Analytics", glyph: "01", chip: "Datos y analítica", soft: "greenSoft", text: "greenText" },
-  Desarrollo: { badge: "Desarrollo", glyph: "</>", chip: "Desarrollo web", soft: "orangeSoft", text: "orangeText" },
+  Programación: { badge: "Programación", glyph: "</>", chip: "Programación", soft: "orangeSoft", text: "orangeText" },
   Educación: { badge: "Educación", glyph: "A+", chip: "Educación", soft: "yellowSoft", text: "yellowText" },
 } as const;
 

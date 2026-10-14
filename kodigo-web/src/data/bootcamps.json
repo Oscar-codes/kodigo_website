@@ -50,13 +50,13 @@
   {
     "slug": "web-developer-frontend",
     "name": "Web Developer Frontend",
-    "area": "Desarrollo",
+    "area": "Programación",
     "summary": "Crea interfaces y experiencias digitales modernas, incorporando herramientas de IA a tu flujo de desarrollo."
   },
   {
     "slug": "full-stack-jr",
     "name": "Full Stack Jr / Full Stack AI Jr",
-    "area": "Desarrollo",
+    "area": "Programación",
     "summary": "Conecta frontend, lógica del servidor y datos para construir soluciones web de extremo a extremo."
   }
 ]
