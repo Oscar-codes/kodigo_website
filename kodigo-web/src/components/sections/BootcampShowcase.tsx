@@ -187,7 +187,7 @@ export const BootcampShowcase = ({ items, flushTop = true }: { items: Bootcamp[]
               label="Aprende con propósito"
               title={
                 <>
-                  Encuentra el bootcamp que te llevará <em>más lejos.</em>
+                  Encuentra la formación que te llevará <em>más lejos.</em>
                 </>
               }
             />
