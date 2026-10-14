@@ -25,21 +25,16 @@ const Wrap = styled.footer`
   overflow: hidden;
 `;
 
-// Mapa mundial punteado de fondo: ocupa todo el ancho y se centra vertical.
-// Va detras del contenido (z-index negativo sobre el Wrap con isolation).
-const Map = styled(WorldMapDots)`
+// Mapa mundial punteado de fondo: ocupa todo el ancho del footer (slice para recortar
+// la altura sobrante y cubrir las 4 columnas) y se ancla arriba. Va detras del
+// contenido (z-index negativo sobre el Wrap con isolation).
+const Map = styled(WorldMapDots).attrs({ preserveAspectRatio: "xMidYMin slice" })`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: -1;
   pointer-events: none;
-  /* En pantallas muy anchas el mapa se queda pequeno; permitimos que crezca hasta cubrir
-     el alto del footer sin deformarse demasiado. */
-  ${media.up("md")} {
-    width: 140%;
-    left: -20%;
-  }
 `;
 
 const Grid = styled(Container)`

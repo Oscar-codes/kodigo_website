@@ -90,6 +90,8 @@ interface WorldMapDotsProps {
   viewBox?: string;
   className?: string;
   ariaLabel?: string;
+  /** Comportamiento de escalado del SVG dentro de su contenedor. */
+  preserveAspectRatio?: string;
 }
 
 export const WorldMapDots = ({
@@ -100,6 +102,7 @@ export const WorldMapDots = ({
   viewBox = "0 0 1000 500",
   className,
   ariaLabel = "Mapa mundial decorativo",
+  preserveAspectRatio = "xMidYMid meet",
 }: WorldMapDotsProps) => {
   // Genera los puntos una sola vez por combinación de parámetros.
   const dots = useMemo(() => {
@@ -122,7 +125,7 @@ export const WorldMapDots = ({
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label={ariaLabel}
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio={preserveAspectRatio}
     >
       <g fill={color} opacity={opacity}>
         {dots.map((d, i) => (
