@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
+import worldMap from "@/assets/brand/world-map.webp";
 import brand from "@/assets/brand/brand.json";
 import { bootcamps } from "@/data/bootcamps";
 import { navigation } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
-import { WorldMapDots } from "./WorldMapDots";
 
 // El Header ya muestra la navegacion completa. En el Footer evitamos esos
 // enlaces para no duplicarlos visualmente (Bug del ticket: 'Saber mas' y
@@ -25,16 +25,18 @@ const Wrap = styled.footer`
   overflow: hidden;
 `;
 
-// Mapa mundial punteado de fondo: ocupa todo el ancho del footer (slice para recortar
-// la altura sobrante y cubrir las 4 columnas) y se ancla arriba. Va detras del
-// contenido (z-index negativo sobre el Wrap con isolation).
-const Map = styled(WorldMapDots).attrs({ preserveAspectRatio: "xMidYMin slice" })`
+// Mapa mundial punteado de fondo: imagen que cubre todo el footer, anclada arriba.
+// Va detras del contenido (z-index negativo sobre el Wrap con isolation).
+const Map = styled.img`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: center top;
   z-index: -1;
   pointer-events: none;
+  user-select: none;
 `;
 
 const Grid = styled(Container)`
@@ -88,7 +90,7 @@ const FEATURED = 5; // bootcamps listados en el pie
 
 export const Footer = () => (
   <Wrap>
-    <Map />
+    <Map src={worldMap} alt="" aria-hidden="true" />
     <Grid>
       <div>
         <img className="logo" src={logoWhite} alt={siteConfig.name} width={brand.logoWhite.width} height={brand.logoWhite.height} />
