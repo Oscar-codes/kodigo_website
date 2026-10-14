@@ -1,15 +1,16 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import type { Partner } from "@/data/content";
+import { institutionNames } from "@/data/partnerGroups";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
-import { ArrowUpRight, Users } from "../ui/Icons";
-import { Marquee } from "../ui/Marquee";
+import { ArrowUpRight } from "../ui/Icons";
 
-// "Aliados": sección limpia, complementaria al panel navy de Organizations. Cabecera corta y panel
-// tintado con la marquesina de logos (mismo patrón que `BrandOne.jsx`, refinado con cabecera cohesiva
-// y enlace al directorio completo).
+// "Clientes": red de aliados estratégicos en un panel oscuro con dos filas por categoría (centros educativos e instituciones,
+// y empresas): etiqueta con línea de acento a la izquierda y, a la derecha, una frase y los logos en celdas con filo fino.
+// Los logos son para fondo claro, así que van en teselas blancas dentro de cada celda.
 
 const ALLIANCES_URL = "/profesional/alianzas";
 
@@ -19,117 +20,185 @@ const Wrap = styled(Section)`
   overflow: hidden;
 `;
 
-const Head = styled.div`
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.space(3)};
-  margin-bottom: ${({ theme }) => theme.space(10)};
-  text-align: center;
-  align-items: center;
-`;
-
-const Label = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space(2)};
-  padding: ${({ theme }) => `${theme.space(2)} ${theme.space(4)}`};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  color: ${({ theme }) => theme.colors.heading};
-  font-size: 0.8125rem;
-  font-weight: ${({ theme }) => theme.weights.semibold};
-
-  &::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.main};
-  }
-`;
-
-const Heading = styled.h2`
-  font-size: clamp(1.5rem, 1rem + 1.6vw, 2rem);
-  font-weight: ${({ theme }) => theme.weights.bold};
-  line-height: 1.2;
-  color: ${({ theme }) => theme.colors.heading};
-  letter-spacing: -0.01em;
-  max-width: 24ch;
-
-  em {
-    font-style: normal;
-    color: ${({ theme }) => theme.colors.accentOnLight};
-  }
-`;
-
-const Lead = styled.p`
-  color: ${({ theme }) => theme.colors.text};
-  max-width: 56ch;
-`;
-
 const Panel = styled.div`
   position: relative;
-  z-index: 1;
-  padding: ${({ theme }) => `${theme.space(10)} ${theme.space(4)}`};
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
-  box-shadow: ${({ theme }) => theme.shadows.card};
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+  border-radius: ${({ theme }) => theme.radii.xl};
+  color: ${({ theme }) => theme.colors.onNavy};
+  background:
+    radial-gradient(55% 60% at 100% 0%, rgba(117, 87, 250, 0.35), transparent 70%),
+    radial-gradient(45% 50% at 0% 100%, rgba(175, 148, 248, 0.16), transparent 70%),
+    linear-gradient(160deg, ${({ theme }) => theme.colors.navy} 0%, ${({ theme }) => theme.colors.navyMid} 100%);
+  box-shadow: ${({ theme }) => theme.shadows.lift};
+`;
+
+const Intro = styled.div`
+  padding: ${({ theme }) => `${theme.space(10)} ${theme.space(5)}`};
 
   ${media.up("md")} {
-    padding: ${({ theme }) => `${theme.space(12)} ${theme.space(6)}`};
+    padding: ${({ theme }) => `${theme.space(14)} ${theme.space(10)} ${theme.space(12)}`};
+  }
+
+  .eyebrow {
+    display: block;
+    margin-bottom: ${({ theme }) => theme.space(4)};
+    font-size: 0.75rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: ${({ theme }) => theme.colors.accentOnDark};
+  }
+
+  h2 {
+    max-width: 24ch;
+    font-size: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
+    font-weight: ${({ theme }) => theme.weights.bold};
+    line-height: 1.05;
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  h2 em {
+    display: block;
+    font-style: normal;
+    background-image: linear-gradient(180deg, #c7b0ff 0%, #adf3e6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .line {
+    display: block;
+    width: 48px;
+    height: 3px;
+    margin: ${({ theme }) => `${theme.space(6)} 0`};
+    border-radius: 3px;
+    background: ${({ theme }) => theme.colors.yellow};
+  }
+
+  p {
+    max-width: 56ch;
+    font-size: 1.125rem;
+    color: ${({ theme }) => theme.colors.onNavy};
   }
 `;
 
-const CountRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.space(3)};
-  margin-bottom: ${({ theme }) => theme.space(8)};
+const Row = styled.div`
+  display: grid;
+  border-top: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
 
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.space(2)};
-    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(4)}`};
-    border-radius: ${({ theme }) => theme.radii.pill};
-    background: ${({ theme }) => theme.colors.white};
-    border: 1px solid ${({ theme }) => theme.colors.border};
-    color: ${({ theme }) => theme.colors.heading};
-    font-size: 0.8125rem;
-    font-weight: ${({ theme }) => theme.weights.medium};
+  ${media.up("md")} {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
 
-    svg {
-      color: ${({ theme }) => theme.colors.accentOnLight};
+  .side {
+    padding: ${({ theme }) => `${theme.space(6)} ${theme.space(5)} ${theme.space(2)}`};
+
+    ${media.up("md")} {
+      padding: ${({ theme }) => `${theme.space(10)} ${theme.space(8)}`};
     }
   }
+
+  .kicker {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    letter-spacing: 0.18em;
+    line-height: 1.7;
+    text-transform: uppercase;
+    color: ${({ theme }) => theme.colors.onNavy};
+  }
+
+  .rule {
+    display: block;
+    width: 28px;
+    height: 2px;
+    margin-top: ${({ theme }) => theme.space(3)};
+    background: ${({ theme }) => theme.colors.yellow};
+  }
+
+  .body {
+    min-width: 0;
+    padding: ${({ theme }) => `${theme.space(3)} ${theme.space(5)} ${theme.space(8)}`};
+
+    ${media.up("md")} {
+      padding: ${({ theme }) => `${theme.space(10)} ${theme.space(8)}`};
+      border-left: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+    }
+  }
+
+  .blurb {
+    max-width: 62ch;
+    margin-bottom: ${({ theme }) => theme.space(6)};
+    font-size: 1.0625rem;
+    color: ${({ theme }) => theme.colors.white};
+  }
 `;
 
-const Logo = styled.span`
+const Cells = styled.ul<{ $visible: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+  border-left: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+
+  ${media.up("sm")} {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  ${media.up("lg")} {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  ${media.up("xl")} {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  > li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: ${({ theme }) => theme.space(3)};
+    border-right: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+    border-bottom: 1px solid ${({ theme }) => theme.colors.borderOnNavy};
+
+    @media (prefers-reduced-motion: no-preference) {
+      opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+      transform: ${({ $visible }) => ($visible ? "none" : "translateY(14px)")};
+      transition:
+        opacity 0.55s ease calc(var(--i, 0) * 30ms),
+        transform 0.55s ${({ theme }) => theme.motion.easing} calc(var(--i, 0) * 30ms);
+    }
+  }
+
+  > li > a {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+const Tile = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 180px;
-  height: 96px;
-  padding: ${({ theme }) => theme.space(3)} ${({ theme }) => theme.space(4)};
+  width: 100%;
+  max-width: 168px;
+  height: 76px;
+  padding: ${({ theme }) => `${theme.space(2.5)} ${theme.space(4)}`};
   background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.md};
   color: ${({ theme }) => theme.colors.heading};
   font-weight: ${({ theme }) => theme.weights.semibold};
   text-align: center;
   transition:
     transform ${({ theme }) => theme.motion.duration.hover} ease,
-    border-color ${({ theme }) => theme.motion.duration.hover} linear;
+    box-shadow ${({ theme }) => theme.motion.duration.hover} ease;
 
   &:hover {
-    transform: translateY(-2px);
-    border-color: ${({ theme }) => theme.colors.accentOnLight};
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(117, 87, 250, 0.45);
   }
 
   img {
@@ -141,34 +210,26 @@ const Logo = styled.span`
   }
 `;
 
-const PartnerLogo = ({ partner }: { partner: Partner }) => {
+const PartnerCell = ({ partner, index }: { partner: Partner; index: number }) => {
   const inner = (
-    <Logo>
+    <Tile>
       {partner.logo ? (
-        <img
-          src={partner.logo}
-          alt={partner.name}
-          width={partner.width}
-          height={partner.height}
-          loading="lazy"
-          decoding="async"
-        />
+        <img src={partner.logo} alt={partner.name} width={partner.width} height={partner.height} loading="lazy" decoding="async" />
       ) : (
         partner.name
       )}
-    </Logo>
+    </Tile>
   );
-  return partner.url ? (
-    <a
-      href={partner.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${partner.name} (abre en una pestaña nueva)`}
-    >
-      {inner}
-    </a>
-  ) : (
-    inner
+  return (
+    <li style={{ "--i": Math.min(index, 24) } as CSSProperties}>
+      {partner.url ? (
+        <a href={partner.url} target="_blank" rel="noopener noreferrer" aria-label={`${partner.name} (abre en una pestaña nueva)`}>
+          {inner}
+        </a>
+      ) : (
+        inner
+      )}
+    </li>
   );
 };
 
@@ -213,44 +274,65 @@ interface AlliesProps {
   items: Partner[];
 }
 
+interface GroupProps {
+  kicker: string;
+  blurb: string;
+  label: string;
+  partners: Partner[];
+}
+
+const Group = ({ kicker, blurb, label, partners }: GroupProps) => {
+  const [ref, visible] = useInView<HTMLUListElement>("0px 0px 120px 0px");
+  if (!partners.length) return null;
+  return (
+    <Row>
+      <div className="side">
+        <span className="kicker">{kicker}</span>
+        <span className="rule" aria-hidden="true" />
+      </div>
+      <div className="body">
+        <p className="blurb">{blurb}</p>
+        <Cells ref={ref} $visible={visible} aria-label={label}>
+          {partners.map((p, i) => (
+            <PartnerCell key={p.name} partner={p} index={i} />
+          ))}
+        </Cells>
+      </div>
+    </Row>
+  );
+};
+
 export const Allies = ({ items }: AlliesProps) => {
-  const [marqueeRef, near] = useInView<HTMLDivElement>("0px 0px 200px 0px");
-  const total = items.length;
+  const institutions = items.filter((p) => institutionNames.includes(p.name));
+  const companies = items.filter((p) => !institutionNames.includes(p.name));
 
   return (
     <Wrap aria-labelledby="allies-title">
       <Container>
-        <Head>
-          <Label>Aliados</Label>
-          <Heading id="allies-title">
-            Las personas y empresas <em>que caminan con nosotros.</em>
-          </Heading>
-          <Lead>
-            Empresas, universidades y aliados que confían en Kodigo para formar a sus equipos y abrir nuevas rutas profesionales.
-          </Lead>
-        </Head>
-
         <Panel>
-          <CountRow>
-            <span className="pill">
-              <Users size={16} />
-              {total} {total === 1 ? "organización aliada" : "organizaciones aliadas"} en cartera
-            </span>
-          </CountRow>
+          <Intro>
+            <span className="eyebrow">Clientes</span>
+            <h2 id="allies-title">
+              Formamos parte de una red de <em>aliados estratégicos.</em>
+            </h2>
+            <span className="line" aria-hidden="true" />
+            <p>
+              Con centros educativos apoyamos la formación de talento; con empresas formamos y empleamos según sus necesidades de contratación.
+            </p>
+          </Intro>
 
-          <div ref={marqueeRef}>
-            {near ? (
-              <Marquee
-                label="Organizaciones aliadas"
-                duration={Math.max(30, total * 2.5)}
-                staticMax={12}
-              >
-                {items.map((p) => (
-                  <PartnerLogo key={p.name} partner={p} />
-                ))}
-              </Marquee>
-            ) : null}
-          </div>
+          <Group
+            kicker="Centros educativos e instituciones"
+            blurb="Apoyamos la formación junto a centros educativos e instituciones."
+            label="Centros educativos e instituciones aliadas"
+            partners={institutions}
+          />
+          <Group
+            kicker="Empresas que confían en Kodigo"
+            blurb="Formamos y empleamos talento en base a las necesidades de contratación de cada empresa."
+            label="Empresas aliadas"
+            partners={companies}
+          />
         </Panel>
 
         <FootRow>

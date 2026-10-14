@@ -14,8 +14,8 @@ import { professionalSections } from "./professional";
 //   Beneficios    -> /#beneficios               (Testimonials: inicio del bloque, en las tarjetas de
 //                                              cifras; la sección vive justo después de
 //                                              Formaciones y cumple el rol narrativo de Beneficios.)
-//   Respaldo      -> /#goals-title              (GoalPaths: 'Tu objetivo, tu ruta / No todos
-//                                              comienzan igual. ¿Qué estás buscando?'.)
+//   Respaldo      -> /#goals-title              (GoalPaths: 'Respaldo / Una formación con respaldo'
+//                                              con las 4 tarjetas de alianzas y liderazgo.)
 //   Clientes      -> /#testimonials-title       (Apunta al mismo anchor que Beneficios por
 //                                              compatibilidad con el menu previo; revisar si
 //                                              se mantiene ahora que Beneficios ya cubre
@@ -64,8 +64,8 @@ export const navigation: NavItem[] = [
   // Vive justo después de Formaciones (BootcampShowcase) en la home.
   { label: "Beneficios", to: "/#beneficios" },
 
-  // RESPALDO: lleva a la sección GoalPaths ("Tu objetivo, tu ruta / No todos comienzan igual. ¿Qué estás buscando?"),
-  // las cuatro rutas por objetivo, cuyo título tiene id="goals-title".
+  // RESPALDO: lleva a la sección GoalPaths ("Respaldo / Una formación con respaldo"): alianzas académicas, certificadoras,
+  // primera academia de IA y formaciones virtuales. Su título tiene id="goals-title".
   { label: "Respaldo", to: "/#goals-title" },
 
   // 'Personas y conexiones / Las historias reales tienen el mayor impacto.'

@@ -1,40 +1,35 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
 import { Float } from "../ui/Float";
-import { ArrowRight, Rocket, Sparkles, TrendUp, Users } from "../ui/Icons";
+import { Award, BookOpen, Laptop, Sparkles } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
 import { SectionTitle } from "../ui/SectionTitle";
 
-// Bloque "Work process" de Eduhall (WorkProcessOne): tarjeta blanca con un bloque tintado, círculo con borde punteado,
-// insignia numerada y relleno de color al pasar el cursor. Aquí cada tarjeta es un objetivo del visitante con su enlace.
-// PROVISIONAL: confirmar con Kodigo el destino de cada "Explorar mi ruta" (hoy: /bootcamps y /profesional/alianzas).
-const goals: { icon: ReactNode; title: string; text: string; to: string }[] = [
+// Sección "Respaldo" (id `goals-title`, destino del menú "Respaldo"): bloque "Work process" de Eduhall (WorkProcessOne), con
+// tarjeta blanca y bloque tintado, círculo con borde punteado, insignia numerada y relleno de degradado al pasar el cursor.
+// Cada tarjeta es un dato de respaldo de Kodigo (informativa, sin enlace). Textos basados en la información entregada por Kodigo.
+const proofs: { icon: ReactNode; title: string; text: string }[] = [
   {
-    icon: <Rocket />,
-    title: "Quiero iniciar mi carrera tech",
-    text: "Explora programas para construir una base y dar tus primeros pasos.",
-    to: "/bootcamps",
+    icon: <BookOpen size={32} />,
+    title: "Alianzas con instituciones académicas",
+    text: "Trabajamos junto a Key Institute y MINEDUCYT.",
   },
   {
-    icon: <TrendUp />,
-    title: "Quiero mejorar mis habilidades",
-    text: "Actualiza tu perfil y aprende nuevas herramientas para destacar.",
-    to: "/bootcamps",
+    icon: <Award size={32} />,
+    title: "Alianza con empresas certificadoras internacionales",
+    text: "Contamos con la alianza de CertiProf.",
   },
   {
     icon: <Sparkles size={32} />,
-    title: "Quiero aprender y aplicar IA",
-    text: "Pasa de usar herramientas a crear soluciones con inteligencia artificial.",
-    to: "/bootcamps",
+    title: "Primera academia de IA en El Salvador",
+    text: "Somos la primera academia de inteligencia artificial del país.",
   },
   {
-    icon: <Users />,
-    title: "Quiero capacitar a mi equipo",
-    text: "Desarrolla competencias estratégicas y tecnológicas en tu organización.",
-    to: "/profesional/alianzas",
+    icon: <Laptop size={32} />,
+    title: "Formaciones virtuales de alto impacto",
+    text: "Programas virtuales diseñados para lograr un alto impacto.",
   },
 ];
 
@@ -161,82 +156,46 @@ const Card = styled(Reveal)`
 
   p {
     flex: 1;
-    margin-bottom: ${({ theme }) => theme.space(5)};
+    margin-bottom: ${({ theme }) => theme.space(2)};
     font-size: 0.9375rem;
     transition: color ${({ theme }) => theme.motion.duration.hover} linear;
-  }
-
-  /* El enlace cubre toda la tarjeta (área de clic grande) sin anidar elementos interactivos. */
-  a {
-    display: inline-flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.space(2)};
-    font-size: 0.9375rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.accentOnLight};
-    transition: color ${({ theme }) => theme.motion.duration.hover} linear;
-  }
-
-  a::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: ${({ theme }) => theme.radii.lg};
-  }
-
-  a:focus-visible {
-    outline: none;
-  }
-
-  a:focus-visible::after {
-    outline: 3px solid ${({ theme }) => theme.colors.main};
-    outline-offset: 2px;
   }
 
   /* Hover/foco: la tarjeta sube y se enciende con el mismo lenguaje que el botón "Aplicar" (degradado, sombra violeta y
      lift de 2-4 px). */
-  &:hover,
-  &:focus-within {
+  &:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 32px rgba(117, 87, 250, 0.45);
   }
 
-  &:hover .inner::before,
-  &:focus-within .inner::before {
+  &:hover .inner::before {
     opacity: 1;
   }
 
   &:hover h3,
-  &:hover p,
-  &:hover a,
-  &:focus-within h3,
-  &:focus-within p,
-  &:focus-within a {
+  &:hover p {
     color: ${({ theme }) => theme.colors.white};
   }
 
   /* Sobre el fondo violeta de la tarjeta, el número se invierte: círculo blanco con el número en violeta profundo. */
-  &:hover .circle::after,
-  &:focus-within .circle::after {
+  &:hover .circle::after {
     background: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.purpleDeep};
   }
 
-  &:hover .ring,
-  &:focus-within .ring {
+  &:hover .ring {
     transform: rotate(8deg) scale(1.06);
     border-color: ${({ theme }) => theme.colors.purpleDeep};
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &:hover,
-    &:focus-within {
+    &:hover {
       transform: none;
     }
   }
 `;
 
-/** Selector de objetivo en Inicio: guía al visitante a una ruta según lo que busca conseguir. */
+/** Respaldo de Kodigo en Inicio: cuatro datos que avalan la formación (alianzas académicas, certificadoras, IA y virtual). */
 export const GoalPaths = () => (
   <Section $surface aria-labelledby="goals-title" style={{ position: "relative" }}>
     <Shape style={{ width: 120, height: 120, left: "5%", top: "8%" }} $range={12} />
@@ -244,12 +203,12 @@ export const GoalPaths = () => (
     <Container style={{ position: "relative" }}>
       <SectionTitle
         id="goals-title"
-        label="Tu objetivo, tu ruta"
-        title="No todos comienzan igual. ¿Qué estás buscando?"
-        lead="En lugar de navegar entre decenas de opciones, empieza por lo que quieres conseguir. Te ayudamos a identificar un camino para ti."
+        label="Respaldo"
+        title="Una formación con respaldo"
+        lead="Alianzas y liderazgo que respaldan nuestra formación."
       />
       <List>
-        {goals.map((g, i) => (
+        {proofs.map((g, i) => (
           <Card key={g.title} tag="li" index={i} direction="up">
             <div className="inner">
               <div className="circle" aria-hidden="true">
@@ -257,9 +216,6 @@ export const GoalPaths = () => (
               </div>
               <h3>{g.title}</h3>
               <p>{g.text}</p>
-              <Link to={g.to}>
-                Explorar mi ruta <ArrowRight />
-              </Link>
             </div>
           </Card>
         ))}
