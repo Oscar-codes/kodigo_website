@@ -11,6 +11,7 @@ import { SectionTitle } from "../ui/SectionTitle";
 // Agenda estilo AIvent ("Schedule"): filas separadas por líneas finas sobre fondo índigo oscuro (fecha a la izquierda,
 // título y modalidad al centro, acción a la derecha) y, a la derecha, la esfera 3D violeta de la plantilla girando despacio.
 const Block = styled(Section)`
+  padding-block: ${({ theme }) => theme.section.dense};
   background: ${({ theme }) => theme.colors.aiventDark};
 `;
 
@@ -103,7 +104,11 @@ const Visual = styled.div`
   justify-content: center;
 
   img {
-    width: min(100%, 460px);
+    width: min(100%, 240px);
+
+    ${media.up("md")} {
+      width: min(100%, 460px);
+    }
     height: auto;
     filter: drop-shadow(0 20px 50px rgba(118, 77, 240, 0.45));
   }

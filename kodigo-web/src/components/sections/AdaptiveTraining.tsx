@@ -3,6 +3,8 @@ import contenido from "@/assets/icons/contenido.png";
 import horarios from "@/assets/icons/horarios.png";
 import modalidad from "@/assets/icons/modalidad.png";
 import ritmo from "@/assets/icons/ritmo.png";
+import sphere from "@/assets/aivent/sphere.webp";
+import wave from "@/assets/aivent/bg-wave.webp";
 import card3 from "@/assets/aivent/card-3.webp";
 import card4 from "@/assets/aivent/card-4.webp";
 import card5 from "@/assets/aivent/card-5.webp";
@@ -12,7 +14,7 @@ import mainPhoto from "@/assets/photos/training.webp";
 import { adaptiveTraining } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
 import { useInView } from "@/hooks/useInView";
-import { bounceIn, bounceInDown, bounceInUp, flipInY, upDown } from "@/styles/effects";
+import { bounceIn, bounceInDown, bounceInUp, flipInY, spin, upDown } from "@/styles/effects";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
 import { bracketLabel, silverText } from "../ui/AiventKit";
@@ -26,8 +28,20 @@ const cardImages = [card3, card4, card5, card6] as const;
 // flotante, y a la derecha etiqueta, título, texto, rejilla 2x2 de ventajas con icono y un botón.
 // Efectos de la plantilla: entradas fade-right / fade-left (AOS), insignia con bounceIn, foto pequeña con upDown,
 // puntos decorativos y giro del icono (flipInY) al pasar el cursor.
+// Fondo con parallax (jarallax de AIvent): ondas de luz bajo un velo índigo que se funde con las secciones vecinas; con
+// cursor y pantalla grande la imagen queda fija mientras la sección se desplaza (background-attachment: fixed).
 const Block = styled(Section)`
-  background: ${({ theme }) => theme.colors.aiventDark};
+  padding-block: ${({ theme }) => theme.section.dense};
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(180deg, ${({ theme }) => theme.colors.aiventDark} 0%, rgba(16, 20, 53, 0.82) 18%, rgba(16, 20, 53, 0.86) 82%, ${({ theme }) => theme.colors.aiventDark} 100%),
+    url(${wave}) center / cover no-repeat,
+    ${({ theme }) => theme.colors.aiventDark};
+
+  @media (min-width: 992px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+    background-attachment: scroll, fixed, scroll;
+  }
 `;
 
 const Layout = styled.div`
@@ -48,24 +62,38 @@ const Collage = styled.div<{ $visible: boolean }>`
   margin-inline: auto;
   padding-bottom: ${({ theme }) => theme.space(10)};
 
-  .dots {
+  isolation: isolate;
+
+  /* Esfera 3D de AIvent girando detrás de la foto (rotate-animation) con resplandor violeta. */
+  .orb {
     position: absolute;
-    top: -24px;
-    left: -24px;
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(${({ theme }) => theme.colors.main} 1.6px, transparent 2px) 0 0 / 16px 16px;
-    opacity: 0.35;
+    top: -40px;
+    left: -28px;
     z-index: -1;
+    width: 150px;
+
+    ${media.up("md")} {
+      top: -64px;
+      left: -72px;
+      width: 240px;
+    }
+    height: auto;
+    filter: drop-shadow(0 18px 40px rgba(118, 77, 240, 0.5));
+    pointer-events: none;
   }
 
   .main {
     display: block;
     width: 100%;
+    height: auto;
     aspect-ratio: 9 / 10;
+
+    ${media.up("lg")} {
+      aspect-ratio: 1 / 1;
+    }
     object-fit: cover;
     border-radius: ${({ theme }) => theme.radii.xl};
-    box-shadow: ${({ theme }) => theme.shadows.lift};
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
   }
 
   .small {
@@ -132,6 +160,19 @@ const Collage = styled.div<{ $visible: boolean }>`
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    .orb {
+      animation: ${spin} 50s linear infinite;
+    }
+
+    /* "scale-in-mask" de AIvent: la foto se destapa de abajo hacia arriba mientras se asienta. */
+    .main {
+      clip-path: ${({ $visible }) => ($visible ? "inset(0 0 0 0 round 24px)" : "inset(100% 0 0 0 round 24px)")};
+      transform: ${({ $visible }) => ($visible ? "none" : "scale(1.12)")};
+      transition:
+        clip-path 1.2s ${({ theme }) => theme.motion.easing},
+        transform 1.4s ${({ theme }) => theme.motion.easing};
+    }
+
     .small {
       animation: ${upDown} 6s ease-in-out infinite;
     }
@@ -191,98 +232,152 @@ const Text = styled.div<{ $visible: boolean }>`
   }
 `;
 
-// Tarjetas "What You'll Gain" de AIvent: imagen a todo el cuadro con degradado inferior, texto superpuesto y, al pasar el
-// cursor, zoom de la imagen y resplandor violeta radial. El icono gira (flipInY) como en el resto de la página.
-const Features = styled.ul`
-  display: grid;
-  gap: ${({ theme }) => theme.space(5)};
-  margin-top: ${({ theme }) => theme.space(16)};
+// Filas estilo "Event Schedule" de AIvent: numeral en contorno, icono, título, descripción y miniatura redondeada a la derecha
+// (como la foto del ponente), separadas por líneas finas. Cada ventaja aparece una sola vez. Al pasar el cursor, un barrido
+// violeta recorre la fila, el numeral se llena, el icono gira (flipInY) y la miniatura recupera su color y se acerca.
+const Features = styled.ul<{ $visible: boolean }>`
+  margin-top: ${({ theme }) => theme.space(14)};
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  counter-reset: feature;
 
-  ${media.up("md")} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  @media (prefers-reduced-motion: no-preference) {
+    > li {
+      opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+      transform: ${({ $visible }) => ($visible ? "none" : "translateX(-32px)")};
+      transition:
+        opacity 0.7s ease,
+        transform 0.8s ${({ theme }) => theme.motion.easing};
+    }
 
-  ${media.up("lg")} {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    > li:nth-child(2) {
+      transition-delay: 0.12s;
+    }
+
+    > li:nth-child(3) {
+      transition-delay: 0.24s;
+    }
+
+    > li:nth-child(4) {
+      transition-delay: 0.36s;
+    }
   }
 `;
 
-const Feature = styled(Reveal)`
+const Feature = styled.li`
   position: relative;
   isolation: isolate;
-  display: flex;
-  align-items: flex-end;
-  min-height: 340px;
-  overflow: hidden;
-  border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme }) => theme.colors.aiventDark2};
+  counter-increment: feature;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-areas:
+    "icon title"
+    "icon text";
+  column-gap: ${({ theme }) => theme.space(5)};
+  row-gap: ${({ theme }) => theme.space(1)};
+  align-items: center;
+  padding: ${({ theme }) => `${theme.space(6)} ${theme.space(3)}`};
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 
-  .bg {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ${({ theme }) => theme.motion.easing};
+  ${media.up("md")} {
+    grid-template-columns: 72px 56px minmax(0, 1fr) minmax(0, 1.3fr) 96px;
+    grid-template-areas: "num icon title text thumb";
+    column-gap: ${({ theme }) => theme.space(6)};
+    padding: ${({ theme }) => `${theme.space(7)} ${theme.space(5)}`};
   }
 
+  /* Barrido violeta que entra desde la izquierda. */
   &::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(0deg, rgba(16, 20, 53, 0.96) 0%, rgba(16, 20, 53, 0.78) 45%, rgba(16, 20, 53, 0.1) 100%);
+    background: linear-gradient(90deg, rgba(118, 77, 240, 0.32), rgba(118, 77, 240, 0));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.6s ${({ theme }) => theme.motion.easing};
   }
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0;
-    background: radial-gradient(circle, rgba(118, 77, 240, 0) 50%, rgba(118, 77, 240, 0.95) 100%);
-    transition: opacity ${({ theme }) => theme.motion.duration.base} ease;
+  &:hover::before {
+    transform: scaleX(1);
   }
 
-  &:hover .bg {
-    transform: scale(1.08);
+  .num {
+    grid-area: num;
+    display: none;
+    font-size: 2.75rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    transition:
+      color ${({ theme }) => theme.motion.duration.base} ease,
+      -webkit-text-stroke-color ${({ theme }) => theme.motion.duration.base} ease;
+
+    ${media.up("md")} {
+      display: block;
+    }
   }
 
-  &:hover::after {
-    opacity: 1;
+  .num::before {
+    content: "0" counter(feature);
+  }
+
+  &:hover .num {
+    color: ${({ theme }) => theme.colors.white};
+    -webkit-text-stroke-color: ${({ theme }) => theme.colors.white};
+  }
+
+  .icon {
+    grid-area: icon;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: ${({ theme }) => theme.radii.md};
+    background: ${({ theme }) => theme.colors.aiventViolet};
+    box-shadow: 0 8px 24px rgba(118, 77, 240, 0.35);
   }
 
   &:hover .icon {
     animation: ${flipInY} 1s ease-in-out;
   }
 
-  .content {
-    padding: ${({ theme }) => theme.space(6)};
-  }
-
-  .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    margin-bottom: ${({ theme }) => theme.space(4)};
-    border-radius: ${({ theme }) => theme.radii.md};
-    background: ${({ theme }) => theme.colors.aiventViolet};
-  }
-
   h3 {
-    margin-bottom: ${({ theme }) => theme.space(2)};
-    font-size: 1.1875rem;
+    grid-area: title;
+    font-size: 1.25rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
+    line-height: 1.3;
     color: ${({ theme }) => theme.colors.white};
   }
 
   p {
-    font-size: 0.9375rem;
+    grid-area: text;
+    font-size: 1rem;
     line-height: 1.55;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.onNavy};
+  }
+
+  .thumb {
+    grid-area: thumb;
+    display: none;
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: ${({ theme }) => theme.radii.md};
+    filter: saturate(0.5) brightness(0.8);
+    transition:
+      filter 0.5s ease,
+      transform 0.5s ${({ theme }) => theme.motion.easing};
+
+    ${media.up("md")} {
+      display: block;
+    }
+  }
+
+  &:hover .thumb {
+    filter: none;
+    transform: scale(1.08) rotate(-3deg);
   }
 `;
 
@@ -319,6 +414,7 @@ const Award = () => (
 
 export const AdaptiveTraining = () => {
   const [ref, visible] = useInView<HTMLDivElement>();
+  const [featuresRef, featuresVisible] = useInView<HTMLUListElement>();
   const { badge } = adaptiveTraining;
   return (
     <Block aria-labelledby="adaptive-title">
@@ -326,7 +422,7 @@ export const AdaptiveTraining = () => {
         <Layout>
           <Reveal direction="right">
             <Collage ref={ref} $visible={visible}>
-              <span className="dots" aria-hidden="true" />
+              <img className="orb" src={sphere} alt="" aria-hidden="true" width={900} height={900} loading="lazy" />
               <img className="main" src={mainPhoto} alt={adaptiveTraining.photoAlt} width={900} height={1000} loading="lazy" />
               <div className="small">
                 <img src={smallPhoto} alt={adaptiveTraining.photoSmallAlt} width={768} height={409} loading="lazy" />
@@ -359,17 +455,16 @@ export const AdaptiveTraining = () => {
             </Text>
           </Reveal>
         </Layout>
-        <Features>
+        <Features ref={featuresRef} $visible={featuresVisible}>
           {adaptiveTraining.features.map((f, i) => (
-            <Feature key={f.title} tag="li" index={i} direction="up">
-              <img className="bg" src={cardImages[i % cardImages.length]} alt="" width={800} height={800} loading="lazy" />
-              <div className="content">
-                <div className="icon">
-                  <img src={icons[f.icon]} alt="" width={24} height={24} />
-                </div>
-                <h3>{f.title}</h3>
-                <p>{f.text}</p>
+            <Feature key={f.title}>
+              <span className="num" aria-hidden="true" />
+              <div className="icon">
+                <img src={icons[f.icon]} alt="" width={24} height={24} loading="lazy" />
               </div>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+              <img className="thumb" src={cardImages[i % cardImages.length]} alt="" aria-hidden="true" width={96} height={96} loading="lazy" />
             </Feature>
           ))}
         </Features>

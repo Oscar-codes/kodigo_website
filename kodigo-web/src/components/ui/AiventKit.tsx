@@ -46,10 +46,10 @@ const slideRight = keyframes`
 `;
 
 // Dos franjas inclinadas con texto en movimiento (marquee de AIvent): violeta a +2° y violeta profundo a -1°.
-const Wrap = styled.div`
+const Wrap = styled.div<{ $flush: boolean }>`
   overflow: hidden;
-  padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem);
-  background: ${({ theme }) => theme.colors.aiventDark};
+  padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  background: ${({ theme, $flush }) => ($flush ? "transparent" : theme.colors.aiventDark)};
 `;
 
 const Band = styled.div<{ $tone: "main" | "deep"; $reverse?: boolean }>`
@@ -83,6 +83,11 @@ const Band = styled.div<{ $tone: "main" | "deep"; $reverse?: boolean }>`
     opacity: 0.4;
   }
 
+  /* Decorativo, pero se detiene al pasar el cursor (WCAG 2.2.2) y con movimiento reducido. */
+  &:hover .track {
+    animation-play-state: paused;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .track {
       animation: none;
@@ -103,9 +108,9 @@ const Track = ({ items }: { items: string[] }) => (
   </div>
 );
 
-/** Decorativa (aria-hidden): repite frases que ya existen en la página. */
-export const SkewBands = ({ items }: { items: string[] }) => (
-  <Wrap aria-hidden="true">
+/** Decorativa (aria-hidden): repite frases que ya existen en la página. `flush` deja el fondo transparente. */
+export const SkewBands = ({ items, flush = false }: { items: string[]; flush?: boolean }) => (
+  <Wrap aria-hidden="true" $flush={flush}>
     <Band $tone="main">
       <Track items={items} />
     </Band>

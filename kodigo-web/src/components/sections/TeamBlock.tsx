@@ -27,6 +27,7 @@ const Grid = styled.ul`
 `;
 
 const Block = styled(Section)`
+  padding-block: ${({ theme }) => theme.section.dense};
   background: ${({ theme }) => theme.colors.aiventDark};
 `;
 
@@ -43,8 +44,14 @@ const Member = styled.article`
   .photo img {
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
+    object-position: center 15%;
+
+    ${media.up("md")} {
+      aspect-ratio: 4 / 5;
+      object-position: center;
+    }
     transition: transform 0.6s ${({ theme }) => theme.motion.easing};
   }
 

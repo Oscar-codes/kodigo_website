@@ -19,6 +19,7 @@ const logoOf = (name: string) => partners.find((p) => p.name === name);
 // cifra. Fondo de skyline azul de la plantilla que se funde con las secciones vecinas. Cumple WCAG 2.2.2: botón de pausa,
 // se detiene al pasar el cursor o enfocar y, con movimiento reducido, no avanza solo.
 const Block = styled(Section)`
+  padding-block: ${({ theme }) => theme.section.dense};
   position: relative;
   isolation: isolate;
   /* Los extremos usan el mismo índigo de las secciones vecinas (sin escalón); el resplandor violeta vive aquí,
@@ -289,8 +290,13 @@ const Results = styled.ul`
   .chip {
     flex: 1 1 200px;
     min-width: 0;
-    min-height: 112px;
-    padding: ${({ theme }) => `${theme.space(5)} ${theme.space(6)}`};
+    min-height: 72px;
+    padding: ${({ theme }) => `${theme.space(4)} ${theme.space(5)}`};
+
+    ${media.up("md")} {
+      min-height: 112px;
+      padding: ${({ theme }) => `${theme.space(5)} ${theme.space(6)}`};
+    }
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: ${({ theme }) => theme.radii.md};
     background: ${({ theme }) => theme.colors.aiventDark};
@@ -473,7 +479,7 @@ export const CaseStudies = () => {
               <Stage aria-roledescription="carrusel" aria-label="Casos de éxito">
                 {cases.map((c, i) => (
                   <Slide key={c.partner} id={`case-${i}`} role="tabpanel" aria-labelledby={`case-tab-${i}`} $active={i === index}>
-                    <LogoTile>{c.logo?.logo && <img src={c.logo.logo} alt={c.partner} width={c.logo.width} height={c.logo.height} />}</LogoTile>
+                    <LogoTile>{c.logo?.logo && <img src={c.logo.logo} alt={c.partner} width={c.logo.width} height={c.logo.height} loading="lazy" />}</LogoTile>
                     <Story>
                       <span className="badge">{c.badge}</span>
                       <p className="text">{c.text}</p>

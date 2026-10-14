@@ -550,9 +550,9 @@ export const Header = () => {
           <ul className="top">
             {navigation.map((item) =>
               item.children ? (
-                <Dropdown key={item.to} item={item} />
+                <Dropdown key={`${item.label}-${item.to}`} item={item} />
               ) : (
-                <Item key={item.to}>
+                <Item key={`${item.label}-${item.to}`}>
                   {/* Para "Inicio" (to === "/") añadimos onClick de scroll-to-top:
                       React Router ignora navegaciones a la misma ruta, asi que el
                       handler fuerza el scroll incluso cuando ya estamos en /. El

@@ -26,7 +26,7 @@ const Band = styled.section`
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding-block: ${({ theme }) => theme.section.y};
+  padding-block: ${({ theme }) => theme.section.dense};
   color: ${({ theme }) => theme.colors.white};
   /* Fondo de red (AIvent) con bordes que se funden con las secciones oscuras contiguas. */
   background:
@@ -240,7 +240,7 @@ export const Workshop = () => (
           {workshop.steps.map((s, i) => (
             <Reveal key={s.title} tag="li" index={i} direction="up">
               <div className="icon">
-                <img src={icons[s.icon]} alt="" width={28} height={28} />
+                <img src={icons[s.icon]} alt="" width={28} height={28} loading="lazy" />
               </div>
               <h3>{s.title}</h3>
             </Reveal>

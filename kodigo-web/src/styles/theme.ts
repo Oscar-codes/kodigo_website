@@ -100,7 +100,11 @@ bgTranslucent: "rgba(255, 255, 255, 0.97)",
     h2: "clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem)", // 40/48 px
     h3: "1.25rem",
   },
-  section: { y: "clamp(4rem, 2rem + 6vw, 7.5rem)" }, // 120 px en escritorio
+  section: {
+    y: "clamp(4rem, 2rem + 6vw, 7.5rem)", // 120 px en escritorio
+    /** Ritmo más compacto (80 px en escritorio) para la página de Alianzas, con muchas secciones consecutivas. */
+    dense: "clamp(3rem, 1.5rem + 4vw, 5rem)",
+  },
   motion: {
     duration: { fast: "150ms", hover: "200ms", base: "300ms", reveal: "600ms", float: "7s" }, // hover = .transition-2 de Eduhall
     easing: "cubic-bezier(0.22, 1, 0.36, 1)",
