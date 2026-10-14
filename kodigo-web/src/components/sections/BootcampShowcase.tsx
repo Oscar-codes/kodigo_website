@@ -131,8 +131,17 @@ const FilterButton = styled.button`
   }
 
   &[aria-pressed="true"] {
-    background: ${({ theme }) => theme.colors.main};
+    /* Mismo gradiente institucional que el CTA "Explorar bootcamps" (Button primary):
+       purpleLight -> purpleDeep, texto blanco y sombra violeta. */
+    background: ${({ theme }) => theme.colors.gradientCta};
     color: ${({ theme }) => theme.colors.white};
+    box-shadow: 0 8px 22px rgba(117, 87, 250, 0.32);
+    border-color: transparent;
+  }
+
+  &[aria-pressed="true"]:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 14px 32px rgba(117, 87, 250, 0.45);
   }
 
   &:focus-visible {
