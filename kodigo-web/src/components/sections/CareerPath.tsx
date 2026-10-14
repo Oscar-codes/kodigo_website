@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import classPhoto from "@/assets/photos/experience-class.webp";
 import trainingPhoto from "@/assets/photos/training.webp";
 import { media } from "@/styles/theme";
@@ -10,39 +10,11 @@ import { ArrowUpRight, BookOpen, Check, Play, Sparkles } from "../ui/Icons";
 // Derecha (visual): foto principal rectangular con dos badges flotantes, foto circular superpuesta con play, y
 // mini-card con iniciales de estudiantes. Decora con grillas de puntos naranja en esquinas opuestas.
 
-type DotProps = { $color: string; $gap: string; $radius: string };
-const dotGrid = ({ $color, $gap, $radius }: DotProps) => css`
-  background-image: radial-gradient(circle, ${$color} ${$radius}, transparent calc(${$radius} + 1px));
-  background-size: ${$gap} ${$gap};
-  background-position: 0 0;
-`;
-
 // === SECCIÓN ===
 const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
-`;
-
-const DotGrid = styled.div<{ $size: number }>`
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
-  opacity: 0.9;
-
-  &.left {
-    top: 2rem;
-    left: 4%;
-    ${({ theme }) => dotGrid({ $color: theme.colors.orange, $gap: "14px", $radius: "2.5px" })}
-  }
-
-  &.right {
-    bottom: 4rem;
-    right: 4%;
-    ${({ theme }) => dotGrid({ $color: theme.colors.orange, $gap: "12px", $radius: "2.2px" })}
-  }
 `;
 
 // === LAYOUT: DOS COLUMNAS ===
@@ -389,8 +361,6 @@ const avatarInitials = ["MC", "AR", "LF", "JS"];
 
 export const CareerPath = () => (
   <Wrap aria-labelledby="career-path-title">
-    <DotGrid className="left" $size={120} aria-hidden="true" />
-    <DotGrid className="right" $size={110} aria-hidden="true" />
     <Container>
       <Grid>
         <Copy>

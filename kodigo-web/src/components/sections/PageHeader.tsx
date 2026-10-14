@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, type Crumb } from "../ui/Breadcrumb";
-import { scalation, spin, upDown } from "@/styles/effects";
+import { scalation, spin } from "@/styles/effects";
 import { Container } from "../ui/Container";
 
 // Cabecera de página de Eduhall: banda tintada con título centrado, migas debajo y adornos de puntos y aro.
@@ -12,22 +12,6 @@ const Wrap = styled.header`
   background: linear-gradient(180deg, ${({ theme }) => theme.colors.surface} 0%, ${({ theme }) => theme.colors.white} 100%);
 
   /* Adornos decorativos (pseudo-elementos: no están en el árbol de accesibilidad). */
-  &::before {
-    content: "";
-    position: absolute;
-    left: 5%;
-    top: 24%;
-    width: 84px;
-    height: 84px;
-    background-image: radial-gradient(circle, ${({ theme }) => theme.colors.orange} 1.6px, transparent 2px);
-    background-size: 14px 14px;
-    opacity: 0.55;
-
-    @media (prefers-reduced-motion: no-preference) {
-      animation: ${upDown} 5s ease-in-out infinite;
-    }
-  }
-
   &::after {
     content: "";
     position: absolute;

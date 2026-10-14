@@ -31,29 +31,6 @@ const Wrap = styled(Section)`
   overflow: hidden;
 `;
 
-const DotGrid = styled.div<{ $size: number; $color: string; $gap: string; $radius: string }>`
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
-  opacity: 0.85;
-
-  background-image: radial-gradient(circle, ${({ $color }) => $color} ${({ $radius }) => $radius},
-      transparent calc(${({ $radius }) => $radius} + 1px));
-  background-size: ${({ $gap }) => $gap} ${({ $gap }) => $gap};
-
-  &.left {
-    top: 2.5rem;
-    left: 5%;
-  }
-
-  &.right {
-    bottom: 5rem;
-    right: 4%;
-  }
-`;
-
 // === LAYOUT ===
 const Grid = styled.div`
   position: relative;
@@ -604,8 +581,6 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
 
   return (
     <Wrap aria-labelledby="testimonials-title">
-      <DotGrid $size={120} $color="#F37739" $gap="14px" $radius="2.5px" className="left" aria-hidden="true" />
-      <DotGrid $size={110} $color="#F37739" $gap="12px" $radius="2.2px" className="right" aria-hidden="true" />
       {/* Bloque superior de contadores (estilo Eduhall CounterOne): vive en la MISMA sección
          "Beneficios" y aparece encima del bloque narrativo "Personas y conexiones". */}
       <Container>

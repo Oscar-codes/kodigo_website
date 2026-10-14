@@ -11,36 +11,10 @@ import { ArrowUpRight } from "../ui/Icons";
 
 const ALLIANCES_URL = "/profesional/alianzas";
 
-type DotProps = { $color: string; $gap: string; $radius: string };
-const dotGrid = ({ $color, $gap, $radius }: DotProps) => css`
-  background-image: radial-gradient(circle, ${$color} ${$radius}, transparent calc(${$radius} + 1px));
-  background-size: ${$gap} ${$gap};
-`;
-
 const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
-`;
-
-const DotGrid = styled.div<{ $size: number; $color: string; $gap: string; $radius: string }>`
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
-  opacity: 0.85;
-  ${({ $color, $gap, $radius }) => dotGrid({ $color, $gap, $radius })}
-
-  &.top-right {
-    top: 2rem;
-    right: 4%;
-  }
-
-  &.bottom-left {
-    bottom: 3rem;
-    left: 4%;
-  }
 `;
 
 const Banner = styled.div`
@@ -181,8 +155,6 @@ const Cta = styled(Link)`
 
 export const Organizations = () => (
   <Wrap aria-labelledby="organizations-title">
-    <DotGrid className="top-right" $size={110} $color="#2FA75F" $gap="12px" $radius="2.2px" aria-hidden="true" />
-    <DotGrid className="bottom-left" $size={110} $color="#F37739" $gap="12px" $radius="2.2px" aria-hidden="true" />
     <Container>
       <Banner>
         <Circle $size={180} $top="-3rem" $left="3%" $tone="on" aria-hidden="true" />

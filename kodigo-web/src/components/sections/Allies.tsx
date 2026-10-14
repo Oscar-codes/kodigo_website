@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import type { Partner } from "@/data/content";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
@@ -13,36 +13,10 @@ import { Marquee } from "../ui/Marquee";
 
 const ALLIANCES_URL = "/profesional/alianzas";
 
-type DotProps = { $color: string; $gap: string; $radius: string };
-const dotGrid = ({ $color, $gap, $radius }: DotProps) => css`
-  background-image: radial-gradient(circle, ${$color} ${$radius}, transparent calc(${$radius} + 1px));
-  background-size: ${$gap} ${$gap};
-`;
-
 const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
-`;
-
-const DotGrid = styled.div<{ $size: number; $color: string; $gap: string; $radius: string }>`
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
-  opacity: 0.85;
-  ${({ $color, $gap, $radius }) => dotGrid({ $color, $gap, $radius })}
-
-  &.left {
-    top: 3rem;
-    left: 4%;
-  }
-
-  &.right {
-    bottom: 4rem;
-    right: 4%;
-  }
 `;
 
 const Head = styled.div`
@@ -245,8 +219,6 @@ export const Allies = ({ items }: AlliesProps) => {
 
   return (
     <Wrap aria-labelledby="allies-title">
-      <DotGrid className="left" $size={110} $color="#F37739" $gap="12px" $radius="2.2px" aria-hidden="true" />
-      <DotGrid className="right" $size={120} $color="#2FA75F" $gap="14px" $radius="2.5px" aria-hidden="true" />
       <Container>
         <Head>
           <Label>Aliados</Label>

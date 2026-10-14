@@ -11,42 +11,10 @@ import { Reveal } from "../ui/Reveal";
 // collage de dos fotos a la izquierda con dos tarjetas de cifras y una insignia flotante,
 // y a la derecha el texto que explica cómo trabaja Kodigo (misión + visión + firma).
 
-type DotProps = { $color: string; $gap: string; $radius: string };
-
-// Grilla decorativa de puntos (naranja arriba a la izquierda, verde arriba a la derecha).
-const dotGrid = ({ $color, $gap, $radius }: DotProps) => css`
-  background-image: radial-gradient(circle, ${$color} ${$radius}, transparent calc(${$radius} + 1px));
-  background-size: ${$gap} ${$gap};
-  background-position: 0 0;
-`;
-
 const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
-`;
-
-// === DECORACIÓN: DOT GRIDS ===
-const DotGrid = styled.div<{ $color: string; $size: number }>`
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  width: ${({ $size }) => $size};
-  height: ${({ $size }) => $size};
-  opacity: 0.85;
-  ${({ $color }) => dotGrid({ $color, $gap: "14px", $radius: "2.5px" })}
-
-  &.orange {
-    top: 2.5rem;
-    left: 4%;
-    color: ${({ theme }) => theme.colors.orange};
-  }
-
-  &.green {
-    top: 4rem;
-    right: 4%;
-    color: ${({ theme }) => theme.colors.green};
-  }
 `;
 
 // === LAYOUT: DOS COLUMNAS ===
@@ -349,8 +317,6 @@ const stats = [
 export const Methodology = () => {
   return (
     <Wrap aria-labelledby="methodology-title">
-      <DotGrid className="orange" $color="#F37739" $size={120} aria-hidden="true" />
-      <DotGrid className="green" $color="#2FA75F" $size={140} aria-hidden="true" />
       <Container>
         <Grid>
           <Collage>
