@@ -141,8 +141,9 @@ const Card = styled(Reveal)`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.colors.main};
-    box-shadow: ${({ theme }) => theme.shadows.card};
+    /* Mismo degradado violeta del botón "Aplicar" (#A678FF -> #7557FA). */
+    background: ${({ theme }) => theme.colors.gradientCta};
+    box-shadow: 0 6px 14px rgba(117, 87, 250, 0.35);
     font-size: 1rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
     color: ${({ theme }) => theme.colors.white};
@@ -214,6 +215,7 @@ const Card = styled(Reveal)`
     color: ${({ theme }) => theme.colors.white};
   }
 
+  /* Sobre el fondo violeta de la tarjeta, el número se invierte: círculo blanco con el número en violeta profundo. */
   &:hover .circle::after,
   &:focus-within .circle::after {
     background: ${({ theme }) => theme.colors.white};
