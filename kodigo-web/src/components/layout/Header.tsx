@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import logoDark from "@/assets/brand/kodigo-logo-dark.webp";
 import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
@@ -292,7 +292,7 @@ const Item = styled.li`
     /* Capitalize: solo la primera letra en mayúsculas. Mantiene "FAQ" intacto si viene
        del dato y respeta "Bootcamps", "Nosotros", etc. */
     text-transform: capitalize;
-    color: ${({ theme }) => theme.colors.purple};
+    color: ${({ theme }) => theme.colors.menuText};
     transition:
       color ${({ theme }) => theme.motion.duration.hover} linear,
       transform ${({ theme }) => theme.motion.duration.hover} ${({ theme }) => theme.motion.easing},
@@ -305,7 +305,13 @@ const Item = styled.li`
   > a:hover,
   > button:hover,
   > button[aria-expanded="true"] {
-    color: ${({ theme }) => theme.colors.purpleDark};
+    color: ${({ theme }) => theme.colors.menuActive};
+  }
+
+  /* Sección activa (la del último clic): mantiene el color de énfasis; al activar otra, esta vuelve al color base. */
+  > a.active:not([data-cta="true"]),
+  > button.active:not([data-cta="true"]) {
+    color: ${({ theme }) => theme.colors.menuActive};
   }
 
   /* CTA "Aplicar" (ultima opcion del menu): boton pill con degradado
@@ -407,6 +413,8 @@ const Toggle = styled.button`
   }
 `;
 
+const hashOf = (to: string) => (to.includes("#") ? to.slice(to.indexOf("#") + 1) : "");
+
 const isDesktop = () => window.matchMedia("(min-width: 992px)").matches;
 
 const Dropdown = ({ item }: { item: NavItem }) => {
@@ -495,6 +503,15 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   // Solo la página de Alianzas usa la variante AIvent (barra oscura y logo blanco).
+  const { hash } = useLocation();
+  // Item activo = destino del último clic: ruta + ancla de la URL ("Inicio" cuando es la portada sin ancla). Un enlace de
+  // ancla solo se activa con su propio hash, así que nunca hay dos activos a la vez.
+  const isActive = (to: string) => {
+    const id = hashOf(to);
+    if (id) return pathname === "/" && hash === `#${id}`;
+    if (to === "/") return pathname === "/" && !hash;
+    return pathname === to || pathname.startsWith(`${to}/`);
+  };
   const aivent = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
 
   useEffect(() => {
@@ -559,15 +576,15 @@ export const Header = () => {
                       bloque {behavior: "smooth"} respeta el scroll-behavior CSS.
                       "Aplicar" es el CTA final del menu: pill con gradient
                       purpleLight->purpleDeep, texto blanco y lift en hover. */}
-                  <NavLink
+                  <Link
                     to={item.to}
-                    end={item.to === "/"}
                     data-cta={item.label === "Aplicar" ? "true" : undefined}
-                    className={({ isActive }) => (isActive ? "active" : "")}
+                    className={isActive(item.to) ? "active" : undefined}
+                    aria-current={isActive(item.to) ? (hashOf(item.to) ? "location" : "page") : undefined}
                     onClick={item.to === "/" ? scrollToTop : undefined}
                   >
                     {item.label}
-                  </NavLink>
+                  </Link>
                 </Item>
               ),
             )}

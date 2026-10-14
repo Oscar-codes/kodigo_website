@@ -56,6 +56,11 @@ export const theme = {
     aiventViolet: "#764DF0",
     aiventVioletDeep: "#442490",
 
+    /** Menú principal de la barra horizontal: color base, y color al pasar el cursor / en la sección activa.
+        #576070 = 6.3:1 y #7748e4 = 5.5:1 sobre blanco (AA). */
+    menuText: "#576070",
+    menuActive: "#7748e4",
+
     // Azul marino (banner y footer)
     navy: "#071431",
     navyMid: "#13203B",
