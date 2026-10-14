@@ -60,11 +60,13 @@ const Wrapper = styled.div`
   contain: layout paint;
   isolation: isolate;
 
-  /* Tablet en adelante: flotante a la derecha, centrada verticalmente. */
+  /* Tablet en adelante: flotante, centrada verticalmente. Se ancla al borde derecho
+     con un offset generoso para que la tarjeta quede más al centro del área visible
+     del slide y no choque contra el borde. */
   ${media.up("md")} {
     position: absolute;
     top: 50%;
-    right: ${({ theme }) => theme.space(6)};
+    right: calc(${({ theme }) => theme.space(6)} + 200px);
     transform: translateY(-50%);
     width: 400px;
     max-width: none;
@@ -81,7 +83,7 @@ const Wrapper = styled.div`
   }
 
   ${media.up("lg")} {
-    right: ${({ theme }) => theme.space(10)};
+    right: calc(${({ theme }) => theme.space(10)} + 200px);
   }
 `;
 

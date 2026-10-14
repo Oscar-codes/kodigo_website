@@ -184,7 +184,9 @@ const Content = styled.div`
      Edge Chromium, Chrome, Firefox y Safari interpretan calc(100vw - Xpx)
      igual y la funcion min() resuelve el limite duro del 760px. */
   ${media.up("md")} {
-    max-width: min(760px, calc(100vw - 460px));
+    /* La GoalsCard ahora se ancla 200 px más a la izquierda (ver GoalsCard.tsx), por lo que
+       el texto debe dejar libre la franja de la tarjeta + el offset. */
+    max-width: min(760px, calc(100vw - 660px));
   }
 
   ${media.up("xl")} {
