@@ -448,22 +448,48 @@ const CounterGrid = styled.ul`
 `;
 
 const CounterItem = styled(Reveal)<{ $tone: Tone }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.space(4)};
   padding: ${({ theme }) => `${theme.space(9)} ${theme.space(5)}`};
   text-align: center;
-  background: ${({ theme, $tone }) => theme.colors[counterTones[$tone].bg]};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.lg};
   box-shadow: ${({ theme }) => theme.shadows.card};
+  overflow: hidden;
+  isolation: isolate;
   transition:
-    border-color ${({ theme }) => theme.motion.duration.hover} linear,
+    transform ${({ theme }) => theme.motion.duration.hover} ease,
     box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
 
+  /* Misma capa cromatica que el .zoom de BootcampGrid (lila + main sobre navy/violetDeep).
+     Se aplica a TODO el fondo de la tarjeta para que las 4 cards de contadores
+     compartan el efecto visual de las cards de formaciones. */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(55% 130% at 92% -15%, ${({ theme }) => theme.colors.lilac}, transparent 62%),
+      radial-gradient(45% 100% at 0% 125%, ${({ theme }) => theme.colors.main}, transparent 70%),
+      linear-gradient(120deg, ${({ theme }) => theme.colors.navy} 0%, ${({ theme }) => theme.colors.violetDeep} 55%, ${({ theme }) => theme.colors.main} 100%);
+  }
+
+  /* Linea diagonal fina que cruza la tarjeta (mismo detalle que las cards de formaciones). */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 58.6%, rgba(255, 255, 255, 0.18) 58.8%, transparent 59.1%);
+    pointer-events: none;
+  }
+
   &:hover {
-    border-color: ${({ theme }) => theme.colors.main200};
+    transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.shadows.lift};
   }
 
@@ -483,13 +509,14 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
     font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem);
     font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.1;
-    color: ${({ theme }) => theme.colors.heading};
+    color: ${({ theme }) => theme.colors.white};
     letter-spacing: -0.01em;
   }
 
   .label {
     font-size: 0.9375rem;
-    color: ${({ theme }) => theme.colors.text};
+    color: ${({ theme }) => theme.colors.white};
+    opacity: 0.9;
   }
 `;
 
