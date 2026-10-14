@@ -9,25 +9,22 @@ import { professionalSections } from "./professional";
 //
 //   Inicio        -> /                          (Hero)
 //   Formaciones   -> /#bootcamps-title          (BootcampShowcase: 'Aprende con proposito /
-//                                              Encuentra el bootcamp que te llevara
+//                                              Encuentra la formacion que te llevara
 //                                              mas lejos'.)
-//   Beneficios    -> /#experience-title         (Experience: 'La experiencia Kodigo /
-//                                              No se trata solo de aprender. Se trata de
-//                                              ponerlo en practica. Un recorrido formativo
-//                                              claro...' + encabezado 'Metodologia Kodigo
-//                                              / El metodo detras de tu proxima carrera tech'.)
+//   Beneficios    -> /#testimonials-title       (Testimonials: 'Personas y conexiones /
+//                                              Las historias reales tienen el mayor impacto.'.
+//                                              Esta seccion se reubico justo despues de
+//                                              Formaciones y ahora cumple el rol narrativo
+//                                              de Beneficios.)
 //   Respaldo      -> /#career-path-title        (CareerPath: 'Por que Kodigo / Una formacion
-//                                              con proposito, una comunidad que acompana.' La
-//                                              pista 'Personas y conexiones / Las historias
-//                                              reales tienen el mayor impacto' sigue servida
-//                                              por el item de menu 'Clientes'.
+//                                              con proposito, una comunidad que acompana.'.
 //                                              Pendiente crear una seccion 'Acreditaciones y
 //                                              ventajas competitivas' para que Respaldo tenga
 //                                              contenido propio.)
-//   Clientes      -> /#testimonials-title       (Testimonials: 'Personas y conexiones /
-//                                              Las historias reales tienen el mayor impacto.'.
-//                                              Falta seccion dedicada a CEOs/CTOs para
-//                                              diferenciarlo de Testimonials actuales.)
+//   Clientes      -> /#testimonials-title       (Apunta al mismo anchor que Beneficios por
+//                                              compatibilidad con el menu previo; revisar si
+//                                              se mantiene ahora que Beneficios ya cubre
+//                                              ese contenido.)
 //   Saber mas     -> /#faq-title                (FAQ: 'preguntas frecuentes'.)
 //   Nosotros      -> /nosotros + subitems
 //   Profesional    -> /profesional + subitems
@@ -67,13 +64,10 @@ export const navigation: NavItem[] = [
   // 'Aprende con proposito' / 'Encuentra el bootcamp que te llevara mas lejos'.
   { label: "Formaciones", to: "/#bootcamps-title" },
 
-  // CONECTAR: Experience.tsx contiene el copy exacto ('La experiencia Kodigo /
-  // No se trata solo de aprender...') y Methodology.tsx contiene el siguiente
-  // encabezado de la lista del usuario ('Metodologia Kodigo / El metodo detras
-  // de tu proxima carrera tech'). Beneficios se enlaza a Experience, que es
-  // la primera seccion de las dos; Methodology viene a continuacion en el
-  // scroll. Si se quiere enlazar a Methodology hay que mover el anchor.
-  { label: "Beneficios", to: "/#experience-title" },
+  // CONECTAR: la sección "Beneficios" del menú apunta a Testimonials
+  // ("Personas y conexiones / Las historias reales tienen el mayor impacto"),
+  // que ahora vive justo después de Formaciones (BootcampShowcase) en la home.
+  { label: "Beneficios", to: "/#testimonials-title" },
 
   // GENERAR CONFIANZA: CareerPath tiene el copy exacto 'Por que Kodigo / Una
   // formacion con proposito, una comunidad que acompana.' (linea 397-399). El

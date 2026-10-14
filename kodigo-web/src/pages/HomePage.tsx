@@ -32,11 +32,12 @@ export const HomePage = () => {
   // antes del CTA final).
   const shown: { id: string; tone: Tone; show: boolean }[] = [
     { id: "bootcamps", tone: "surface", show: true },
+    { id: "testimonials", tone: "white", show: true },
+    { id: "goalPaths", tone: "surface", show: true },
     { id: "experience", tone: "white", show: true },
     { id: "methodology", tone: "surface", show: true },
     { id: "careerPath", tone: "white", show: true },
     { id: "steps", tone: "surface", show: Boolean(steps) },
-    { id: "testimonials", tone: "white", show: true },
     { id: "organizations", tone: "surface", show: true },
     { id: "allies", tone: "white", show: true },
     { id: "faq", tone: "surface", show: true },
@@ -52,13 +53,15 @@ export const HomePage = () => {
       <Hero />
       {partners ? <BrandMarquee items={partners} /> : null}
       <BootcampShowcase items={bootcamps} />
+      {/* Testimonials ("Personas y conexiones") ahora vive justo después de Formaciones y
+         hace de sección "Beneficios" en el menú (ver data/navigation.ts). */}
+      {testimonials ? <Testimonials items={testimonials} /> : <Testimonials />}
       <GoalPaths />
       <Experience />
       <Methodology />
       <CareerPath />
       {/* Cada sección solo aparece si Kodigo entregó su contenido (ver src/data/content.ts). */}
       {steps ? <Steps items={steps} /> : null}
-      {testimonials ? <Testimonials items={testimonials} /> : <Testimonials />}
       <Organizations />
       <Allies items={allies ?? []} />
       <Faq items={faq} flushTop={flush("faq")} />
