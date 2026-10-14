@@ -412,7 +412,7 @@ const counterCards: {
   { icon: <VideoCamera />, tone: "orange", value: 4500, prefix: "+", suffix: "K", decimals: 1, label: "Personas formadas" },
   { icon: <Users />, tone: "main", value: 428, label: "Personas empleadas" },
   { icon: <ThumbsUp />, tone: "main", value: 400, prefix: "+", label: "Personas certificadas" },
-  { icon: <Community />, tone: "orange", value: 162, label: "Empresas formadas" },
+  { icon: <Community />, tone: "orange", value: 360, prefix: "+", label: "Empresas formadas" },
 ];
 
 const counterTones: Record<Tone, { bg: "main50" | "orangeSoft"; icon: "main" | "orangeText" }> = {
