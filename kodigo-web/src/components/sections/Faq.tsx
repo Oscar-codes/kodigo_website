@@ -153,6 +153,8 @@ const Label = styled.span`
 `;
 
 const Heading = styled.h2`
+  /* Al llegar por el menú, el título queda visible bajo la cabecera sticky. */
+  scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeightScrolled} + 5.5rem);
   margin-bottom: ${({ theme }) => theme.space(4)};
   font-size: clamp(1.875rem, 1.3rem + 2vw, 2.75rem);
   font-weight: ${({ theme }) => theme.weights.bold};

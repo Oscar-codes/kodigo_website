@@ -68,6 +68,9 @@ const Card = styled(Reveal)`
   border-radius: ${({ theme }) => theme.radii.lg};
   box-shadow: ${({ theme }) => theme.shadows.card};
   text-align: center;
+  transition:
+    transform ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing},
+    box-shadow ${({ theme }) => theme.motion.duration.base} ease;
 
   .inner {
     display: flex;
@@ -78,6 +81,26 @@ const Card = styled(Reveal)`
     border-radius: ${({ theme }) => theme.radii.lg};
     background: ${({ theme }) => theme.colors.surface};
     transition: background-color ${({ theme }) => theme.motion.duration.hover} linear;
+  }
+
+  /* Capa con el degradado del botón "Aplicar" (purpleLight -> purpleDeep): se aparece con un fundido, porque un degradado
+     no se puede animar con transition. Va debajo del contenido. */
+  .inner {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .inner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    /* Los dos colores del CTA "Aplicar". El tono claro queda arriba a la izquierda (zona del círculo) y el profundo
+       cubre el texto, para conservar el contraste del blanco (>= 4.5:1 sobre #7557FA). */
+    background: linear-gradient(160deg, ${({ theme }) => theme.colors.purpleLight} -10%, ${({ theme }) => theme.colors.purpleDeep} 55%);
+    transition: opacity ${({ theme }) => theme.motion.duration.base} ease;
   }
 
   .circle {
@@ -169,23 +192,45 @@ const Card = styled(Reveal)`
     outline-offset: 2px;
   }
 
-  &:hover .inner {
-    background: ${({ theme }) => theme.colors.main};
+  /* Hover/foco: la tarjeta sube y se enciende con el mismo lenguaje que el botón "Aplicar" (degradado, sombra violeta y
+     lift de 2-4 px). */
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(117, 87, 250, 0.45);
+  }
+
+  &:hover .inner::before,
+  &:focus-within .inner::before {
+    opacity: 1;
   }
 
   &:hover h3,
   &:hover p,
-  &:hover a {
+  &:hover a,
+  &:focus-within h3,
+  &:focus-within p,
+  &:focus-within a {
     color: ${({ theme }) => theme.colors.white};
   }
 
-  &:hover .circle::after {
+  &:hover .circle::after,
+  &:focus-within .circle::after {
     background: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.accentOnLight};
+    color: ${({ theme }) => theme.colors.purpleDeep};
   }
 
-  &:hover .ring {
+  &:hover .ring,
+  &:focus-within .ring {
     transform: rotate(8deg) scale(1.06);
+    border-color: ${({ theme }) => theme.colors.purpleDeep};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover,
+    &:focus-within {
+      transform: none;
+    }
   }
 `;
 

@@ -219,6 +219,8 @@ const Copy = styled.div`
   }
 
   h2 {
+    /* Al llegar por el menú ("Clientes"), el título queda visible bajo la cabecera sticky. */
+    scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeightScrolled} + 5.5rem);
     margin-bottom: ${({ theme }) => theme.space(5)};
     font-size: ${({ theme }) => theme.type.h2};
     line-height: 1.15;

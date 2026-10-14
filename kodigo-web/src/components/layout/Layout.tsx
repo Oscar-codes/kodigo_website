@@ -7,8 +7,11 @@ import { Header } from "./Header";
 import { SkipLink } from "./SkipLink";
 
 export const Layout = () => {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, key } = useLocation();
 
+  // Depende de `key` y no solo de pathname/hash: al pulsar un enlace del menú que apunta a la URL en la que ya estamos
+  // (por ejemplo "Formaciones" -> /#bootcamps-title tras haber subido al inicio), la URL no cambia pero React Router genera
+  // una ubicación nueva con otra `key`; así el scroll al ancla se repite todas las veces.
   useEffect(() => {
     // Cambio de ruta pura: salto instantáneo al top (con 'instant' evitamos
     // que scroll-behavior: smooth haga "subir" la pagina desde donde estaba).
@@ -28,7 +31,7 @@ export const Layout = () => {
         window.scrollTo({ top: 0, left: 0, behavior: "instant" });
       }
     });
-  }, [pathname, hash]);
+  }, [pathname, hash, key]);
 
   return (
     <>
