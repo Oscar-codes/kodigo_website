@@ -1,26 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import classPhoto from "@/assets/photos/experience-class.webp";
-import autoPhoto from "@/assets/photos/experience-automation.webp";
-import trainingPhoto from "@/assets/photos/training.webp";
-import heroPhoto from "@/assets/photos/hero.webp";
 import type { Testimonial } from "@/data/content";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
-import { ArrowLeft, ArrowRight, Community, QuoteMark, Star, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
+import { ArrowLeft, ArrowRight, BookOpen, Community, QuoteMark, Star, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
 import { wobble } from "@/styles/effects";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
 
-// "Personas y conexiones": rediseño del bloque Eduhall `TestimonialsOne.jsx` aplicado al brief
-// "Las historias reales tienen el mayor impacto. Estudiantes, proyectos, graduados y experiencias
-// verificadas". Izquierda: foto partida en 3 franjas verticales (mismo escenario, recortes con
-// background-position). Derecha: pestañas Estudiantes / Proyectos / Graduados / Conexiones y un
-// carrusel con estrella, cita, persona, rol y etiqueta de verificación. Avanza con flechas/teclado.
-
-type Kind = "estudiantes" | "proyectos" | "graduados" | "conexiones";
+// "Personas y conexiones": arriba, los contadores (KPI) estilo Eduhall CounterOne; debajo, el bloque de testimonios de
+// Eduhall (TestimonialsOne): tarjetas blancas con avatar circular, insignia naranja de comillas, estrellas, nombre y rol en
+// un carrusel horizontal a la izquierda y, a la derecha, etiqueta, título, texto y flechas. Las historias son las mismas
+// de antes (estudiantes, proyectos, graduados y conexiones); ya no hay pestañas ni foto partida.
 
 type Story = Testimonial;
 
@@ -29,6 +22,18 @@ const Wrap = styled(Section)`
   position: relative;
   isolation: isolate;
   overflow: hidden;
+`;
+
+// Panel tintado (fondo `surface` de Eduhall) que contiene el bloque de testimonios. Va dentro del contenedor y con
+// esquinas redondeadas para no fundirse con la sección tintada que le sigue en el Home.
+const Band = styled.div`
+  padding: ${({ theme }) => theme.space(6)} ${({ theme }) => theme.space(5)} ${({ theme }) => theme.space(2)};
+  background: ${({ theme }) => theme.colors.surface};
+  border-radius: ${({ theme }) => theme.radii.xl};
+
+  ${media.up("lg")} {
+    padding: ${({ theme }) => theme.space(12)} ${({ theme }) => theme.space(10)} ${({ theme }) => theme.space(6)};
+  }
 `;
 
 // === LAYOUT ===
@@ -40,103 +45,177 @@ const Grid = styled.div`
   gap: ${({ theme }) => theme.space(10)};
 
   ${media.up("lg")} {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: ${({ theme }) => theme.space(16)};
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: ${({ theme }) => theme.space(12)};
   }
 `;
 
-// === IZQUIERDA: FOTO PARTIDA ===
-const StripFrame = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  width: 100%;
-  max-width: 480px;
-  margin-inline: auto;
-
-  ${media.up("md")} {
-    max-width: 540px;
-  }
-`;
-
-const Strip = styled.div`
-  /* Tira más alargada verticalmente para asemejarse a la referencia (3:5 en móvil, 4:7 en escritorio). */
-  aspect-ratio: 3 / 5;
-  overflow: hidden;
-  border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme }) => theme.colors.navy};
-  box-shadow: ${({ theme }) => theme.shadows.card};
-
-  ${media.up("md")} {
-    aspect-ratio: 4 / 7;
-  }
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 600ms ${({ theme }) => theme.motion.easing};
-  }
-
-  &:hover img {
-    transform: scale(1.04);
-  }
-`;
-
-// Badge con libro (esquina superior izquierda, como en ChooseUsOne)
-const QuoteBadge = styled.span`
-  position: absolute;
-  top: -1.25rem;
-  left: 1.25rem;
-  z-index: 2;
+// === IZQUIERDA: CARRUSEL DE TARJETAS ===
+const Track = styled.ul`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.colors.lilac};
-  color: ${({ theme }) => theme.colors.accentOnLight};
-  box-shadow: ${({ theme }) => theme.shadows.float};
+  gap: ${({ theme }) => theme.space(6)};
+  overflow-x: auto;
+  padding: ${({ theme }) => `${theme.space(2)} ${theme.space(1)} ${theme.space(8)}`};
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 
-  svg {
-    width: 26px;
-    height: 26px;
+  /* Desvanece el borde derecho para sugerir que hay más tarjetas. */
+  -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, #000 90%, transparent);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.yellow};
+    outline-offset: 4px;
+    border-radius: ${({ theme }) => theme.radii.md};
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
+
+  > li {
+    flex: 0 0 min(340px, 84%);
+    scroll-snap-align: start;
+  }
+
+  /* El segundo de cada par baja un poco, como en la referencia de Eduhall. */
+  > li:nth-child(even) {
+    margin-top: ${({ theme }) => theme.space(6)};
   }
 `;
 
-// === DERECHA: COPY + TABS + CARRUSEL ===
-const Copy = styled.div`
-  max-width: 58ch;
+const Card = styled.figure`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  padding: ${({ theme }) => theme.space(6)};
+  background: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.lg};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  transition:
+    transform ${({ theme }) => theme.motion.duration.hover} ease,
+    box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: ${({ theme }) => theme.shadows.lift};
+  }
+
+  .avatar {
+    position: relative;
+    align-self: flex-start;
+    margin-bottom: ${({ theme }) => theme.space(5)};
+  }
+
+  /* Avatar con iniciales (no hay retratos de las personas): círculo con el degradado de Kodigo. */
+  .initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, ${({ theme }) => theme.colors.main}, ${({ theme }) => theme.colors.lilac});
+    color: ${({ theme }) => theme.colors.white};
+    font-size: 1.75rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    letter-spacing: 0.02em;
+  }
+
+  /* Insignia naranja de comillas, montada sobre el borde inferior derecho del avatar. */
+  .quote {
+    position: absolute;
+    right: -10px;
+    bottom: -6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 3px solid ${({ theme }) => theme.colors.white};
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.orange};
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  .quote svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  blockquote {
+    margin: 0 0 ${({ theme }) => theme.space(5)};
+    font-size: 1rem;
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.text};
+  }
+
+  .stars {
+    display: inline-flex;
+    gap: 4px;
+    margin-bottom: ${({ theme }) => theme.space(3)};
+    color: ${({ theme }) => theme.colors.orange};
+  }
+
+  .stars .last {
+    opacity: 0.35;
+  }
+
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: ${({ theme }) => theme.space(1)};
+    line-height: 1.3;
+  }
+
+  .name {
+    font-size: 1.125rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    color: ${({ theme }) => theme.colors.heading};
+  }
+
+  .role {
+    font-size: 0.9375rem;
+    color: ${({ theme }) => theme.colors.textMuted};
+  }
+
+  .tag {
+    align-self: flex-start;
+    margin-top: ${({ theme }) => theme.space(3)};
+    padding: ${({ theme }) => `${theme.space(1)} ${theme.space(3)}`};
+    border-radius: ${({ theme }) => theme.radii.pill};
+    background: ${({ theme }) => theme.colors.greenSoft};
+    color: ${({ theme }) => theme.colors.greenText};
+    font-size: 0.75rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+  }
 `;
 
-const Heading = styled.div`
-  margin-bottom: ${({ theme }) => theme.space(7)};
+// === DERECHA: COPY + FLECHAS ===
+const Copy = styled.div`
+  max-width: 52ch;
 
   .label {
     display: inline-flex;
     align-items: center;
     gap: ${({ theme }) => theme.space(2)};
-    margin-bottom: ${({ theme }) => theme.space(4)};
-    font-size: 1.0625rem;
+    margin-bottom: ${({ theme }) => theme.space(3)};
+    font-size: 1.125rem;
     font-weight: ${({ theme }) => theme.weights.bold};
     color: ${({ theme }) => theme.colors.accentOnLight};
-
-    &::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: ${({ theme }) => theme.colors.main};
-    }
   }
 
   h2 {
+    margin-bottom: ${({ theme }) => theme.space(5)};
     font-size: ${({ theme }) => theme.type.h2};
     line-height: 1.15;
-    margin-bottom: ${({ theme }) => theme.space(4)};
   }
 
   h2 em {
@@ -145,113 +224,8 @@ const Heading = styled.div`
   }
 
   > p {
+    margin-bottom: ${({ theme }) => theme.space(8)};
     color: ${({ theme }) => theme.colors.text};
-    max-width: 56ch;
-  }
-`;
-
-const Tabs = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.space(2)};
-  margin-bottom: ${({ theme }) => theme.space(6)};
-`;
-
-const Tab = styled.button<{ $active: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space(2)};
-  padding: ${({ theme }) => `${theme.space(2)} ${theme.space(4)}`};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  border: 1px solid ${({ $active, theme }) => ($active ? theme.colors.main : theme.colors.border)};
-  background: ${({ $active, theme }) => ($active ? theme.colors.main : theme.colors.white)};
-  color: ${({ $active, theme }) => ($active ? theme.colors.white : theme.colors.text)};
-  font-size: 0.875rem;
-  font-weight: ${({ theme }) => theme.weights.semibold};
-  cursor: pointer;
-  transition:
-    background-color ${({ theme }) => theme.motion.duration.hover} linear,
-    color ${({ theme }) => theme.motion.duration.hover} linear,
-    border-color ${({ theme }) => theme.motion.duration.hover} linear;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.accentOnLight};
-    color: ${({ $active, theme }) => ($active ? theme.colors.white : theme.colors.main)};
-  }
-
-  &:focus-visible {
-    outline: 3px solid ${({ theme }) => theme.colors.yellow};
-    outline-offset: 2px;
-  }
-`;
-
-const Count = styled.span<{ $active: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 ${({ theme }) => theme.space(2)};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ $active, theme }) => ($active ? "rgba(255,255,255,0.18)" : theme.colors.main50)};
-  color: ${({ $active, theme }) => ($active ? theme.colors.white : theme.colors.main)};
-  font-size: 0.75rem;
-  font-weight: ${({ theme }) => theme.weights.bold};
-`;
-
-const Slide = styled.figure`
-  margin: 0 0 ${({ theme }) => theme.space(6)};
-  padding: 0;
-
-  .stars {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: ${({ theme }) => theme.space(3)};
-    color: ${({ theme }) => theme.colors.accentOnDark};
-  }
-
-  .stars .last {
-    color: ${({ theme }) => theme.colors.main100};
-  }
-
-  blockquote {
-    margin: 0 0 ${({ theme }) => theme.space(5)};
-    font-size: 1.0625rem;
-    line-height: 1.5;
-    color: ${({ theme }) => theme.colors.heading};
-  }
-
-  figcaption {
-    display: flex;
-    flex-direction: column;
-    gap: ${({ theme }) => theme.space(1)};
-    line-height: 1.2;
-  }
-
-  figcaption .name {
-    font-size: 1.0625rem;
-    font-weight: ${({ theme }) => theme.weights.bold};
-    color: ${({ theme }) => theme.colors.heading};
-  }
-
-  figcaption .role {
-    font-size: 0.875rem;
-    color: ${({ theme }) => theme.colors.textMuted};
-  }
-
-  figcaption .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.space(2)};
-    margin-top: ${({ theme }) => theme.space(2)};
-    padding: ${({ theme }) => `${theme.space(1)} ${theme.space(3)}`};
-    border-radius: ${({ theme }) => theme.radii.pill};
-    background: ${({ theme }) => theme.colors.greenSoft};
-    color: ${({ theme }) => theme.colors.greenText};
-    font-size: 0.75rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    align-self: flex-start;
   }
 `;
 
@@ -267,7 +241,7 @@ const Controls = styled.div`
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid ${({ theme }) => theme.colors.border};
+    border: 1px solid ${({ theme }) => theme.colors.borderStrong};
     background: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.heading};
     cursor: pointer;
@@ -278,7 +252,7 @@ const Controls = styled.div`
       transform ${({ theme }) => theme.motion.duration.hover} ease;
   }
 
-  button:hover {
+  button:hover:not([disabled]) {
     background: ${({ theme }) => theme.colors.main};
     border-color: ${({ theme }) => theme.colors.accentOnLight};
     color: ${({ theme }) => theme.colors.white};
@@ -293,29 +267,10 @@ const Controls = styled.div`
   button[disabled] {
     opacity: 0.4;
     cursor: not-allowed;
-    transform: none;
   }
 `;
 
-const Counter = styled.span`
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.textMuted};
-`;
-
-const kindMeta: Record<Kind, { label: string }> = {
-  estudiantes: { label: "Estudiantes" },
-  proyectos: { label: "Proyectos" },
-  graduados: { label: "Graduados" },
-  conexiones: { label: "Conexiones" },
-};
-
-const kindOrder: Kind[] = ["estudiantes", "proyectos", "graduados", "conexiones"];
-
-// Pool de fotos para los strips; al cambiar de slide, se elige una de estas.
-const photoPool = [classPhoto, trainingPhoto, autoPhoto, heroPhoto];
-
-// Datos editoriales de respaldo. Cuando Kodigo entregue testimonios reales en `content.ts`, esos
-// sustituyen a estos. Cada uno se asigna a una categoría y a una foto para mantener el patrón.
+// Datos editoriales de respaldo. Cuando Kodigo entregue testimonios reales en `content.ts`, esos sustituyen a estos.
 const fallbackStories: Story[] = [
   {
     kind: "estudiantes",
@@ -324,7 +279,6 @@ const fallbackStories: Story[] = [
     name: "Mariana Cabrera",
     role: "Estudiante · Bootcamp de Desarrollo Web",
     tag: "Cohorte 2025",
-    image: classPhoto,
   },
   {
     kind: "estudiantes",
@@ -333,7 +287,6 @@ const fallbackStories: Story[] = [
     name: "Luis Figueroa",
     role: "Estudiante · Bootcamp de Datos",
     tag: "Cohorte 2025",
-    image: trainingPhoto,
   },
   {
     kind: "proyectos",
@@ -342,7 +295,6 @@ const fallbackStories: Story[] = [
     name: "Equipo cohorte · Bootcamp de Datos",
     role: "Proyecto final",
     tag: "Cliente: Alianza comercial",
-    image: autoPhoto,
   },
   {
     kind: "proyectos",
@@ -351,7 +303,6 @@ const fallbackStories: Story[] = [
     name: "Equipo cohorte · Bootcamp de Desarrollo",
     role: "Proyecto final",
     tag: "Cliente: Empresa aliada",
-    image: heroPhoto,
   },
   {
     kind: "graduados",
@@ -360,7 +311,6 @@ const fallbackStories: Story[] = [
     name: "Andrea Rivas",
     role: "Graduada · Bootcamp de Desarrollo Web",
     tag: "2024 · Insertada laboralmente",
-    image: classPhoto,
   },
   {
     kind: "graduados",
@@ -369,7 +319,6 @@ const fallbackStories: Story[] = [
     name: "Carlos Méndez",
     role: "Graduado · Bootcamp de Datos",
     tag: "2024 · Insertado laboralmente",
-    image: trainingPhoto,
   },
   {
     kind: "conexiones",
@@ -378,7 +327,6 @@ const fallbackStories: Story[] = [
     name: "Patricia Soto",
     role: "People Lead · Empresa aliada",
     tag: "Empresa aliada 2025",
-    image: autoPhoto,
   },
   {
     kind: "conexiones",
@@ -387,11 +335,17 @@ const fallbackStories: Story[] = [
     name: "Jorge Salinas",
     role: "Mentor Kodigo",
     tag: "Mentor activo",
-    image: heroPhoto,
   },
 ];
 
-const plural = (n: number) => (n === 1 ? "1 historia" : `${n} historias`);
+/** Iniciales del avatar: primeras letras de las dos primeras palabras con letra (ignora "·"). */
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter((w) => /\p{L}/u.test(w))
+    .slice(0, 2)
+    .map((w) => Array.from(w)[0].toUpperCase())
+    .join("");
 
 // === BLOQUE DE CONTADORES (estilo Eduhall CounterOne) ===
 // Tarjetas de "KPI" en la parte SUPERIOR de la seccion Beneficios (= Testimonials). Mismo lenguaje
@@ -528,201 +482,147 @@ const formatStat = (
   return `${prefix ?? ""}${out}${suffix ?? ""}`;
 };
 
+// Tarjeta de contador: componente propio para poder usar useCountUp (un hook no puede llamarse dentro de un .map).
+const CounterCard = ({ card: c, index: i, visible }: { card: (typeof counterCards)[number]; index: number; visible: boolean }) => {
+  const shown = useCountUp(c.value, visible);
+  const labelId = `counter-${i}`;
+  return (
+    <CounterItem tag="li" index={i} direction={i === 0 ? "right" : i === 3 ? "left" : "up"} $tone={c.tone} aria-labelledby={labelId}>
+      <span className="icon" aria-hidden="true">
+        {c.icon}
+      </span>
+      <span className="number" aria-hidden="true">
+        {formatStat(shown, c.prefix, c.suffix, c.decimals)}
+      </span>
+      <VisuallyHidden>{formatStat(c.value, c.prefix, c.suffix, c.decimals)}</VisuallyHidden>
+      <span id={labelId} className="label">
+        {c.label}
+      </span>
+    </CounterItem>
+  );
+};
+
 export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
-  // Mezcla los testimonios oficiales (si llegan) con los editoriales de respaldo. Codigo real gana.
+  // Mezcla los testimonios oficiales (si llegan) con los editoriales de respaldo. Lo real gana.
   const stories: Story[] = (() => {
     if (items && items.length) {
-      const merged: Story[] = items.map((t, i) => ({
-        ...t,
-        kind: t.kind ?? fallbackStories[i % fallbackStories.length].kind,
-        image: t.image ?? photoPool[i % photoPool.length],
-      }));
-      const remaining = fallbackStories.filter(
-        (f) => !items.some((t) => t.name === f.name && t.quote === f.quote),
-      );
-      return [...merged, ...remaining];
+      const remaining = fallbackStories.filter((f) => !items.some((t) => t.name === f.name && t.quote === f.quote));
+      return [...items, ...remaining];
     }
     return fallbackStories;
   })();
 
-  const [kind, setKind] = useState<Kind>("estudiantes");
-  const filtered = stories.filter((s) => (s.kind ?? "estudiantes") === kind);
-  const [index, setIndex] = useState(0);
-  const active = filtered[index] ?? filtered[0];
+  const trackRef = useRef<HTMLUListElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: false });
 
-  // Al cambiar de pestaña, vuelve al primer slide.
+  // Habilita/deshabilita las flechas según la posición del carrusel.
+  const updateEdges = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setEdges({ start: el.scrollLeft <= 4, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 });
+  };
+
   useEffect(() => {
-    setIndex(0);
-  }, [kind]);
+    updateEdges();
+    window.addEventListener("resize", updateEdges);
+    return () => window.removeEventListener("resize", updateEdges);
+  }, []);
 
-  // Teclado: flechas izquierda/derecha cuando el foco está sobre el carrusel.
-  const onKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  // Desplaza una tarjeta (ancho + separación) en la dirección pedida.
+  const scrollByCard = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    const card = el?.querySelector("li");
+    if (!el || !card) return;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    el.scrollBy({ left: dir * (card.getBoundingClientRect().width + gap) });
+  };
+
+  const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") {
       e.preventDefault();
-      goPrev();
+      scrollByCard(-1);
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
-      goNext();
+      scrollByCard(1);
     }
   };
-
-  const goPrev = () => {
-    if (!filtered.length) return;
-    setIndex((i) => (i - 1 + filtered.length) % filtered.length);
-  };
-  const goNext = () => {
-    if (!filtered.length) return;
-    setIndex((i) => (i + 1) % filtered.length);
-  };
-
-  const photo = active?.image ?? photoPool[index % photoPool.length];
 
   const [counterRef, counterVisible] = useInView<HTMLUListElement>("0px 0px 200px 0px");
 
   return (
     <Wrap aria-labelledby="testimonials-title">
       {/* Bloque superior de contadores (estilo Eduhall CounterOne): vive en la MISMA sección
-         "Beneficios" y aparece encima del bloque narrativo "Personas y conexiones". */}
+         "Beneficios" y aparece encima del bloque de testimonios. */}
       <Container>
         <VisuallyHidden as="h2">Cifras clave de Kodigo</VisuallyHidden>
         <CounterGrid ref={counterRef}>
-          {counterCards.map((c, i) => {
-            const shown = useCountUp(c.value, counterVisible);
-            const labelId = `counter-${i}`;
-            return (
-              <CounterItem
-                key={c.label}
-                tag="li"
-                index={i}
-                direction={i === 0 ? "right" : i === 3 ? "left" : "up"}
-                $tone={c.tone}
-                aria-labelledby={labelId}
-              >
-                <span className="icon" aria-hidden="true">
-                  {c.icon}
-                </span>
-                <span className="number" aria-hidden="true">
-                  {formatStat(shown, c.prefix, c.suffix, c.decimals)}
-                </span>
-                <VisuallyHidden>{formatStat(c.value, c.prefix, c.suffix, c.decimals)}</VisuallyHidden>
-                <span id={labelId} className="label">
-                  {c.label}
-                </span>
-              </CounterItem>
-            );
-          })}
+          {counterCards.map((c, i) => (
+            <CounterCard key={c.label} card={c} index={i} visible={counterVisible} />
+          ))}
         </CounterGrid>
       </Container>
       <Container>
-        <Grid>
-          <div style={{ position: "relative" }}>
-            <StripFrame aria-label={`Foto de ${active?.name ?? "estudiantes Kodigo"} dividida en tres franjas`}>
-              <Strip>
-                <img src={photo} alt="" loading="lazy" decoding="async" style={{ objectPosition: "left center" }} />
-              </Strip>
-              <Strip>
-                <img src={photo} alt="" loading="lazy" decoding="async" style={{ objectPosition: "center center" }} />
-              </Strip>
-              <Strip>
-                <img src={photo} alt="" loading="lazy" decoding="async" style={{ objectPosition: "right center" }} />
-              </Strip>
-            </StripFrame>
-            <QuoteBadge aria-hidden="true">
-              <QuoteMark size={26} />
-            </QuoteBadge>
-          </div>
+        <Band>
+          <Grid>
+            <Track
+              ref={trackRef}
+              tabIndex={0}
+              role="group"
+              aria-roledescription="carrusel"
+              aria-label="Historias de la comunidad Kodigo"
+              onScroll={updateEdges}
+              onKeyDown={onKey}
+            >
+              {stories.map((s) => (
+                <Reveal key={`${s.name}-${s.quote.slice(0, 12)}`} tag="li" direction="up">
+                  <Card>
+                    <div className="avatar" aria-hidden="true">
+                      <span className="initials">{initialsOf(s.name)}</span>
+                      <span className="quote">
+                        <QuoteMark size={16} />
+                      </span>
+                    </div>
+                    <blockquote>{s.quote}</blockquote>
+                    <div className="stars" role="img" aria-label="Valoración 4.5 de 5">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <span key={i} className={i === 4 ? "last" : undefined} aria-hidden="true">
+                          <Star size={18} />
+                        </span>
+                      ))}
+                    </div>
+                    <figcaption>
+                      <span className="name">{s.name}</span>
+                      {s.role ? <span className="role">{s.role}</span> : null}
+                      {s.tag ? <span className="tag">{s.tag}</span> : null}
+                    </figcaption>
+                  </Card>
+                </Reveal>
+              ))}
+            </Track>
 
-          <Copy onKeyDown={onKey} role="region" aria-roledescription="carrusel" aria-label="Historias de la comunidad Kodigo">
-            <Heading>
-              <span className="label">Personas y conexiones</span>
+            <Copy>
+              <span className="label">
+                <BookOpen />
+                Personas y conexiones
+              </span>
               <h2 id="testimonials-title">
                 Las historias reales <em>tienen el mayor impacto.</em>
               </h2>
               <p>
                 Estudiantes, proyectos, graduados y conexiones verificadas. Mostramos a las personas y sus evidencias, no solo una colección de logotipos.
               </p>
-            </Heading>
-
-            <Tabs role="tablist" aria-label="Categorías de historias Kodigo">
-              {kindOrder.map((k) => {
-                const count = stories.filter((s) => (s.kind ?? "estudiantes") === k).length;
-                return (
-                  <Tab
-                    key={k}
-                    role="tab"
-                    aria-selected={kind === k}
-                    aria-controls={`panel-${k}`}
-                    id={`tab-${k}`}
-                    $active={kind === k}
-                    onClick={() => setKind(k)}
-                    type="button"
-                  >
-                    {kindMeta[k].label}
-                    <Count $active={kind === k} aria-hidden="true">
-                      {count}
-                    </Count>
-                    <span className="sr-only">, {plural(count)}</span>
-                  </Tab>
-                );
-              })}
-            </Tabs>
-
-            <div role="tabpanel" id={`panel-${kind}`} aria-labelledby={`tab-${kind}`}>
-              {active ? <StorySlide story={active} /> : null}
-            </div>
-
-            <Controls>
-              <button
-                type="button"
-                onClick={goPrev}
-                disabled={filtered.length < 2}
-                aria-label={`Historia anterior (${index + 1} de ${filtered.length})`}
-              >
-                <ArrowLeft size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={goNext}
-                disabled={filtered.length < 2}
-                aria-label={`Historia siguiente (${index + 1} de ${filtered.length})`}
-              >
-                <ArrowRight size={18} />
-              </button>
-              {filtered.length > 0 ? (
-                <Counter aria-live="polite">
-                  {index + 1} / {filtered.length}
-                </Counter>
-              ) : null}
-            </Controls>
-          </Copy>
-        </Grid>
+              <Controls>
+                <button type="button" onClick={() => scrollByCard(-1)} disabled={edges.start} aria-label="Historia anterior">
+                  <ArrowLeft size={18} />
+                </button>
+                <button type="button" onClick={() => scrollByCard(1)} disabled={edges.end} aria-label="Historia siguiente">
+                  <ArrowRight size={18} />
+                </button>
+              </Controls>
+            </Copy>
+          </Grid>
+        </Band>
       </Container>
     </Wrap>
-  );
-};
-
-const StorySlide = ({ story }: { story: Story }) => {
-  // Marcamos la última estrella como "media" solo cuando el rating es numéricamente 4.5; si no, pintamos todas.
-  const rating = 4.5;
-  return (
-    <Slide>
-      <div className="stars" aria-label={`Valoración ${rating} de 5`}>
-        {Array.from({ length: 5 }, (_, i) => (
-          <span key={i} className={i === 4 ? "last" : undefined} aria-hidden="true">
-            <Star size={18} />
-          </span>
-        ))}
-      </div>
-      <blockquote>“{story.quote}”</blockquote>
-      <figcaption>
-        <span className="name">{story.name}</span>
-        {story.role ? <span className="role">{story.role}</span> : null}
-        {story.tag ? (
-          <span className="tag" aria-label="Etiqueta de verificación">
-            {story.tag}
-          </span>
-        ) : null}
-      </figcaption>
-    </Slide>
   );
 };
