@@ -5,7 +5,8 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
-import { ArrowLeft, ArrowRight, BookOpen, Community, QuoteMark, Star, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
+import { Star, StarHalf } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, BookOpen, Community, QuoteMark, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
 import { wobble } from "@/styles/effects";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
@@ -162,10 +163,6 @@ const Card = styled.figure`
     gap: 4px;
     margin-bottom: ${({ theme }) => theme.space(3)};
     color: ${({ theme }) => theme.colors.orange};
-  }
-
-  .stars .last {
-    opacity: 0.35;
   }
 
   figcaption {
@@ -583,12 +580,12 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
                       </span>
                     </div>
                     <blockquote>{s.quote}</blockquote>
+                    {/* Valoración 4.5 con Phosphor Icons: ph-star-fill (completa) y ph-star-half (media). */}
                     <div className="stars" role="img" aria-label="Valoración 4.5 de 5">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <span key={i} className={i === 4 ? "last" : undefined} aria-hidden="true">
-                          <Star size={18} />
-                        </span>
+                      {Array.from({ length: 4 }, (_, i) => (
+                        <Star key={i} size={20} weight="fill" aria-hidden="true" />
                       ))}
+                      <StarHalf size={20} weight="fill" aria-hidden="true" />
                     </div>
                     <figcaption>
                       <span className="name">{s.name}</span>
