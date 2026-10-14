@@ -10,7 +10,7 @@ import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
 import { ArrowLeft, ArrowRight, Community, QuoteMark, Star, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
-import { flipInY } from "@/styles/effects";
+import { wobble } from "@/styles/effects";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
 
@@ -506,11 +506,11 @@ const CounterItem = styled(Reveal)<{ $tone: Tone }>`
     box-shadow: ${({ theme }) => theme.shadows.card};
   }
 
-  /* Efecto "animation-item" de Eduhall (mismo que Benefits): el icono gira con flipInY
-     al pasar el cursor por la tarjeta. Se anula con movimiento reducido. */
+  /* Efecto "animation-item" de Eduhall (animate__wobble de animate.css): el icono
+     se tambalea al pasar el cursor por la tarjeta. Se anula con movimiento reducido. */
   @media (prefers-reduced-motion: no-preference) {
     &:hover .icon {
-      animation: ${flipInY} 1s ease-in-out;
+      animation: ${wobble} 1s ease-in-out;
     }
   }
 
