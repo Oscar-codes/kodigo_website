@@ -1,28 +1,45 @@
 import styled from "styled-components";
+import benefitsBg from "@/assets/photos/benefits-bg.webp";
 import { media } from "@/styles/theme";
-import { ButtonLink } from "../ui/Button";
 import { Container, Section } from "../ui/Container";
 import { Float } from "../ui/Float";
 import { Reveal } from "../ui/Reveal";
+import { ApplyForm } from "./ApplyForm";
 
-// Banda final de la home: gradiente navy → violeta con gradiente radial que cierra el Inicio.
-// Texto centrado, palabra clave en verde Kodigo (#2FA75F), CTA primario blanco y CTA secundario
-// "outline-light" para combinar con el fondo oscuro. Mismo patrón de círculos `Float` + zoom `Reveal`.
+// Banda final de la home ("Aplicar", destino del menú): panel navy → violeta con el mensaje y los pasos del proceso a la
+// izquierda y el formulario de 4 fases a la derecha (ApplyForm). Mismo patrón de círculos `Float` + zoom `Reveal`.
+
+// Mismo fondo que la sección "Beneficios" (foto de reunión bajo un velo azul de marca). Como esta es la última sección
+// de la página, el velo no se funde con el tono claro de abajo: se mantiene azul para que el texto blanco se lea.
+const Wrap = styled(Section)`
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(19, 30, 75, 0.92) 0%, rgba(30, 40, 130, 0.7) 45%, rgba(60, 70, 205, 0.6) 100%),
+    url(${benefitsBg}) center / cover no-repeat,
+    ${({ theme }) => theme.colors.navy};
+`;
 
 const Panel = styled.div`
   position: relative;
-  overflow: hidden;
   isolation: isolate;
-  text-align: center;
-  padding: ${({ theme }) => `${theme.space(16)} ${theme.space(6)}`};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  background:
-    radial-gradient(70% 100% at 50% 100%, ${({ theme }) => theme.colors.main}cc, transparent 70%),
-    linear-gradient(180deg, ${({ theme }) => theme.colors.navy} 0%, ${({ theme }) => theme.colors.violetDeep} 100%);
+  padding: ${({ theme }) => `${theme.space(4)} 0`};
   color: ${({ theme }) => theme.colors.white};
 
   ${media.up("md")} {
-    padding: ${({ theme }) => `${theme.space(20)} ${theme.space(10)}`};
+    padding: ${({ theme }) => `${theme.space(8)} 0`};
+  }
+`;
+
+const Layout = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.space(10)};
+  align-items: center;
+
+  ${media.up("lg")} {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: ${({ theme }) => theme.space(14)};
   }
 `;
 
@@ -37,9 +54,9 @@ const Label = styled.span`
 `;
 
 const Heading = styled.h2`
-  margin: 0 auto ${({ theme }) => theme.space(6)};
-  max-width: 22ch;
-  font-size: clamp(1.875rem, 1.2rem + 3vw, 3.5rem);
+  margin: 0 0 ${({ theme }) => theme.space(6)};
+  max-width: 18ch;
+  font-size: clamp(1.875rem, 1.2rem + 3vw, 3.25rem);
   font-weight: ${({ theme }) => theme.weights.bold};
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -52,19 +69,57 @@ const Heading = styled.h2`
 `;
 
 const Lead = styled.p`
-  margin: 0 auto ${({ theme }) => theme.space(9)};
-  max-width: 56ch;
+  margin: 0 0 ${({ theme }) => theme.space(8)};
+  max-width: 52ch;
   font-size: clamp(0.9375rem, 0.85rem + 0.4vw, 1.0625rem);
-  line-height: 1.5;
+  line-height: 1.6;
   color: ${({ theme }) => theme.colors.onNavy};
 `;
 
-const ButtonRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.space(4)};
+/* Pasos del proceso: línea vertical con un punto por paso, como en la referencia. */
+const Timeline = styled.ol`
+  position: relative;
+  display: grid;
+  gap: ${({ theme }) => theme.space(5)};
+  margin: 0;
+  padding: 0 0 0 ${({ theme }) => theme.space(6)};
+  list-style: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  li {
+    position: relative;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: -${({ theme }) => theme.space(6)};
+    top: 7px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.lilac};
+  }
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  span {
+    font-size: 0.9375rem;
+    color: ${({ theme }) => theme.colors.onNavy};
+  }
 `;
 
 const Circle = styled(Float)`
@@ -78,7 +133,7 @@ const Circle = styled(Float)`
 `;
 
 export const CallToAction = ({ flushTop = false }: { flushTop?: boolean }) => (
-  <Section
+  <Wrap
     id="cta"
     aria-labelledby="cta-title"
     style={flushTop ? { paddingTop: 0 } : undefined}
@@ -91,24 +146,34 @@ export const CallToAction = ({ flushTop = false }: { flushTop?: boolean }) => (
           <Circle style={{ width: 160, height: 160, left: "10%", bottom: "10%" }} $range={10} $delay={-1.5} />
           <Circle style={{ width: 200, height: 200, right: "12%", top: "8%" }} $range={12} $delay={-2} />
 
-          <Label id="cta-title">Tu próximo capítulo</Label>
-          <Heading>
-            El futuro que imaginas empieza con las habilidades que <em>desarrollas hoy.</em>
-          </Heading>
-          <Lead>
-            Cuéntanos qué quieres lograr y te orientamos sobre el siguiente paso, ya sea para tu desarrollo profesional o para impulsar las capacidades de tu equipo.
-          </Lead>
-
-          <ButtonRow>
-            <ButtonLink to="/bootcamps" variant="light" arrow="right">
-              Quiero recibir orientación
-            </ButtonLink>
-            <ButtonLink to="/bootcamps" variant="outlineLight">
-              Ver todos los bootcamps
-            </ButtonLink>
-          </ButtonRow>
+          <Layout>
+            <div>
+              <Label id="cta-title">Tu próximo capítulo</Label>
+              <Heading>
+                El futuro que imaginas empieza con las habilidades que <em>desarrollas hoy.</em>
+              </Heading>
+              <Lead>
+                Cuéntanos qué quieres lograr y te orientamos sobre el siguiente paso, ya sea para tu desarrollo profesional o para impulsar las capacidades de tu equipo.
+              </Lead>
+              <Timeline>
+                <li>
+                  <strong>Tu interés</strong>
+                  <span>Completas tu perfil en 4 pasos.</span>
+                </li>
+                <li>
+                  <strong>Orientación</strong>
+                  <span>Revisamos tu perfil y tus objetivos para recomendarte la mejor ruta.</span>
+                </li>
+                <li>
+                  <strong>Siguiente paso</strong>
+                  <span>Te contactamos para acompañarte en tu proceso de inscripción.</span>
+                </li>
+              </Timeline>
+            </div>
+            <ApplyForm />
+          </Layout>
         </Panel>
       </Reveal>
     </Container>
-  </Section>
+  </Wrap>
 );
