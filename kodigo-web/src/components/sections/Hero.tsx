@@ -46,7 +46,7 @@ const SLIDES: SlideData[] = [
   {
     label: "Futuro digital · Kodigo 2026",
     title: ["El futuro no\nse espera.\n", { em: "Se construye." }],
-    lead: "Transforma tu potencial en habilidades reales. Aprende desarrollo de software, datos e inteligencia artificial con formación práctica y enfoque profesional.",
+    lead: "Somos la academia referente en El Salvador para aprender inteligencia artificial y desarrollar habilidades en tecnología, datos y desarrollo de software. Aprende a aplicar la AI para impulsar tu carrera o transformar tu organización.",
     primary: { text: "Explorar bootcamps", to: "/bootcamps" },
     secondary: { text: "Descubrir mi ruta", to: "#goals-title" },
     benefits: ["Programas orientados a la práctica", "Opciones según tu perfil"],
@@ -56,7 +56,7 @@ const SLIDES: SlideData[] = [
   {
     label: "Futuro digital · Kodigo 2026",
     title: ["El futuro no\nse espera.\n", { em: "Se construye." }],
-    lead: "Transforma tu potencial en habilidades reales. Aprende desarrollo de software, datos e inteligencia artificial con formación práctica y enfoque profesional.",
+    lead: "Somos la academia referente en El Salvador para aprender inteligencia artificial y desarrollar habilidades en tecnología, datos y desarrollo de software. Aprende a aplicar la AI para impulsar tu carrera o transformar tu organización.",
     primary: { text: "Explorar bootcamps", to: "/bootcamps" },
     secondary: { text: "Descubrir mi ruta", to: "#goals-title" },
     benefits: ["Programas orientados a la práctica", "Opciones según tu perfil"],
@@ -226,8 +226,14 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.colors.white};
 
   em {
-    /* Gradiente lila -> cian sobre la parte enfatizada, replicando el mockup. */
     font-style: normal;
+  }
+
+  /* Gradiente lila -> cian sobre la parte enfatizada, replicando el mockup. En la versión animada cada letra es un
+     inline-block con su propia capa (will-change), así que el degradado se aplica a cada letra: recortado desde el
+     <em> las dejaba transparentes y "Se construye." no se veía. El degradado es vertical, por lo que se ve continuo. */
+  em:not(:has(span)),
+  em span span {
     background-image: linear-gradient(180deg, #c7b0ff 0%, #adf3e6 100%);
     -webkit-background-clip: text;
     background-clip: text;
