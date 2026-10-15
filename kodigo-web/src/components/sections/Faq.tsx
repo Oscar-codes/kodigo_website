@@ -49,6 +49,8 @@ const Wrap = styled(Section)<{ $flushTop?: boolean }>`
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  /* Fondo lila institucional de las secciones claras. */
+  background: #e5e5fd;
   padding-top: ${({ $flushTop }) => ($flushTop ? "0" : "unset")};
 `;
 

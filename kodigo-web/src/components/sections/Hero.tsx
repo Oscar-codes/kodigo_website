@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import styled, { css, keyframes } from "styled-components";
-import heroImage from "@/assets/photos/hero.webp";
-import heroImageSmall from "@/assets/photos/hero-768.webp";
+import heroImage from "@/assets/photos/hero-bg.webp";
+import heroImageSmall from "@/assets/photos/hero-bg-768.webp";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
 import { Float } from "../ui/Float";
@@ -150,10 +150,10 @@ const Slide = styled.div<SlideProps>`
       background-image:
         linear-gradient(
           90deg,
-          rgba(7, 20, 49, 0.92) 0%,
-          rgba(7, 20, 49, 0.8) 45%,
-          rgba(7, 20, 49, 0.4) 62%,
-          rgba(7, 20, 49, 0.12) 100%
+          rgba(7, 20, 49, 0.45) 0%,
+          rgba(7, 20, 49, 0.3) 45%,
+          rgba(7, 20, 49, 0.1) 62%,
+          rgba(7, 20, 49, 0) 100%
         ),
         url(${$image});
       background-size: cover;
@@ -161,7 +161,7 @@ const Slide = styled.div<SlideProps>`
 
       ${media.down("md")} {
         /* En móvil se usa la versión liviana de la foto (768 px) bajo una capa oscura uniforme. */
-        background-image: linear-gradient(rgba(7, 20, 49, 0.85), rgba(7, 20, 49, 0.85)), url(${$imageSmall});
+        background-image: linear-gradient(rgba(7, 20, 49, 0.5), rgba(7, 20, 49, 0.5)), url(${$imageSmall});
       }
     `}
 
