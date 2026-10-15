@@ -7,7 +7,6 @@ import { ButtonLink } from "../ui/Button";
 import { Float } from "../ui/Float";
 import { Container } from "../ui/Container";
 import { BookOpen, Check } from "../ui/Icons";
-import { GoalsCard } from "./GoalsCard";
 
 // Carrusel del banner de Eduhall (Home 3): foto a pantalla completa con degradado azul marino de izquierda a derecha.
 // Cada 6 s la diapositiva actual sale hacia la izquierda y entra la siguiente. Al cargar la página y en cada cambio,
@@ -122,9 +121,7 @@ const Slide = styled.div<SlideProps>`
   min-width: 0;
   background-color: ${({ theme }) => theme.colors.navy};
   /* El banner ocupa casi todo el alto visible (cabecera + banner + borde del panel) con el contenido centrado,
-     como el Home 3 de Eduhall. El panel de rutas solo se superpone un poco al banner.
-     En >= md: el GoalsCard se vuelve position: absolute y queda al lado del texto.
-     En <= md: ambos hijos se apilan verticalmente para no pelearse el ancho. */
+     como el Home 3 de Eduhall. */
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -184,22 +181,6 @@ const Slide = styled.div<SlideProps>`
 
 const Content = styled.div`
   max-width: 760px;
-
-  /* A partir de md la GoalsCard es un panel flotante de 400px a la derecha. Si
-     la dejamos libre, el texto se monta sobre la tarjeta y rompe layout. Lo
-     capamos con calc(100vw - 460px) para que el texto respete 460 px desde
-     el borde derecho del viewport (400 + 24 del Wrapper en right + buffer).
-     Edge Chromium, Chrome, Firefox y Safari interpretan calc(100vw - Xpx)
-     igual y la funcion min() resuelve el limite duro del 760px. */
-  ${media.up("md")} {
-    /* La GoalsCard ahora se ancla 200 px más a la izquierda (ver GoalsCard.tsx), por lo que
-       el texto debe dejar libre la franja de la tarjeta + el offset. */
-    max-width: min(760px, calc(100vw - 660px));
-  }
-
-  ${media.up("xl")} {
-    max-width: 720px;
-  }
 `;
 
 const Label = styled.p`
@@ -486,8 +467,6 @@ const SlideView = ({ slide, mode }: SlideViewProps) => {
           </Checks>
         </Content>
       </Container>
-      {/* Tarjeta flotante "Encuentra tu punto de partida" — solo visible en ≥ md (se apila en el flujo en móvil). */}
-      {animated ? <GoalsCard /> : null}
     </Slide>
   );
 };
