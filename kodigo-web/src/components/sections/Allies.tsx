@@ -37,13 +37,13 @@ const Wrap = styled(Section)`
 
 const Slider = styled.div`
   position: relative;
+  width: 100%;
+  margin-top: ${({ theme }) => theme.space(8)};
 `;
 
 const Track = styled.ul`
   display: flex;
   overflow-x: auto;
-  border-radius: ${({ theme }) => theme.radii.xl};
-  box-shadow: ${({ theme }) => theme.shadows.lift};
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   cursor: grab;
@@ -85,7 +85,7 @@ const Slide = styled.li`
 
   ${media.up("md")} {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    height: 480px;
+    height: clamp(480px, 34vw, 600px);
   }
 
   /* ----- Izquierda: foto con velo azul y logos blancos ----- */
@@ -179,8 +179,8 @@ const Slide = styled.li`
     object-fit: cover;
 
     ${media.up("md")} {
-      flex-basis: 230px;
-      height: 230px;
+      flex-basis: 48%;
+      height: 48%;
     }
   }
 
@@ -453,8 +453,10 @@ export const Allies = (_props: AlliesProps) => {
           }
           lead="Con centros educativos apoyamos la formación de talento; con empresas formamos y empleamos según sus necesidades de contratación."
         />
+      </Container>
 
-        <Slider>
+      {/* El carrusel va fuera del Container: ocupa todo el ancho de la ventana, como un slider de cabecera. */}
+      <Slider>
           <Track
             ref={trackRef}
             tabIndex={0}
@@ -515,8 +517,9 @@ export const Allies = (_props: AlliesProps) => {
               <ArrowRight size={18} />
             </button>
           </Controls>
-        </Slider>
+      </Slider>
 
+      <Container>
         <FootRow>
           <CtaSecondaryAlt to={ALLIANCES_URL} aria-label="Ver el directorio completo de aliados">
             Ver todos los aliados
