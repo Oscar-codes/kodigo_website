@@ -35,7 +35,7 @@ const steps: { icon: ReactNode; tone: Tone; word: string; title: string; text: s
   { icon: <Users size={30} />, tone: "green", word: "Aprende", title: "Aprende con expertos", text: "Sesiones y actividades guiadas según el bootcamp." },
   { icon: <Laptop size={30} />, tone: "main", word: "Construye", title: "Desarrolla proyectos", text: "Aplica herramientas en retos y ejercicios prácticos." },
   { icon: <Award size={30} />, tone: "orange", word: "Demuestra", title: "Construye evidencia", text: "Muestra competencias mediante entregables y portafolio." },
-  { icon: <Rocket size={30} />, tone: "green", word: "Proyecta", title: "Prepara tu siguiente paso", text: "Conecta tu aprendizaje con necesidades profesionales." },
+  { icon: <Rocket size={30} />, tone: "green", word: "Proyecta", title: "Prepara tu siguiente paso", text: "Prepárate para aplicar lo aprendido, destacar en nuevos retos o seguir escalando tu carrera." },
 ];
 
 // Foto de cada paso (fotos de la carpeta de recursos de Kodigo; permisos pendientes). `pos` ajusta el encuadre.
@@ -470,7 +470,7 @@ export const Experience = () => {
               Se trata de <em>ponerlo en práctica.</em>
             </>
           }
-          lead="Un recorrido formativo claro, desde la elección del programa hasta el desarrollo de capacidades para nuevos retos profesionales."
+          lead="Aprender es el comienzo. Ponerlo en práctica marca la diferencia. Desde la elección de tu ruta hasta la construcción de proyectos, cada etapa está diseñada para que avances con propósito y desarrolles habilidades aplicables."
         />
 
         <Reveal direction="zoom">

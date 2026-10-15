@@ -33,19 +33,19 @@ const byArea = (a: Bootcamp, b: Bootcamp) => AREA_ORDER.indexOf(a.area) - AREA_O
 // idénticos a los de BootcampGrid, para que se lean como parte de la misma familia.
 const routeCards: { area: Area; title: string; text: string }[] = [
   {
-    area: "Programación",
-    title: "Ruta de Programación",
-    text: "Construye aplicaciones web desde el frontend hasta el full stack con proyectos reales.",
+    area: "IA",
+    title: "Ruta de Inteligencia Artificial",
+    text: "De la IA generativa a los agentes inteligentes: aprende a usarla y a crear soluciones con ella.",
   },
   {
     area: "Datos",
-    title: "Ruta de Data análisis",
+    title: "Ruta de Data Analyst",
     text: "Analiza, visualiza e interpreta datos para tomar mejores decisiones de negocio.",
   },
   {
-    area: "IA",
-    title: "Ruta de IA",
-    text: "De la IA generativa a los agentes inteligentes: aprende a usarla y a crear soluciones con ella.",
+    area: "Programación",
+    title: "Ruta de Programación",
+    text: "Construye aplicaciones web desde el frontend hasta el full stack con proyectos reales.",
   },
 ];
 
@@ -186,16 +186,23 @@ export const BootcampShowcase = ({ items, flushTop = true }: { items: Bootcamp[]
               align="left"
               label="Aprende con propósito"
               title={
-                <>
-                  Encuentra la formación que te llevará <em>más lejos.</em>
-                </>
+                isRutas ? (
+                  <>
+                    Encuentra la ruta que mejor se conecta <em>con tus metas.</em>
+                  </>
+                ) : (
+                  <>
+                    Encuentra el bootcamp que te llevará <em>más lejos.</em>
+                  </>
+                )
               }
             />
           </div>
           <Reveal className="side" direction="left">
             <p>
-              Rutas de formación en programación, datos y IA. Descubre qué aprenderás y elige el programa que mejor se
-              conecta con tus metas.
+              {isRutas
+                ? "Aprende habilidades que abren nuevas posibilidades. Explora nuestras rutas de formación en inteligencia artificial, análisis de datos y desarrollo de software."
+                : "Encuentra la formación que te llevará más lejos. Desarrolla nuevas competencias en IA, datos y programación mediante experiencias de aprendizaje orientadas a la práctica."}
             </p>
             <Link to="/bootcamps">
               Ver todos los bootcamps <ArrowRight />

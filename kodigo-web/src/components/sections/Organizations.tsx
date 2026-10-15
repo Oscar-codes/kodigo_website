@@ -124,6 +124,14 @@ const Heading = styled.h2`
   }
 `;
 
+const Lead = styled.p`
+  margin: -${({ theme }) => theme.space(5)} auto ${({ theme }) => theme.space(10)};
+  max-width: 62ch;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.onNavy};
+`;
+
 const Cta = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -171,8 +179,11 @@ export const Organizations = () => (
         <Heading id="organizations-title">
           El talento de tu equipo <em>también puede evolucionar.</em>
         </Heading>
-        <Cta to={ALLIANCES_URL} aria-label="Solicitar una conversación para Kodigo Empresas">
-          Solicitar una conversación
+        <Lead>
+          El siguiente salto de tu negocio comienza con las capacidades de tu equipo. Desarrolla habilidades digitales y aplica inteligencia artificial para responder a los desafíos de tu organización.
+        </Lead>
+        <Cta to={ALLIANCES_URL} aria-label="Conversemos sobre tu equipo">
+          Conversemos sobre tu equipo
           <ArrowUpRight size={20} />
         </Cta>
       </Banner>

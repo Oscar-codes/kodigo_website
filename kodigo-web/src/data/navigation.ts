@@ -1,5 +1,3 @@
-import { professionalSections } from "./professional";
-
 // Mapa de cada item del menu a un anchor/ ruta concretos. La regla del ticket:
 // "solo Nosotros y Profesional redirigen a otras paginas, los demas apuntan
 // a sections de la home". Las sections que ya existen tienen id='<name>-title';
@@ -47,6 +45,7 @@ const nosotrosChildren: { label: string; to: string }[] = [
   { label: "Historia", to: "/nosotros#historia" },
   { label: "Sala de prensa", to: "/nosotros#prensa" },
   { label: "Trabaja con nosotros", to: "/profesional/alianzas" },
+  { label: "PPD", to: "/profesional/ppd" },
 ];
 
 export const navigation: NavItem[] = [
@@ -81,11 +80,8 @@ export const navigation: NavItem[] = [
     to: "/nosotros",
     children: nosotrosChildren,
   },
-  {
-    label: "Profesional",
-    to: "/profesional",
-    children: professionalSections.map((s) => ({ label: s.title, to: `/profesional/${s.slug}` })),
-  },
+  // 'Profesional' ya no tiene submenú: lleva directo a la página de Alianzas (B2B). PPD pasó al submenú de Nosotros.
+  { label: "Profesional", to: "/profesional/alianzas" },
 
   // CONVERTIR: la CallToAction al final del HeroModulesLight es el CTA
   // generico actual. Pendiente crear una seccion 'ApplySection' con

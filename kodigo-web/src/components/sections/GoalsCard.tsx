@@ -21,26 +21,26 @@ interface Goal {
 const goals: Goal[] = [
   {
     icon: <Compass size={20} />,
-    title: "Iniciar en tecnología",
-    text: "Tu primer paso en el mundo tech.",
+    title: "Quiero iniciar mi carrera tech",
+    text: "Desarrolla las bases que necesitas para dar tus primeros pasos en tecnología.",
     to: "/bootcamps",
   },
   {
     icon: <TrendUp size={20} />,
-    title: "Potenciar mi carrera",
-    text: "Sube de nivel con nuevas habilidades.",
+    title: "Quiero potenciar mis habilidades",
+    text: "Actualiza tus conocimientos y adquiere competencias para asumir nuevos retos profesionales.",
     to: "/bootcamps",
   },
   {
     icon: <Sparkles size={20} />,
-    title: "Aplicar inteligencia artificial",
-    text: "Lleva la IA a tu trabajo.",
+    title: "Quiero aprender y aplicar IA",
+    text: "Aprende a integrar la IA en tu trabajo y a convertirla en soluciones concretas.",
     to: "/bootcamps",
   },
   {
     icon: <Users size={20} />,
-    title: "Capacitar a mi equipo",
-    text: "Formación estratégica para tu organización.",
+    title: "Quiero capacitar a mi equipo",
+    text: "Fortalece las competencias digitales de tu organización con formación conectada con sus objetivos.",
     to: "/profesional/alianzas",
     highlighted: true,
   },
@@ -316,9 +316,12 @@ const Row = styled.li<{ $active?: boolean }>`
   .text {
     font-size: 0.75rem;
     color: ${({ theme }) => theme.colors.onNavy};
-    white-space: nowrap;
+    line-height: 1.3;
+    /* Las descripciones son más largas: se permiten hasta 3 líneas. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .arrow {

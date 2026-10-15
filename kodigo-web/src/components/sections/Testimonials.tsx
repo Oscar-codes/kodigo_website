@@ -601,7 +601,7 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
                 Las historias reales <em>tienen el mayor impacto.</em>
               </h2>
               <p>
-                Estudiantes, proyectos, graduados y conexiones verificadas. Mostramos a las personas y sus evidencias, no solo una colección de logotipos.
+                Historias reales. Aprendizajes que se convierten en acción. Conoce las experiencias de personas y organizaciones que han llevado el aprendizaje a la práctica con Kodigo.
               </p>
               <Controls>
                 <button type="button" onClick={() => scrollByCard(-1)} disabled={edges.start} aria-label="Historia anterior">

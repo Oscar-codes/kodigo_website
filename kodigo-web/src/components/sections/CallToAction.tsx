@@ -93,10 +93,10 @@ export const CallToAction = ({ flushTop = false }: { flushTop?: boolean }) => (
 
           <Label id="cta-title">Tu próximo capítulo</Label>
           <Heading>
-            El futuro que imaginas empieza con lo que <em>aprendes hoy.</em>
+            El futuro que imaginas empieza con las habilidades que <em>desarrollas hoy.</em>
           </Heading>
           <Lead>
-            Descubre las opciones de formación que pueden ayudarte a crecer profesionalmente. Estamos para orientarte.
+            Cuéntanos qué quieres lograr y te orientamos sobre el siguiente paso, ya sea para tu desarrollo profesional o para impulsar las capacidades de tu equipo.
           </Lead>
 
           <ButtonRow>

@@ -359,8 +359,8 @@ export const Methodology = () => {
                 <BarChart size={26} />
               </span>
               <div>
-                <h3>Aprender haciendo</h3>
-                <p>Subes de nivel resolviendo problemas reales: de tareas guiadas a proyectos completos que viven en tu portafolio.</p>
+                <h3>Aprendizaje aplicado</h3>
+                <p>Resuelve retos y desarrolla proyectos relacionados con situaciones reales.</p>
               </div>
             </Feature>
 
@@ -370,7 +370,7 @@ export const Methodology = () => {
               </span>
               <div>
                 <h3>Acompañamiento real</h3>
-                <p>Un coach entrena tu forma de pensar; mentores de la industria te guían en cada entrega y en tu inserción laboral.</p>
+                <p>Recibe orientación y retroalimentación de coaches durante tu proceso para fortalecer tus competencias y avanzar con confianza.</p>
               </div>
             </Feature>
 
