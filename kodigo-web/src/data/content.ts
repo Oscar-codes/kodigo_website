@@ -44,6 +44,8 @@ export interface Testimonial {
   kind?: "estudiantes" | "proyectos" | "graduados" | "conexiones";
   /** Foto asociada al testimonio (asset importado, formato Vite-friendly). */
   image?: string;
+  /** URL de video incrustable (iframe) que se abre en una ventana al pulsar "Ver testimonio". */
+  video?: string;
 }
 
 export interface Step {

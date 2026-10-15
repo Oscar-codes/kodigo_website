@@ -7,7 +7,7 @@ import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { Container, Section } from "../ui/Container";
 import { Star, StarHalf } from "@phosphor-icons/react";
-import { ArrowLeft, ArrowRight, BookOpen, Community, QuoteMark, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
+import { ArrowLeft, ArrowRight, BookOpen, Community, Play, QuoteMark, ThumbsUp, Users, VideoCamera } from "../ui/Icons";
 import { wobble } from "@/styles/effects";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
@@ -204,6 +204,82 @@ const Card = styled.figure`
   }
 `;
 
+// === VIDEO: botón en la tarjeta y ventana con el reproductor incrustado ===
+const WatchButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(2)};
+  margin-top: ${({ theme }) => theme.space(4)};
+  min-height: 44px;
+  padding: ${({ theme }) => `0 ${theme.space(5)}`};
+  border: 1px solid ${({ theme }) => theme.colors.accentOnLight};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.accentOnLight};
+  font-weight: ${({ theme }) => theme.weights.semibold};
+  cursor: pointer;
+  transition:
+    background-color ${({ theme }) => theme.motion.duration.hover} linear,
+    color ${({ theme }) => theme.motion.duration.hover} linear;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.accentOnLight};
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.yellow};
+    outline-offset: 3px;
+  }
+`;
+
+const Backdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: ${({ theme }) => theme.space(5)};
+  background: rgba(7, 20, 49, 0.82);
+
+  .frame {
+    position: relative;
+    width: min(960px, 100%);
+    aspect-ratio: 16 / 9;
+    border-radius: ${({ theme }) => theme.radii.lg};
+    background: #000;
+    overflow: hidden;
+  }
+
+  iframe,
+  video {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+  }
+
+  .close {
+    position: absolute;
+    top: ${({ theme }) => theme.space(4)};
+    right: ${({ theme }) => theme.space(4)};
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.heading};
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .close:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.yellow};
+    outline-offset: 3px;
+  }
+`;
+
 // === DERECHA: COPY + FLECHAS ===
 const Copy = styled.div`
   max-width: 52ch;
@@ -327,6 +403,22 @@ const fallbackStories: Story[] = [
     name: "Carlos Méndez",
     role: "Graduado · Bootcamp de Datos",
     tag: "2024 · Insertado laboralmente",
+  },
+  {
+    kind: "conexiones",
+    quote:
+      "Kodigo ha sido nuestro aliado estratégico para estas soluciones: nos ayudó a acercar nuevas herramientas de una forma dinámica, práctica y que genera valor para nuestros equipos.",
+    name: "Mario Quintanilla",
+    role: "Coordinador de Gestión de Talento · Vidrí",
+    tag: "Empresa aliada · Bootcamp para equipos",
+  },
+  {
+    kind: "conexiones",
+    quote:
+      "La expectativa que teníamos se cubrió con creces y generó una expectativa aún mayor para continuar con la adopción de la inteligencia artificial. En el taller nos dimos cuenta de que hay muchísimas más herramientas de IA que cubren aspectos que otras probablemente no, y la idea es avanzar en el conocimiento de estas soluciones para poder utilizarlas en la empresa.",
+    name: "Roberto Carlos Méndez",
+    role: "Gerente de Informática · COMERSAL",
+    tag: "Empresa aliada · Taller de IA",
   },
   {
     kind: "conexiones",
@@ -505,6 +597,7 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
   })();
 
   const trackRef = useRef<HTMLUListElement>(null);
+  const [playing, setPlaying] = useState<Story | null>(null);
   const [edges, setEdges] = useState({ start: true, end: false });
 
   // Habilita/deshabilita las flechas según la posición del carrusel.
@@ -538,6 +631,19 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
       scrollByCard(1);
     }
   };
+
+  // Con la ventana de video abierta: Escape la cierra y se bloquea el scroll de la página.
+  useEffect(() => {
+    if (!playing) return;
+    const onEsc = (e: KeyboardEvent) => e.key === "Escape" && setPlaying(null);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onEsc);
+    return () => {
+      window.removeEventListener("keydown", onEsc);
+      document.body.style.overflow = prev;
+    };
+  }, [playing]);
 
   const [counterRef, counterVisible] = useInView<HTMLUListElement>("0px 0px 200px 0px");
 
@@ -587,6 +693,12 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
                       {s.role ? <span className="role">{s.role}</span> : null}
                       {s.tag ? <span className="tag">{s.tag}</span> : null}
                     </figcaption>
+                    {s.video ? (
+                      <WatchButton type="button" onClick={() => setPlaying(s)} aria-label={`Ver el video de ${s.name}`}>
+                        <Play size={14} />
+                        Ver testimonio
+                      </WatchButton>
+                    ) : null}
                   </Card>
                 </Reveal>
               ))}
@@ -615,6 +727,32 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
           </Grid>
         </Band>
       </Container>
+      {playing?.video ? (
+        <Backdrop role="dialog" aria-modal="true" aria-label={`Testimonio de ${playing.name}`} onClick={() => setPlaying(null)}>
+          <div className="frame" onClick={(e) => e.stopPropagation()}>
+            {/\.(mp4|webm)$/i.test(playing.video) ? (
+              <video
+                ref={(el) => {
+                  // Con sonido: el clic en "Ver testimonio" ya cuenta como gesto del usuario para reproducir con audio.
+                  if (!el) return;
+                  el.muted = false;
+                  el.volume = 1;
+                  void el.play().catch(() => undefined);
+                }}
+                src={playing.video}
+                controls
+                playsInline
+                title={`Testimonio de ${playing.name}`}
+              />
+            ) : (
+              <iframe src={playing.video} title={`Testimonio de ${playing.name}`} allow="autoplay; fullscreen" allowFullScreen />
+            )}
+            <button type="button" className="close" onClick={() => setPlaying(null)} aria-label="Cerrar video" autoFocus>
+              ×
+            </button>
+          </div>
+        </Backdrop>
+      ) : null}
     </Wrap>
   );
 };
