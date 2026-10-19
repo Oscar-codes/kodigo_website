@@ -22,139 +22,144 @@ const scrollToTop = (e: MouseEvent) => {
   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 };
 
-// Variante de la plantilla AIvent (solo página de Alianzas): barra índigo oscura, logo blanco, menú en blanco con subrayado
-// violeta en el activo/hover, "Aplicar" como botón rectangular violeta en mayúsculas con espaciado y submenús oscuros.
-// Se escribe con el atributo [data-variant] para ganar en especificidad sin tocar el estilo del resto del sitio.
-const aiventSkin = css`
-  &[data-variant="aivent"] {
-    background: ${({ theme }) => theme.colors.aiventDark};
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+// Variante de la landing B2B (solo página de Alianzas): barra morada oscura con Matimo, logo blanco, menú en blanco con
+// subrayado en degradado lavanda → teal en el activo/hover, "Aplicar" como píldora con degradado en mayúsculas y
+// submenús oscuros. Se escribe con el atributo [data-variant] para ganar en especificidad sin tocar el estilo del resto del sitio.
+const b2bSkin = css`
+  &[data-variant="b2b"] {
+    background: ${({ theme }) => theme.b2b.bg1};
+    border-bottom-color: ${({ theme }) => theme.b2b.line};
     box-shadow: none;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.b2b.text};
+    font-family: ${({ theme }) => theme.fonts.b2b};
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 
-  &[data-variant="aivent"][data-scrolled="true"] {
-    background: rgba(16, 20, 53, 0.9);
+  &[data-variant="b2b"][data-scrolled="true"] {
+    background: rgba(26, 15, 69, 0.9);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
   }
 
-  &[data-variant="aivent"] li > a,
-  &[data-variant="aivent"] li > button {
+  &[data-variant="b2b"] li > a,
+  &[data-variant="b2b"] li > button {
     position: relative;
     border-radius: 0;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.white};
+    font-family: inherit;
+    font-weight: ${({ theme }) => theme.weights.medium};
+    color: ${({ theme }) => theme.b2b.text};
   }
 
-  &[data-variant="aivent"] li > a:hover,
-  &[data-variant="aivent"] li > button:hover,
-  &[data-variant="aivent"] li > button[aria-expanded="true"] {
-    color: ${({ theme }) => theme.colors.white};
+  &[data-variant="b2b"] li > a:hover,
+  &[data-variant="b2b"] li > a.active,
+  &[data-variant="b2b"] li > button:hover,
+  &[data-variant="b2b"] li > button.active,
+  &[data-variant="b2b"] li > button[aria-expanded="true"] {
+    color: ${({ theme }) => theme.b2b.text};
   }
 
-  &[data-variant="aivent"] li > a::after,
-  &[data-variant="aivent"] li > button::after {
+  &[data-variant="b2b"] li > a::after,
+  &[data-variant="b2b"] li > button::after {
     content: "";
     position: absolute;
     left: ${({ theme }) => theme.space(3.5)};
     right: ${({ theme }) => theme.space(3.5)};
     bottom: 0;
     height: 2px;
-    background: ${({ theme }) => theme.colors.aiventViolet};
+    background: ${({ theme }) => theme.b2b.gradientKey};
     transform: scaleX(0);
     transition: transform ${({ theme }) => theme.motion.duration.base} ease;
   }
 
-  &[data-variant="aivent"] li > a:hover::after,
-  &[data-variant="aivent"] li > a.active::after,
-  &[data-variant="aivent"] li > button:hover::after,
-  &[data-variant="aivent"] li > button.active::after,
-  &[data-variant="aivent"] li > button[aria-expanded="true"]::after {
+  &[data-variant="b2b"] li > a:hover::after,
+  &[data-variant="b2b"] li > a.active::after,
+  &[data-variant="b2b"] li > button:hover::after,
+  &[data-variant="b2b"] li > button.active::after,
+  &[data-variant="b2b"] li > button[aria-expanded="true"]::after {
     transform: scaleX(1);
   }
 
-  &[data-variant="aivent"] li > a:focus-visible,
-  &[data-variant="aivent"] li > button:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.white};
+  &[data-variant="b2b"] li > a:focus-visible,
+  &[data-variant="b2b"] li > button:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.b2b.teal};
     outline-offset: 2px;
   }
 
-  /* CTA: rectángulo violeta en mayúsculas (BUY TICKETS de AIvent). Sin subrayado. */
-  &[data-variant="aivent"] li > a[data-cta="true"] {
+  /* CTA: píldora con degradado lavanda → teal y texto morado oscuro, en mayúsculas. Sin subrayado. */
+  &[data-variant="b2b"] li > a[data-cta="true"] {
     margin-left: ${({ theme }) => theme.space(2)};
-    padding: ${({ theme }) => `${theme.space(3)} ${theme.space(5)}`};
-    border-radius: ${({ theme }) => theme.radii.sm};
-    background: ${({ theme }) => theme.colors.aiventViolet};
-    box-shadow: none;
+    padding: ${({ theme }) => `${theme.space(3)} ${theme.space(6)}`};
+    border-radius: ${({ theme }) => theme.radii.pill};
+    background: ${({ theme }) => theme.b2b.gradientKey};
+    color: ${({ theme }) => theme.b2b.onGradient};
+    box-shadow: 0 10px 30px -10px rgba(127, 224, 204, 0.5);
     font-size: 0.8125rem;
     font-weight: ${({ theme }) => theme.weights.bold};
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
-  &[data-variant="aivent"] li > a[data-cta="true"]::after {
+  &[data-variant="b2b"] li > a[data-cta="true"]::after {
     display: none;
   }
 
   /* Entre 992 y 1199 px el menú completo + CTA en mayúsculas no cabe: se compactan espaciados. */
   ${media.up("lg")} {
     ${media.down("xl")} {
-      &[data-variant="aivent"] li > a,
-      &[data-variant="aivent"] li > button {
+      &[data-variant="b2b"] li > a,
+      &[data-variant="b2b"] li > button {
         padding-inline: ${({ theme }) => theme.space(2.5)};
       }
 
-      &[data-variant="aivent"] li > a[data-cta="true"] {
+      &[data-variant="b2b"] li > a[data-cta="true"] {
         margin-left: 0;
-        padding-inline: ${({ theme }) => theme.space(3.5)};
+        padding-inline: ${({ theme }) => theme.space(4)};
         letter-spacing: 0.06em;
       }
     }
   }
 
-  &[data-variant="aivent"] li > a[data-cta="true"]:hover,
-  &[data-variant="aivent"] li > a[data-cta="true"]:focus-visible {
-    background: #8a66ff;
-    box-shadow: 0 10px 24px rgba(118, 77, 240, 0.45);
+  &[data-variant="b2b"] li > a[data-cta="true"]:hover,
+  &[data-variant="b2b"] li > a[data-cta="true"]:focus-visible {
+    color: ${({ theme }) => theme.b2b.onGradient};
+    box-shadow: 0 14px 36px -8px rgba(127, 224, 204, 0.75);
   }
 
   /* Submenús y panel móvil oscuros. */
-  &[data-variant="aivent"] li > ul {
-    background: ${({ theme }) => theme.colors.aiventDark2};
-    border-color: rgba(255, 255, 255, 0.1);
+  &[data-variant="b2b"] li > ul {
+    background: ${({ theme }) => theme.b2b.bg2};
+    border-color: ${({ theme }) => theme.b2b.cardBorder};
   }
 
-  &[data-variant="aivent"] li > ul a,
-  &[data-variant="aivent"] li > ul li > a {
-    color: ${({ theme }) => theme.colors.white};
+  &[data-variant="b2b"] li > ul a,
+  &[data-variant="b2b"] li > ul li > a {
+    color: ${({ theme }) => theme.b2b.text};
   }
 
-  &[data-variant="aivent"] li > ul a:hover {
-    background: rgba(118, 77, 240, 0.28);
-    color: ${({ theme }) => theme.colors.white};
+  &[data-variant="b2b"] li > ul a:hover {
+    background: rgba(110, 60, 200, 0.3);
+    color: ${({ theme }) => theme.b2b.text};
   }
 
-  &[data-variant="aivent"] li > ul a::after {
+  &[data-variant="b2b"] li > ul a::after {
     display: none;
   }
 
-  &[data-variant="aivent"] .group-title {
-    color: ${({ theme }) => theme.colors.lilac};
+  &[data-variant="b2b"] .group-title {
+    color: ${({ theme }) => theme.b2b.lavender};
   }
 
-  &[data-variant="aivent"] nav#main-menu {
+  &[data-variant="b2b"] nav#main-menu {
     ${media.down("lg")} {
-      background: ${({ theme }) => theme.colors.aiventDark2};
-      border-bottom-color: rgba(255, 255, 255, 0.1);
+      background: ${({ theme }) => theme.b2b.bg2};
+      border-bottom-color: ${({ theme }) => theme.b2b.cardBorder};
     }
   }
 
-  &[data-variant="aivent"] button[aria-label="Abrir menú"] {
-    color: ${({ theme }) => theme.colors.white};
+  &[data-variant="b2b"] button[aria-label="Abrir menú"] {
+    color: ${({ theme }) => theme.b2b.text};
   }
 `;
 
@@ -181,7 +186,7 @@ const Bar = styled.header<{ $scrolled: boolean }>`
     -webkit-backdrop-filter ${({ theme }) => theme.motion.duration.base} linear,
     backdrop-filter ${({ theme }) => theme.motion.duration.base} linear;
 
-  ${aiventSkin}
+  ${b2bSkin}
 `;
 
 /** Distancia de scroll (px) a partir de la cual la cabecera pasa de sólida a translúcida. */
@@ -502,7 +507,7 @@ export const Header = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
-  // Solo la página de Alianzas usa la variante AIvent (barra oscura y logo blanco).
+  // Solo la página de Alianzas usa la variante B2B (barra oscura y logo blanco).
   const { hash } = useLocation();
   // Item activo = destino del último clic: ruta + ancla de la URL ("Inicio" cuando es la portada sin ancla). Un enlace de
   // ancla solo se activa con su propio hash, así que nunca hay dos activos a la vez.
@@ -512,7 +517,7 @@ export const Header = () => {
     if (to === "/") return pathname === "/" && !hash;
     return pathname === to || pathname.startsWith(`${to}/`);
   };
-  const aivent = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
+  const b2b = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
 
   useEffect(() => {
     setOpen(false);
@@ -535,7 +540,7 @@ export const Header = () => {
   }, [open]);
 
   return (
-    <Bar $scrolled={scrolled} data-variant={aivent ? "aivent" : undefined} data-scrolled={scrolled}>
+    <Bar $scrolled={scrolled} data-variant={b2b ? "b2b" : undefined} data-scrolled={scrolled}>
       {/* Indicador de progreso de scroll: pegado al borde inferior del Header
           (que cambia de 84 a 64 px) gracias a position: absolute; bottom: 0.
           Solo aparece en la home; las páginas internas no lo necesitan. */}
@@ -548,10 +553,10 @@ export const Header = () => {
           onClick={scrollToTop}
         >
           <img
-            src={aivent ? logoWhite : logoDark}
+            src={b2b ? logoWhite : logoDark}
             alt={siteConfig.name}
-            width={aivent ? brand.logoWhite.width : brand.logoDark.width}
-            height={aivent ? brand.logoWhite.height : brand.logoDark.height}
+            width={b2b ? brand.logoWhite.width : brand.logoDark.width}
+            height={b2b ? brand.logoWhite.height : brand.logoDark.height}
           />
         </Brand>
         <Toggle

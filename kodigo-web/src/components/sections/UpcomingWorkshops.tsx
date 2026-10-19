@@ -1,18 +1,19 @@
-import styled, { keyframes } from "styled-components";
-import sphere from "@/assets/aivent/sphere.webp";
+import styled from "styled-components";
 import { upcomingWorkshops } from "@/data/alliances";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
 import { Container, Section } from "../ui/Container";
 import { Clock, MapPin } from "../ui/Icons";
+import { Plexus, type GlobeOptions } from "../ui/Plexus";
 import { Reveal } from "../ui/Reveal";
 import { SectionTitle } from "../ui/SectionTitle";
 
-// Agenda estilo AIvent ("Schedule"): filas separadas por líneas finas sobre fondo índigo oscuro (fecha a la izquierda,
-// título y modalidad al centro, acción a la derecha) y, a la derecha, la esfera 3D violeta de la plantilla girando despacio.
+// Agenda de la landing B2B: filas separadas por líneas finas (fecha a la izquierda, modalidad y título al centro, acción
+// debajo) y, a la derecha, un globo plexus (canvas) girando despacio.
+const GLOBE: GlobeOptions = { seed: 3, count: 240, speed: 0.1 };
+
 const Block = styled(Section)`
   padding-block: ${({ theme }) => theme.section.dense};
-  background: ${({ theme }) => theme.colors.aiventDark};
 `;
 
 const Layout = styled.div`
@@ -27,7 +28,7 @@ const Layout = styled.div`
 `;
 
 const List = styled.ul`
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid ${({ theme }) => theme.b2b.line};
 `;
 
 const Event = styled.div`
@@ -35,7 +36,7 @@ const Event = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.space(5)};
   padding: ${({ theme }) => `${theme.space(7)} 0`};
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid ${({ theme }) => theme.b2b.line};
 
   ${media.up("md")} {
     flex-direction: row;
@@ -46,15 +47,15 @@ const Event = styled.div`
     flex: none;
     min-width: 72px;
     text-align: center;
-    color: ${({ theme }) => theme.colors.lilac};
+    color: ${({ theme }) => theme.b2b.purpleLight};
   }
 
   .day {
     display: block;
     font-size: 2.75rem;
-    font-weight: ${({ theme }) => theme.weights.bold};
+    font-weight: 800;
     line-height: 1;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.b2b.text};
   }
 
   .month {
@@ -63,7 +64,7 @@ const Event = styled.div`
     font-size: 0.875rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
     letter-spacing: 0.08em;
-    color: ${({ theme }) => theme.colors.lilac};
+    color: ${({ theme }) => theme.b2b.purpleLight};
   }
 
   .info {
@@ -72,7 +73,7 @@ const Event = styled.div`
 
     ${media.up("md")} {
       padding-left: ${({ theme }) => theme.space(6)};
-      border-left: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 1px solid ${({ theme }) => theme.b2b.cardBorder};
     }
   }
 
@@ -82,40 +83,29 @@ const Event = styled.div`
     gap: ${({ theme }) => theme.space(2)};
     margin-bottom: ${({ theme }) => theme.space(1)};
     font-size: 0.9375rem;
-    color: ${({ theme }) => theme.colors.onNavy};
+    color: ${({ theme }) => theme.b2b.text3};
   }
 
   h3 {
     font-size: 1.375rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
+    font-weight: ${({ theme }) => theme.weights.bold};
     line-height: 1.3;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.b2b.text};
   }
 `;
 
-const spin = keyframes`
-  to { transform: rotate(360deg); }
-`;
-
-// Esfera decorativa de AIvent (rotate-animation de la plantilla). Con movimiento reducido queda quieta.
+// Globo decorativo: cuadrado, centrado y con tope de tamaño. El Plexus ya respeta el movimiento reducido (cuadro fijo).
 const Visual = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 
-  img {
-    width: min(100%, 240px);
+  .globe {
+    width: min(100%, 280px);
+    aspect-ratio: 1;
 
     ${media.up("md")} {
       width: min(100%, 460px);
-    }
-    height: auto;
-    filter: drop-shadow(0 20px 50px rgba(118, 77, 240, 0.45));
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    img {
-      animation: ${spin} 60s linear infinite;
     }
   }
 `;
@@ -123,10 +113,10 @@ const Visual = styled.div`
 const Soon = styled.span`
   flex: none;
   padding: ${({ theme }) => `${theme.space(3)} ${theme.space(6)}`};
-  border: 1px dashed ${({ theme }) => theme.colors.lilac};
+  border: 1px dashed rgba(196, 181, 245, 0.5);
   border-radius: ${({ theme }) => theme.radii.pill};
   font-weight: ${({ theme }) => theme.weights.semibold};
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.b2b.text2};
 `;
 
 export const UpcomingWorkshops = () => (
@@ -159,7 +149,7 @@ export const UpcomingWorkshops = () => (
                   {e.soon ? (
                     <Soon>{upcomingWorkshops.soon}</Soon>
                   ) : (
-                    <ButtonLink to="#workshop-title" variant="outlineLight" arrow>
+                    <ButtonLink to="#workshop-title" variant="gradient" arrow>
                       {upcomingWorkshops.cta}
                     </ButtonLink>
                   )}
@@ -169,7 +159,9 @@ export const UpcomingWorkshops = () => (
           </List>
         </div>
         <Visual aria-hidden="true">
-          <img src={sphere} alt="" width={900} height={900} loading="lazy" />
+          <div className="globe">
+            <Plexus kind="globe" options={GLOBE} />
+          </div>
         </Visual>
       </Layout>
     </Container>

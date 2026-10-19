@@ -4,7 +4,8 @@ import { ArrowRight, ArrowUpRight } from "./Icons";
 
 // Variantes: primary (gradient institucional 100deg purpleLight -> purpleDeep), outline (borde violeta),
 // light (blanco, para fondos oscuros o violeta), outlineLight (borde blanco, para el banner oscuro).
-type Variant = "primary" | "outline" | "light" | "outlineLight";
+// gradient / ghost: botón primario (degradado lavanda → teal) y secundario (contorno lavanda) de la landing B2B.
+type Variant = "primary" | "outline" | "light" | "outlineLight" | "gradient" | "ghost";
 
 const buttonStyles = css<{ $variant: Variant }>`
   display: inline-flex;
@@ -21,6 +22,7 @@ const buttonStyles = css<{ $variant: Variant }>`
     color ${({ theme }) => theme.motion.duration.base} ease,
     border-color ${({ theme }) => theme.motion.duration.base} ease,
     filter ${({ theme }) => theme.motion.duration.base} ease,
+    transform ${({ theme }) => theme.motion.duration.hover} ease,
     box-shadow ${({ theme }) => theme.motion.duration.base} ease;
 
   ${({ $variant, theme }) => {
@@ -68,6 +70,31 @@ const buttonStyles = css<{ $variant: Variant }>`
           &:hover {
             background: ${theme.colors.white};
             color: ${theme.colors.navy};
+          }
+        `;
+      case "gradient":
+        return css`
+          background: ${theme.b2b.gradientKey};
+          color: ${theme.b2b.onGradient};
+          font-weight: ${theme.weights.semibold};
+          box-shadow: 0 10px 40px -10px rgba(127, 224, 204, 0.55);
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 48px -10px rgba(127, 224, 204, 0.8);
+          }
+          &:focus-visible {
+            outline-color: ${theme.b2b.text};
+          }
+        `;
+      case "ghost":
+        return css`
+          background: rgba(26, 15, 69, 0.35);
+          border-color: rgba(196, 181, 245, 0.45);
+          color: ${theme.b2b.text};
+          font-weight: ${theme.weights.semibold};
+          &:hover {
+            background: rgba(110, 60, 200, 0.22);
+            border-color: ${theme.b2b.lavender};
           }
         `;
     }

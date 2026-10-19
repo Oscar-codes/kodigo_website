@@ -1,17 +1,17 @@
 import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import styled, { css, keyframes } from "styled-components";
-import hero1 from "@/assets/aivent/hero-1.webp";
-import hero1Small from "@/assets/aivent/hero-1-768.webp";
-import hero2 from "@/assets/aivent/hero-2.webp";
-import hero2Small from "@/assets/aivent/hero-2-768.webp";
+import hero1 from "@/assets/b2b/hero-1.webp";
+import hero1Mobile from "@/assets/b2b/hero-1-m.webp";
+import hero2 from "@/assets/b2b/hero-2.webp";
+import hero2Mobile from "@/assets/b2b/hero-2-m.webp";
 import { alliancesHero } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
-import { bracketLabel } from "../ui/AiventKit";
+import { bracketLabel, keywordText } from "../ui/B2bKit";
 import { Container } from "../ui/Container";
-import { Float } from "../ui/Float";
 import { Pause, Play } from "../ui/Icons";
+import { Plexus, type BandOptions } from "../ui/Plexus";
 
 /** Cuánto se superponen las cifras de impacto (ImpactStats) sobre el banner; debe coincidir con ImpactStats.tsx. */
 export const HERO_OVERLAP = "4.5rem";
@@ -22,19 +22,23 @@ const CHAR_STAGGER_MS = 14;
 const MAX_CHAR_DELAY_MS = 900;
 const TEXT_START_DELAY_MS = 350;
 
-// Banner de la plantilla AIvent (demo "slider-text"): dos diapositivas con sus fotos (images/slider/3 y 4), degradado
-// índigo, etiqueta entre corchetes, flechas laterales y contador "1 / 2". Con los efectos propios del Home de Kodigo:
-// la diapositiva sale hacia la izquierda y entra la siguiente, las letras del título "se ensamblan", y el anillo y la
-// esfera flotan. El texto es el de Alianzas en ambas diapositivas (igual que el Home, hasta tener copy distinto).
+// Banner de la landing B2B: dos diapositivas con fotos ya tratadas en morado (versión de escritorio y de móvil, con el
+// texto a la izquierda / abajo), etiqueta entre corchetes, titular con palabra clave en degradado lavanda → teal, botón
+// primario, controles (anterior / pausa / siguiente) y contador "1 / 2". Efectos propios del Home de Kodigo: la
+// diapositiva sale hacia la izquierda y entra la siguiente, las letras del título "se ensamblan" y una red plexus
+// animada flota sobre la foto. El texto es el de Alianzas en ambas diapositivas (hasta tener copy distinto).
 interface SlideData {
   image: string;
-  imageSmall: string;
+  imageMobile: string;
 }
 
 const SLIDES: SlideData[] = [
-  { image: hero1, imageSmall: hero1Small },
-  { image: hero2, imageSmall: hero2Small },
+  { image: hero1, imageMobile: hero1Mobile },
+  { image: hero2, imageMobile: hero2Mobile },
 ];
+
+// Red plexus sobre la mitad derecha de la foto (en móvil queda sobre la parte alta, donde está la imagen).
+const PLEXUS_BAND: BandOptions = { seed: 7, count: 130, u0: 0.42, u1: 1.06, fade0: 0.5, y: 0.34, amp: 0.1, thick: 0.17, dist: 0.12 };
 
 // === ANIMACIONES ===
 const assemble = keyframes`
@@ -69,7 +73,7 @@ const slideOut = keyframes`
 const Wrap = styled.section`
   position: relative;
   isolation: isolate;
-  background-color: ${({ theme }) => theme.colors.aiventDark};
+  background-color: ${({ theme }) => theme.b2b.bg1};
 `;
 
 // Todas las diapositivas ocupan la misma celda: el alto lo fija la más alta (las "sizer" invisibles).
@@ -80,7 +84,7 @@ const Stage = styled.div`
 
 interface SlideProps {
   $image: string;
-  $imageSmall: string;
+  $imageMobile: string;
   $mode: "current" | "entering" | "leaving" | "sizer";
 }
 
@@ -89,26 +93,32 @@ const Slide = styled.div<SlideProps>`
   min-width: 0;
   display: flex;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.aiventDark};
-  min-height: clamp(34rem, calc(100svh - ${({ theme }) => theme.layout.headerHeight}), 58rem);
-  padding-block: 4rem calc(${HERO_OVERLAP} + 5rem);
+  background-color: ${({ theme }) => theme.b2b.bg1};
+  min-height: clamp(36rem, calc(100svh - ${({ theme }) => theme.layout.headerHeight}), 56rem);
+  padding-block: 4rem calc(${HERO_OVERLAP} + 5.5rem);
 
-  ${({ $mode, $image, $imageSmall }) =>
+  ${media.down("md")} {
+    /* En móvil la foto ocupa la parte alta y el texto va abajo. */
+    align-items: flex-end;
+    min-height: 42rem;
+    padding-top: 16rem;
+  }
+
+  ${({ $mode, $image, $imageMobile, theme }) =>
     $mode !== "sizer" &&
     css`
-      /* Superposición de AIvent (sw-overlay) + degradado inferior que funde el banner con la sección siguiente. */
+      /* La foto ya viene tratada (morado + plexus); solo se funde el borde inferior con la sección siguiente. */
       background-image:
-        linear-gradient(0deg, rgba(16, 20, 53, 1) 0%, rgba(16, 20, 53, 0) 30%),
-        linear-gradient(90deg, rgba(16, 20, 53, 0.82) 0%, rgba(16, 20, 53, 0.55) 50%, rgba(16, 20, 53, 0.25) 100%),
+        linear-gradient(0deg, ${theme.b2b.bg1} 0%, rgba(26, 15, 69, 0) 28%),
         url(${$image});
       background-size: cover;
       background-position: center;
 
       ${media.down("md")} {
         background-image:
-          linear-gradient(0deg, rgba(16, 20, 53, 1) 0%, rgba(16, 20, 53, 0) 30%),
-          linear-gradient(rgba(16, 20, 53, 0.78), rgba(16, 20, 53, 0.78)),
-          url(${$imageSmall});
+          linear-gradient(0deg, ${theme.b2b.bg1} 0%, rgba(26, 15, 69, 0) 45%),
+          url(${$imageMobile});
+        background-position: top center;
       }
     `}
 
@@ -129,31 +139,36 @@ const Slide = styled.div<SlideProps>`
   }
 `;
 
+// El contenido va por encima de la red plexus.
+const Body = styled(Container)`
+  position: relative;
+  z-index: 2;
+`;
+
 const Content = styled.div`
-  max-width: 820px;
+  max-width: 940px;
 `;
 
 const Eyebrow = styled.h1`
   ${bracketLabel}
   margin-bottom: ${({ theme }) => theme.space(5)};
-  font-size: 1rem;
-  letter-spacing: 0.04em;
+  font-size: 0.8125rem;
+  font-weight: ${({ theme }) => theme.weights.semibold};
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 `;
 
 const Question = styled.p`
   margin-bottom: ${({ theme }) => theme.space(6)};
-  font-size: ${({ theme }) => theme.type.display};
-  font-weight: ${({ theme }) => theme.weights.bold};
-  line-height: 1.05;
-  color: ${({ theme }) => theme.colors.white};
+  font-size: clamp(2.5rem, 1rem + 3.6vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  color: ${({ theme }) => theme.b2b.text};
 
   em {
     font-style: normal;
-    background-image: linear-gradient(180deg, #c7b0ff 0%, #adf3e6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    ${keywordText}
   }
 `;
 
@@ -161,7 +176,7 @@ const Subtitle = styled.p<{ $animate: boolean }>`
   max-width: 52ch;
   margin-bottom: ${({ theme }) => theme.space(10)};
   font-size: 1.125rem;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.b2b.text2};
 
   @media (prefers-reduced-motion: no-preference) {
     ${({ $animate }) =>
@@ -196,63 +211,25 @@ const Char = styled.span`
   }
 `;
 
-const Ring = styled(Float)`
+// Red plexus: capa decorativa sobre la foto, detrás del texto.
+const PlexusLayer = styled.div`
+  position: absolute;
+  inset: 0 0 ${HERO_OVERLAP};
   z-index: 1;
-  border: 2px solid rgba(255, 255, 255, 0.22);
-  border-radius: 50%;
-`;
-
-const Orb = styled(Float)`
-  z-index: 1;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.colors.lilac};
-  opacity: 0.35;
+  pointer-events: none;
 
   ${media.down("md")} {
-    display: none;
+    bottom: 45%;
   }
 `;
 
-// Flechas laterales de AIvent (swiper-button-prev/next): solo en pantallas anchas para no tapar el texto en móvil.
-const Arrow = styled.button<{ $side: "prev" | "next" }>`
-  position: absolute;
-  top: 50%;
-  ${({ $side }) => ($side === "prev" ? "left: 1.25rem;" : "right: 1.25rem;")}
-  z-index: 2;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-top: -24px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(16, 20, 53, 0.35);
-  color: ${({ theme }) => theme.colors.white};
-  cursor: pointer;
-  transition: background-color ${({ theme }) => theme.motion.duration.hover} linear;
-
-  ${media.up("lg")} {
-    display: flex;
-  }
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.aiventViolet};
-  }
-
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.white};
-    outline-offset: 3px;
-  }
-`;
-
-// Fila inferior: pausa (WCAG 2.2.2) a la izquierda y contador "1 / 2" de AIvent a la derecha.
+// Fila de controles bajo el botón: anterior, pausa (WCAG 2.2.2) y siguiente, y a la derecha el contador "1 / 2".
 const Controls = styled(Container)`
   position: absolute;
   left: 0;
   right: 0;
   bottom: calc(${HERO_OVERLAP} + 1.25rem);
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -261,33 +238,42 @@ const Controls = styled(Container)`
   button {
     pointer-events: auto;
   }
+
+  .buttons {
+    display: flex;
+    gap: ${({ theme }) => theme.space(3)};
+  }
 `;
 
-const PauseButton = styled.button`
+const RoundButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 2px solid ${({ theme }) => theme.colors.white};
-  background: transparent;
-  color: ${({ theme }) => theme.colors.white};
+  border: 1px solid rgba(196, 181, 245, 0.55);
+  background: rgba(26, 15, 69, 0.35);
+  color: ${({ theme }) => theme.b2b.text};
   cursor: pointer;
+  transition:
+    background-color ${({ theme }) => theme.motion.duration.hover} linear,
+    border-color ${({ theme }) => theme.motion.duration.hover} linear;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.16);
+    background: rgba(110, 60, 200, 0.3);
+    border-color: ${({ theme }) => theme.b2b.lavender};
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.yellow};
+    outline: 2px solid ${({ theme }) => theme.b2b.teal};
     outline-offset: 3px;
   }
 `;
 
 const Counter = styled.p`
-  font-size: 1.125rem;
-  color: ${({ theme }) => theme.colors.white};
+  font-size: 1.0625rem;
+  color: ${({ theme }) => theme.b2b.text};
 
   span {
     opacity: 0.55;
@@ -333,7 +319,7 @@ const splitQuestion = (text: string): [string, string] => {
 const inertProps = { inert: "" } as Record<string, string>;
 
 const ChevronIcon = ({ dir }: { dir: "left" | "right" }) => (
-  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
     <path d={dir === "left" ? "m15 5-7 7 7 7" : "m9 5 7 7-7 7"} />
   </svg>
 );
@@ -347,8 +333,8 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
   const render = (text: string) => (animated ? assembleText(text, counter) : text);
 
   return (
-    <Slide $image={slide.image} $imageSmall={slide.imageSmall} $mode={mode} {...hidden}>
-      <Container>
+    <Slide $image={slide.image} $imageMobile={slide.imageMobile} $mode={mode} {...hidden}>
+      <Body>
         <Content>
           <Eyebrow as={animated ? "h1" : "p"}>{alliancesHero.title}</Eyebrow>
           <Question aria-label={animated ? alliancesHero.question : undefined}>
@@ -357,12 +343,12 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
           </Question>
           <Subtitle $animate={animated}>{alliancesHero.subtitle}</Subtitle>
           <Actions $animate={animated}>
-            <ButtonLink to={siteConfig.advisoryUrl ?? "#contacto"} variant="light" arrow="right">
+            <ButtonLink to={siteConfig.advisoryUrl ?? "#contacto"} variant="gradient" arrow="right">
               {alliancesHero.cta}
             </ButtonLink>
           </Actions>
         </Content>
-      </Container>
+      </Body>
     </Slide>
   );
 };
@@ -412,18 +398,21 @@ export const AlliancesHero = () => {
         {leaving !== null && <SlideView key={`s-${leaving}`} slide={SLIDES[leaving % total]} mode="leaving" />}
         <SlideView key={`s-${tick}`} slide={SLIDES[current]} mode={tick === 0 ? "current" : "entering"} />
       </Stage>
-      <Ring className="shape a" style={{ width: 220, height: 220, right: "7%", top: "12%" }} $range={14} />
-      <Orb className="shape b" style={{ width: 84, height: 84, right: "24%", bottom: "26%" }} $range={18} $delay={-2} />
-      <Arrow type="button" $side="prev" aria-label="Diapositiva anterior" onClick={() => goTo(total - 1)}>
-        <ChevronIcon dir="left" />
-      </Arrow>
-      <Arrow type="button" $side="next" aria-label="Diapositiva siguiente" onClick={() => goTo(1)}>
-        <ChevronIcon dir="right" />
-      </Arrow>
+      <PlexusLayer>
+        <Plexus kind="band" options={PLEXUS_BAND} />
+      </PlexusLayer>
       <Controls>
-        <PauseButton type="button" aria-label={playing ? "Pausar carrusel" : "Reanudar carrusel"} onClick={() => setPlaying((p) => !p)}>
-          {playing ? <Pause size={14} /> : <Play size={14} />}
-        </PauseButton>
+        <div className="buttons">
+          <RoundButton type="button" aria-label="Diapositiva anterior" onClick={() => goTo(total - 1)}>
+            <ChevronIcon dir="left" />
+          </RoundButton>
+          <RoundButton type="button" aria-label={playing ? "Pausar carrusel" : "Reanudar carrusel"} onClick={() => setPlaying((p) => !p)}>
+            {playing ? <Pause size={14} /> : <Play size={14} />}
+          </RoundButton>
+          <RoundButton type="button" aria-label="Diapositiva siguiente" onClick={() => goTo(1)}>
+            <ChevronIcon dir="right" />
+          </RoundButton>
+        </div>
         <Counter aria-live="off">
           {current + 1} <span>/ {total}</span>
         </Counter>

@@ -50,7 +50,7 @@ const open = async (width) => {
   // ---- 4. Formulario (inmediatamente después de las tarjetas)
   const form = p.locator("section[aria-labelledby=workshop-title] form");
   t("formulario: está dentro de la banda del workshop, antes de los tres pasos", (await form.count()) === 1 && (await p.locator("section[aria-labelledby=workshop-title] ol").evaluate((ol) => !!(document.querySelector("section[aria-labelledby=workshop-title] form").compareDocumentPosition(ol) & Node.DOCUMENT_POSITION_FOLLOWING))));
-  t("banda: fondo oscuro con degradado y título plateado (AIvent)", /gradient/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e).backgroundImage)) && /gradient/.test(await p.locator("#workshop-title").evaluate((e) => getComputedStyle(e).backgroundImage)));
+  t("banda: fondo con foto tratada (pseudo-elemento) y palabra clave 'empresa' en degradado", /url\(/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e, "::before").backgroundImage)) && (await p.locator("#workshop-title em").innerText()) === "empresa" && /gradient/.test(await p.locator("#workshop-title em").evaluate((e) => getComputedStyle(e).backgroundImage)));
   const email = p.getByLabel("Correo corporativo");
   const submit = p.getByRole("button", { name: "Registrarme al Workshop" });
   t("formulario: campo con etiqueta 'Correo corporativo' y botón 'Registrarme al Workshop'", (await email.isVisible()) && (await submit.isVisible()));
@@ -62,7 +62,7 @@ const open = async (width) => {
   t("error: vacío muestra mensaje, marca aria-invalid y devuelve el foco al campo", (await p.getByRole("alert").innerText()).includes("Ingresa tu correo corporativo") && (await email.getAttribute("aria-invalid")) === "true" && (await email.evaluate((e) => e === document.activeElement)));
   t("error: el campo se asocia al mensaje (aria-describedby)", await email.evaluate((e) => !!document.getElementById(e.getAttribute("aria-describedby"))?.textContent));
   await sleep(300);
-  t("error: borde rojo", (await email.evaluate((e) => getComputedStyle(e).borderColor)) === "rgb(180, 35, 24)");
+  t("error: borde de error (coral legible sobre el fondo morado)", (await email.evaluate((e) => getComputedStyle(e).borderColor)) === "rgb(255, 138, 122)");
   await email.fill("sin-arroba");
   t("error: al escribir, el error se limpia", (await email.getAttribute("aria-invalid")) === null);
   await submit.click();
@@ -80,7 +80,7 @@ const open = async (width) => {
   const card = ev.locator("li").first();
   const ct = (await card.innerText()).replace(/\s+/g, " ");
   t("eventos: dos tarjetas, la segunda 'Próximamente'", (await ev.locator("li").count()) === 2 && (await ev.locator("li").nth(1).innerText()).includes("Próximamente"));
-  t("eventos: esfera decorativa de AIvent (aria-hidden, imagen cargada)", await ev.locator("[aria-hidden=true] img").evaluateAll((l) => l.length === 1 && l[0].alt === "" && l[0].complete && l[0].naturalWidth > 0));
+  t("eventos: globo plexus decorativo (canvas aria-hidden con tamaño)", await ev.locator("canvas[aria-hidden=true]").evaluateAll((l) => l.length === 1 && l[0].clientWidth > 100 && l[0].clientHeight > 100));
   t("eventos: tarjeta con NOV 26, título y modalidad", /26/.test(ct) && /NOV/.test(ct) && ct.includes("AI para equipos comerciales") && ct.includes("Sesión Presencial INCAF"), ct);
   t("eventos: título como h3 y fecha destacada (>= 40 px)", (await card.locator("h3").innerText()) === "AI para equipos comerciales" && parseFloat(await card.locator(".day").evaluate((e) => getComputedStyle(e).fontSize)) >= 40);
   t("eventos: CTA 'Registrarme' lleva al registro", (await card.getByRole("link", { name: "Registrarme" }).getAttribute("href")) === "#workshop-title");
@@ -90,7 +90,7 @@ const open = async (width) => {
   const cs = p.locator("section[aria-labelledby=cases-title]");
   t("casos: título exacto con énfasis", (await cs.locator("#cases-title").innerText()).replace(/\s+/g, " ").trim() === "Empresas que llevan la formación a resultado" && (await cs.locator("#cases-title strong").innerText()) === "la formación a resultado");
   t("casos: 5 casos y 5 pestañas con el logo de cada empresa", (await cs.locator("[role=tabpanel]").count()) === 5 && JSON.stringify(await cs.locator("[role=tab]").evaluateAll((l) => l.map((e) => e.getAttribute("aria-label")))) === JSON.stringify(["Coderland", "Vidri", "CBC", "Telus", "Casa Muñoz"]));
-  t("casos: fondo oscuro de AIvent con resplandor violeta", /gradient/.test(await cs.locator("#cases-title").evaluate((e) => getComputedStyle(e.closest("section")).backgroundImage)));
+  t("casos: fondo con foto tratada en morado (pseudo-elemento con velo)", /url\(/.test(await cs.locator("#cases-title").evaluate((e) => getComputedStyle(e.closest("section"), "::before").backgroundImage)));
   const visibleCase = async () => cs.locator("[role=tabpanel]").evaluateAll((l) => l.filter((e) => getComputedStyle(e).visibility === "visible").map((e) => e.querySelector(".badge").textContent));
   t("casos: arranca en Coderland con una sola diapositiva visible", JSON.stringify(await visibleCase()) === JSON.stringify(["CODERLAND - PANAMÁ"]));
   await cs.getByRole("tab", { name: "Vidri" }).click(); await sleep(700);
@@ -100,7 +100,7 @@ const open = async (width) => {
   await cs.getByRole("tab", { name: "Telus" }).click(); await sleep(700);
   t("casos: Telus", (await cs.getByText("TELUS DIGITAL").isVisible()) && (await cs.getByText(/reskilling del talento interno/).isVisible()));
   await cs.getByRole("tab", { name: "Casa Muñoz" }).click(); await sleep(700);
-  t("casos: Casa Muñoz sobre tarjeta blanca como las demás", (await cs.getByText("decisiones 22X más rápidas").isVisible()) && (await cs.locator("[role=tabpanel]").nth(4).locator("div").first().evaluate((e) => getComputedStyle(e).backgroundColor)) === "rgb(255, 255, 255)");
+  t("casos: Casa Muñoz sobre tarjeta clara como las demás", (await cs.getByText("decisiones 22X más rápidas").isVisible()) && (await cs.locator("[role=tabpanel]").nth(4).locator("div").first().evaluate((e) => getComputedStyle(e).backgroundColor)) === "rgb(244, 242, 248)");
   await cs.getByRole("tab", { name: "Casa Muñoz" }).focus(); await p.keyboard.press("ArrowRight"); await sleep(700);
   t("casos: la flecha derecha avanza (y vuelve al primero)", JSON.stringify(await visibleCase()) === JSON.stringify(["CODERLAND - PANAMÁ"]) && (await cs.getByRole("tab", { name: "Coderland" }).getAttribute("aria-selected")) === "true");
   t("casos: botón de pausa accesible", (await cs.getByRole("button", { name: "Pausar el carrusel" }).getAttribute("aria-pressed")) === "false");
@@ -110,7 +110,7 @@ const open = async (width) => {
   await p.mouse.move(5, 5); await cs.getByRole("tab", { name: "Coderland" }).click(); await p.mouse.move(5, 5); await sleep(7800);
   t("casos: avanza solo tras ~7 s (carrusel automático)", JSON.stringify(await visibleCase()) === JSON.stringify(["VIDRI - EL SALVADOR"]), JSON.stringify(await visibleCase()));
   t("casos: va después de los próximos workshops", await p.evaluate(() => document.querySelector("section[aria-labelledby=events-title]").nextElementSibling === document.querySelector("section[aria-labelledby=cases-title]")));
-  t("casos: resultados con cifra destacada como tarjeta (+40, 8, 30, 13, 3)", (await cs.locator(".stat").count()) === 5 && (await cs.locator(".stat b").allTextContents()).join("|") === "+40|8|30|13|3");
+  t("casos: los 11 resultados van como tarjetas iguales con visto", (await cs.locator("[role=tabpanel] ul li").count()) === 11 && (await cs.locator("[role=tabpanel] ul li .check svg").count()) === 11);
 
   // ---- 7. Nos adaptamos a tu operación
   const ad = p.locator("section[aria-labelledby=adaptive-title]");
@@ -169,7 +169,7 @@ for (const width of [360, 768]) {
   t("reducido: las cifras muestran su valor final sin animar", /\+2,800/.test(await p.locator("section[aria-labelledby=impact-title]").innerText()));
   await p.locator("section[aria-labelledby=cases-title]").scrollIntoViewIfNeeded(); await sleep(8000);
   t("reducido: el carrusel NO avanza solo", (await p.locator("section[aria-labelledby=cases-title] [role=tab][aria-selected=true]").getAttribute("aria-label")) === "Coderland");
-  t("reducido: las formas del banner quedan quietas", (await p.locator(".shape.a").evaluate((e) => getComputedStyle(e).animationName)) === "none");
+  t("reducido: las letras del titular del banner no se ensamblan (sin animación)", (await p.locator("section[aria-label='Destacados de Alianzas'] h1 ~ p span span, section[aria-label='Destacados de Alianzas'] p[aria-label] span span").first().evaluate((e) => getComputedStyle(e).animationName)) === "none");
   await ctx.close();
 }
 

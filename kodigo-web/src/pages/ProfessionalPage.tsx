@@ -9,19 +9,21 @@ import { Partners } from "@/components/sections/Partners";
 import { TeamBlock } from "@/components/sections/TeamBlock";
 import { UpcomingWorkshops } from "@/components/sections/UpcomingWorkshops";
 import { Workshop } from "@/components/sections/Workshop";
-import { SkewBands } from "@/components/ui/AiventKit";
 import { Card } from "@/components/ui/Card";
 import { Container, Section } from "@/components/ui/Container";
 import { ArrowRight } from "@/components/ui/Icons";
-import { alliancesHero, impactStats } from "@/data/alliances";
 import { content } from "@/data/content";
 import { professionalSections } from "@/data/professional";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { media } from "@/styles/theme";
 import { NotFoundPage } from "./NotFoundPage";
 
-// Frases de las franjas inclinadas (AIvent): reutilizan textos que ya existen en la página.
-const bandPhrases = [alliancesHero.title, ...impactStats.map((s) => s.label)];
+// Landing B2B (Alianzas): fondo morado continuo (el degradado cubre toda la página) y tipografía Matimo.
+const B2bPage = styled.div`
+  background: ${({ theme }) => theme.b2b.bgGradient};
+  color: ${({ theme }) => theme.b2b.text};
+  font-family: ${({ theme }) => theme.fonts.b2b};
+`;
 
 const Cards = styled.ul`
   display: grid;
@@ -102,20 +104,20 @@ export const ProfessionalPage = () => {
 
   if (!section) return <NotFoundPage />;
 
-  // Alianzas = "Kodigo para empresas": banner, cifras de impacto, workshop con formulario y, al final, los aliados.
+  // Alianzas = "Kodigo para empresas": banner, cifras de impacto, workshop con formulario, próximos workshops, casos de
+  // éxito, adaptación a la operación, equipo y, al final, los aliados (orden de la guía "Landing B2B Kodigo").
   if (section.slug === "alianzas") {
     return (
-      <>
+      <B2bPage>
         <AlliancesHero />
         <ImpactStats />
-        <SkewBands items={bandPhrases} />
         <Workshop />
         <UpcomingWorkshops />
         <CaseStudies />
         <AdaptiveTraining />
         <TeamBlock />
         {content.partners?.length ? <Partners items={content.partners} variant="grid" dark /> : null}
-      </>
+      </B2bPage>
     );
   }
 

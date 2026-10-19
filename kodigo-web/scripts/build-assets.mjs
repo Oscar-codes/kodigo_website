@@ -4,7 +4,7 @@
 //
 // Uso:
 //   npm run assets:build                       (usa ../Recursos kodigo)
-//   node scripts/build-assets.mjs --src "ruta/a/Recursos kodigo" [--only partners|brand|icons|photos]
+//   node scripts/build-assets.mjs --src "ruta/a/Recursos kodigo" [--only partners|brand|icons|photos|team|b2b]
 //
 // Genera (se versiona el resultado optimizado, no los originales de 29 MB):
 //   src/assets/partners/<slug>.webp + src/data/partners.json   (logos de aliados, recortados y normalizados)
@@ -186,7 +186,53 @@ const buildTeam = async () => {
   console.log(`equipo: ${Object.keys(people).length} retratos -> src/assets/team (${kb(total)} en total)`);
 };
 
+// ---------- Landing B2B (página Alianzas) ----------
+// Carpeta "recursos-landing-b2b" (dentro de Recursos kodigo): fondos ya tratados en morado (PNG enormes de 3840 px) -> WebP
+// optimizados, íconos SVG de línea teal (sin la metadata C2PA que traen embebida) y la fuente Matimo (woff2 tal cual).
+const buildB2b = async () => {
+  const srcDir = join(SRC, "recursos-landing-b2b");
+  const outDir = join(ROOT, "src/assets/b2b"); rmSync(outDir, { recursive: true, force: true }); ensure(outDir);
+  const webp = async (rel, out, width, quality, height) => {
+    const buf = await sharp(join(srcDir, rel)).resize({ width, height, fit: height ? "cover" : "inside", withoutEnlargement: true })
+      .webp({ quality, effort: 5 }).toBuffer();
+    writeFileSync(join(outDir, out), buf);
+    return buf.length;
+  };
+  const jobs = [
+    ["01-hero/tratadas/hero-slide-1-tratada-desktop-3840x2160.png", "hero-1.webp", 2560, 74],
+    ["01-hero/tratadas/hero-slide-1-tratada-movil-2160x3840.png", "hero-1-m.webp", 1080, 72],
+    ["01-hero/tratadas/hero-slide-2-tratada-desktop-3840x2160.png", "hero-2.webp", 2560, 74],
+    ["01-hero/tratadas/hero-slide-2-tratada-movil-2160x3840.png", "hero-2-m.webp", 1080, 72],
+    ["02-workshop/tratadas/workshop-fondo-tratada-3840x2160.png", "workshop-bg.webp", 2560, 68],
+    ["02-workshop/tratadas/workshop-ticket-cabecera-tratada-1840x800.png", "ticket-cabecera.webp", 1200, 80],
+    ["04-casos-de-exito/tratadas/casos-fondo-tratada-3840x2160.png", "casos-bg.webp", 2560, 68],
+    ["05-adaptacion/tratadas/adaptacion-fondo-tratada-3840x2160.png", "adaptacion-bg.webp", 2560, 68],
+    ["05-adaptacion/tratadas/lista-01-horarios-a-la-medida-tratada-800x800.png", "lista-01.webp", 400, 78],
+    ["05-adaptacion/tratadas/lista-02-ritmo-adaptable-tratada-800x800.png", "lista-02.webp", 400, 78],
+    ["05-adaptacion/tratadas/lista-03-modalidad-flexible-tratada-800x800.png", "lista-03.webp", 400, 78],
+    ["05-adaptacion/tratadas/lista-04-contenido-aplicado-tratada-800x800.png", "lista-04.webp", 400, 78],
+    ["07-aliados/tratadas/aliados-fondo-tratada-3840x2160.png", "aliados-bg.webp", 2560, 68],
+  ];
+  let total = 0;
+  for (const [rel, out, w, q] of jobs) total += await webp(rel, out, w, q);
+  // Íconos: solo los que usa la página.
+  const iconDir = join(srcDir, "08-iconos", "svg-linea-teal"); const iconOut = join(outDir, "icons"); ensure(iconOut);
+  const icons = readdirSync(iconDir).filter((f) => f.endsWith(".svg"));
+  for (const f of icons) {
+    const svg = readFileSync(join(iconDir, f), "utf8").replace(/<metadata>[\s\S]*?<\/metadata>/g, "").replace(/\s+xmlns:c2pa="[^"]*"/g, "").replace(/\s+width="512"\s+height="512"/, "");
+    writeFileSync(join(iconOut, f), svg);
+  }
+  const linkedin = readFileSync(join(srcDir, "08-iconos", "svg-linkedin.svg"), "utf8").replace(/<metadata>[\s\S]*?<\/metadata>/g, "").replace(/\s+xmlns:c2pa="[^"]*"/g, "");
+  writeFileSync(join(iconOut, "linkedin.svg"), linkedin);
+  // Fuente Matimo (5 pesos woff2, autoalojada).
+  const fontOut = join(ROOT, "src/assets/fonts/matimo"); rmSync(fontOut, { recursive: true, force: true }); ensure(fontOut);
+  const fontSrc = join(srcDir, "00-marca", "fuente-matimo");
+  for (const f of readdirSync(fontSrc).filter((x) => x.endsWith(".woff2"))) writeFileSync(join(fontOut, f), readFileSync(join(fontSrc, f)));
+  console.log(`b2b: ${jobs.length} imágenes (${kb(total)}), ${icons.length + 1} íconos SVG, fuente Matimo -> src/assets/b2b y src/assets/fonts/matimo`);
+};
+
 try {
+  if (want("b2b")) await buildB2b();
   if (want("partners")) await buildPartners();
   if (want("photos")) await buildPhotos();
   if (want("team")) await buildTeam();

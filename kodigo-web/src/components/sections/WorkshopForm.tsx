@@ -2,9 +2,7 @@ import { useId, useState } from "react";
 import styled from "styled-components";
 import { workshop } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
-import { media } from "@/styles/theme";
 import { ArrowRight } from "../ui/Icons";
-import { VisuallyHidden } from "../ui/VisuallyHidden";
 
 type Status = "idle" | "sending" | "sent" | "unavailable" | "failed";
 
@@ -20,58 +18,56 @@ const validate = (raw: string): string => {
   return "";
 };
 
-// Barra de correo del bloque "newsletter" de Eduhall: caja blanca con el campo y el botón con degradado de Kodigo dentro.
-// Va sobre la banda violeta, así que el mensaje se muestra en una pastilla blanca (el rojo no tiene contraste sobre violeta).
+// Formulario del pase de registro (landing B2B): etiqueta visible, campo oscuro con borde lavanda y botón primario con
+// degradado lavanda → teal. El mensaje de estado se muestra bajo el botón, en un tono legible sobre el fondo morado.
 const Form = styled.form`
   width: 100%;
-  max-width: 640px;
-  margin-inline: auto;
+
+  label {
+    display: block;
+    margin-bottom: ${({ theme }) => theme.space(2)};
+    font-size: 0.875rem;
+    font-weight: ${({ theme }) => theme.weights.medium};
+    color: ${({ theme }) => theme.b2b.text};
+  }
 
   .bar {
     display: grid;
-    gap: ${({ theme }) => theme.space(2)};
-    padding: ${({ theme }) => theme.space(2.5)};
-    background: ${({ theme }) => theme.colors.white};
-    border-radius: ${({ theme }) => theme.radii.lg};
-    box-shadow: ${({ theme }) => theme.shadows.float};
-
-    ${media.up("md")} {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
+    gap: ${({ theme }) => theme.space(3)};
   }
 
   input {
     width: 100%;
-    padding: 15px 18px;
+    padding: 16px 18px;
     font: inherit;
-    color: ${({ theme }) => theme.colors.heading};
-    background: ${({ theme }) => theme.colors.white};
-    border: 1px solid transparent;
-    border-radius: ${({ theme }) => theme.radii.md};
+    color: ${({ theme }) => theme.b2b.text};
+    background: rgba(26, 15, 69, 0.7);
+    border: 1px solid ${({ theme }) => theme.b2b.cardBorder};
+    border-radius: 14px;
     transition: border-color ${({ theme }) => theme.motion.duration.hover} linear,
       box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
 
     &::placeholder {
-      color: ${({ theme }) => theme.colors.textMuted};
+      color: ${({ theme }) => theme.b2b.text3};
     }
 
     &:hover {
-      border-color: ${({ theme }) => theme.colors.main200};
+      border-color: ${({ theme }) => theme.b2b.cardBorderActive};
     }
 
     &:focus-visible {
       outline: none;
-      border-color: ${({ theme }) => theme.colors.accentOnLight};
-      box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.main100};
+      border-color: ${({ theme }) => theme.b2b.lavender};
+      box-shadow: 0 0 0 3px rgba(196, 181, 245, 0.25);
     }
 
     &[aria-invalid="true"] {
-      border-color: ${({ theme }) => theme.colors.danger};
-      background: ${({ theme }) => theme.colors.dangerSoft};
+      border-color: #ff8a7a;
+      background: rgba(240, 78, 41, 0.12);
     }
 
     &[aria-invalid="true"]:focus-visible {
-      box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.2);
+      box-shadow: 0 0 0 3px rgba(255, 138, 122, 0.3);
     }
   }
 
@@ -79,24 +75,26 @@ const Form = styled.form`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: ${({ theme }) => theme.space(2)};
-    padding: 15px 28px;
+    gap: ${({ theme }) => theme.space(2.5)};
+    width: 100%;
+    padding: 16px 28px;
     border: 0;
-    border-radius: ${({ theme }) => theme.radii.md};
-    background: linear-gradient(90deg, ${({ theme }) => theme.colors.mainHover}, ${({ theme }) => theme.colors.main} 60%, #6a4fe3);
-    color: ${({ theme }) => theme.colors.white};
+    border-radius: 14px;
+    background: ${({ theme }) => theme.b2b.gradientKey};
+    color: ${({ theme }) => theme.b2b.onGradient};
     font-size: 1rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
     cursor: pointer;
-    transition: box-shadow ${({ theme }) => theme.motion.duration.base} ease, transform ${({ theme }) => theme.motion.duration.hover} linear;
+    box-shadow: 0 10px 40px -10px rgba(127, 224, 204, 0.55);
+    transition: box-shadow ${({ theme }) => theme.motion.duration.base} ease, transform ${({ theme }) => theme.motion.duration.hover} ease;
 
     &:hover:not(:disabled) {
-      box-shadow: 0 8px 20px rgba(46, 45, 239, 0.4);
+      box-shadow: 0 14px 48px -10px rgba(127, 224, 204, 0.8);
       transform: translateY(-1px);
     }
 
     &:focus-visible {
-      outline: 2px solid ${({ theme }) => theme.colors.heading};
+      outline: 2px solid ${({ theme }) => theme.b2b.text};
       outline-offset: 2px;
     }
 
@@ -106,34 +104,30 @@ const Form = styled.form`
     }
   }
 
+  .msgwrap {
+    text-align: center;
+  }
+
   .msg {
-    margin-top: ${({ theme }) => theme.space(3)};
     font-size: 0.9375rem;
     font-weight: ${({ theme }) => theme.weights.medium};
     text-align: center;
   }
 
   .msg:not(:empty) {
-    display: inline-block;
-    padding: ${({ theme }) => `${theme.space(1.5)} ${theme.space(4)}`};
-    border-radius: ${({ theme }) => theme.radii.pill};
-    background: ${({ theme }) => theme.colors.white};
-  }
-
-  .msgwrap {
-    text-align: center;
+    margin-top: ${({ theme }) => theme.space(4)};
   }
 
   .msg.error {
-    color: ${({ theme }) => theme.colors.danger};
+    color: #ffb4a8;
   }
 
   .msg.ok {
-    color: ${({ theme }) => theme.colors.greenText};
+    color: ${({ theme }) => theme.b2b.teal};
   }
 
   .msg.info {
-    color: ${({ theme }) => theme.colors.heading};
+    color: ${({ theme }) => theme.b2b.text2};
   }
 `;
 
@@ -183,9 +177,7 @@ export const WorkshopForm = () => {
 
   return (
     <Form onSubmit={onSubmit} noValidate>
-      <VisuallyHidden as="label" htmlFor={`${id}-email`}>
-        {form.emailLabel}
-      </VisuallyHidden>
+      <label htmlFor={`${id}-email`}>{form.emailLabel}</label>
       <div className="bar">
         <input
           id={`${id}-email`}

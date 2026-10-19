@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { useInView } from "@/hooks/useInView";
 import { bounceIn, bounceInDown, bounceInUp } from "@/styles/effects";
 import { BookOpen } from "./Icons";
-import { bracketLabel, silverText } from "./AiventKit";
+import { bracketLabel, headlineText, keywordText } from "./B2bKit";
 
 // Entrada de los títulos de sección como en Eduhall: la etiqueta cae (bounceInDown), el título aparece rebotando
 // (bounceIn) y el párrafo sube (bounceInUp). Con movimiento reducido todo se ve de inmediato.
@@ -38,7 +38,7 @@ const Wrap = styled.div<{ $align: "center" | "left"; $visible: boolean; $dark: b
     max-width: 60ch;
   }
 
-  /* Tono oscuro (página de Alianzas, estilo AIvent): etiqueta entre corchetes, título plateado y texto claro. */
+  /* Tono oscuro (landing B2B de Alianzas): etiqueta entre corchetes, título claro con palabra clave en degradado y texto claro. */
   ${({ $dark, theme }) =>
     $dark &&
     css`
@@ -48,17 +48,17 @@ const Wrap = styled.div<{ $align: "center" | "left"; $visible: boolean; $dark: b
       }
 
       h2 {
-        ${silverText}
+        font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+        line-height: 1.1;
+        ${headlineText}
       }
 
       h2 em {
-        background: none;
-        -webkit-text-fill-color: ${theme.colors.lilac};
-        color: ${theme.colors.lilac};
+        ${keywordText}
       }
 
       p.lead {
-        color: ${theme.colors.onNavy};
+        color: ${theme.b2b.text2};
       }
     `}
 
@@ -93,7 +93,7 @@ interface SectionTitleProps {
   /** Etiqueta con icono sobre el título, típica de Eduhall ("Latest News", "Campus Life"…). */
   label?: string;
   align?: "center" | "left";
-  /** Fondo oscuro: título plateado y etiqueta con corchetes (AIvent). */
+  /** Fondo oscuro: título claro y etiqueta con corchetes (landing B2B). */
   tone?: "light" | "dark";
 }
 

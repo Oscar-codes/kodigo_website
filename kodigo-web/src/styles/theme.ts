@@ -50,12 +50,6 @@ export const theme = {
     violetDeep: "#1E1B6E",
     lilac: "#AF94F8",
 
-    // Paleta de la plantilla AIvent (demo slider-text) para la página de Alianzas: fondos índigo oscuro y violeta.
-    aiventDark: "#101435",
-    aiventDark2: "#1A1E42",
-    aiventViolet: "#764DF0",
-    aiventVioletDeep: "#442490",
-
     /** Menú principal de la barra horizontal: color base, y color al pasar el cursor / en la sección activa.
         #576070 = 6.3:1 y #7748e4 = 5.5:1 sobre blanco (AA). */
     menuText: "#576070",
@@ -79,6 +73,33 @@ bgTranslucent: "rgba(255, 255, 255, 0.97)",
   },
   fonts: {
     body: `"Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`,
+    /** Matimo, la tipografía de marca de la landing B2B (página Alianzas, su header y su footer). */
+    b2b: `Matimo, "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`,
+  },
+  /** Paleta de la landing B2B (guía "kodigo-b2b-estilos.css"): fondo morado profundo, lavanda y teal como acentos. */
+  b2b: {
+    bg1: "#1a0f45",
+    bg2: "#241460",
+    bg3: "#1d1150",
+    bgGradient: "linear-gradient(180deg, #1a0f45 0%, #241460 40%, #1d1150 100%)",
+    purple: "#6E3CC8",
+    purpleLight: "#A07BF0",
+    lavender: "#C4B5F5",
+    teal: "#7FE0CC",
+    mint: "#A8F0E0",
+    text: "#F4F2F8",
+    text2: "#DCD8E6",
+    text3: "#A79FBF",
+    cardBg: "rgba(38, 20, 84, 0.6)",
+    cardBorder: "rgba(196, 181, 245, 0.22)",
+    cardBorderActive: "rgba(160, 123, 240, 0.6)",
+    tileBg: "rgba(110, 60, 200, 0.35)",
+    tileBorder: "rgba(160, 123, 240, 0.5)",
+    /** Degradado de palabra clave en titulares y del botón primario. */
+    gradientKey: "linear-gradient(90deg, #C4B5F5 0%, #7FE0CC 100%)",
+    /** Texto sobre el botón primario. */
+    onGradient: "#1a0f45",
+    line: "rgba(196, 181, 245, 0.16)",
   },
   weights: { regular: 400, medium: 500, semibold: 600, bold: 700 },
   space: (n: number) => `${n * 0.25}rem`,

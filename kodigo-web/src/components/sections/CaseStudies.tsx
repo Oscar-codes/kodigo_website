@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import skyline from "@/assets/aivent/bg-skyline.webp";
+import casesBg from "@/assets/b2b/casos-bg.webp";
 import { successCases } from "@/data/alliances";
 import { partners } from "@/data/partners";
 import { useInView } from "@/hooks/useInView";
 import { bounceIn, bounceInDown, bounceInUp } from "@/styles/effects";
 import { media } from "@/styles/theme";
-import { bracketLabel, silverText } from "../ui/AiventKit";
+import { bracketLabel, glassCard, headlineText, iconTile, imageBackdrop, keywordText } from "../ui/B2bKit";
 import { Container, Section } from "../ui/Container";
 import { Check } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
@@ -14,21 +14,12 @@ import { Reveal } from "../ui/Reveal";
 const AUTOPLAY_MS = 7000;
 const logoOf = (name: string) => partners.find((p) => p.name === name);
 
-// Casos de éxito con el formato "Event Schedule" de AIvent: una fila de pestañas (aquí, una por empresa, con su logo)
-// y debajo el caso activo como una "sesión": logo en tarjeta blanca, historia y, al pie, los resultados como tarjetas de
-// cifra. Fondo de skyline azul de la plantilla que se funde con las secciones vecinas. Cumple WCAG 2.2.2: botón de pausa,
-// se detiene al pasar el cursor o enfocar y, con movimiento reducido, no avanza solo.
+// Casos de éxito: una fila de pestañas (una por empresa, con su logo) y debajo el caso activo: logo en tarjeta clara,
+// historia y, al pie, los resultados como tarjetas con visto. Fondo ya tratado en morado que se funde con las secciones
+// vecinas. Cumple WCAG 2.2.2: botón de pausa, se detiene al pasar el cursor o enfocar y, con movimiento reducido, no avanza solo.
 const Block = styled(Section)`
+  ${imageBackdrop(casesBg, 0.55)}
   padding-block: ${({ theme }) => theme.section.dense};
-  position: relative;
-  isolation: isolate;
-  /* Los extremos usan el mismo índigo de las secciones vecinas (sin escalón); el resplandor violeta vive aquí,
-     no en un contenedor interno, para que no se note ningún borde rectangular. */
-  background:
-    radial-gradient(55% 32% at 85% 40%, rgba(118, 77, 240, 0.22), transparent 70%),
-    linear-gradient(180deg, ${({ theme }) => theme.colors.aiventDark} 0%, rgba(16, 20, 53, 0.7) 22%, rgba(16, 20, 53, 0.78) 78%, ${({ theme }) => theme.colors.aiventDark} 100%),
-    url(${skyline}) center / cover no-repeat,
-    ${({ theme }) => theme.colors.aiventDark};
 `;
 
 const Panel = styled.div`
@@ -36,34 +27,35 @@ const Panel = styled.div`
 `;
 
 const Head = styled.div<{ $visible: boolean }>`
-  max-width: 760px;
+  max-width: 820px;
   margin: 0 auto ${({ theme }) => theme.space(12)};
   text-align: center;
 
   .label {
     ${bracketLabel}
-    margin-bottom: ${({ theme }) => theme.space(3)};
+    margin-bottom: ${({ theme }) => theme.space(4)};
+    font-size: 0.8125rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
   h2 {
-    font-size: ${({ theme }) => theme.type.h2};
-    font-weight: ${({ theme }) => theme.weights.medium};
-    line-height: 1.25;
-    ${silverText}
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+    line-height: 1.1;
+    ${headlineText}
   }
 
   h2 strong {
-    font-weight: ${({ theme }) => theme.weights.bold};
-    background-image: linear-gradient(180deg, #c7b0ff 0%, #adf3e6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    font-weight: inherit;
+    ${keywordText}
   }
 
   p.lead {
-    margin-top: ${({ theme }) => theme.space(4)};
-    color: ${({ theme }) => theme.colors.onNavy};
+    max-width: 62ch;
+    margin: ${({ theme }) => theme.space(5)} auto 0;
+    font-size: 1.0625rem;
+    color: ${({ theme }) => theme.b2b.text2};
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -89,15 +81,13 @@ const Head = styled.div<{ $visible: boolean }>`
   }
 `;
 
-// Pestañas tipo "Day 1 / Day 2" de AIvent: logo en tarjeta blanca y nombre debajo; la activa se eleva y lleva barra violeta.
+// Pestañas: logo en tarjeta clara (la activa, sólida; las demás, translúcidas) y nombre debajo; la activa lleva barra lavanda.
 const Tabs = styled.div`
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: ${({ theme }) => theme.space(3)};
-  max-width: 1040px;
-  margin-inline: auto;
+  gap: ${({ theme }) => theme.space(4)};
   padding-bottom: ${({ theme }) => theme.space(6)};
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid ${({ theme }) => theme.b2b.line};
 
   ${media.down("md")} {
     display: flex;
@@ -111,16 +101,16 @@ const Tabs = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${({ theme }) => theme.space(2)};
-    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(2)} ${theme.space(4)}`};
-    color: ${({ theme }) => theme.colors.onNavy};
+    gap: ${({ theme }) => theme.space(2.5)};
+    padding: ${({ theme }) => `${theme.space(1)} 0 ${theme.space(4)}`};
+    color: ${({ theme }) => theme.b2b.text3};
     cursor: pointer;
     scroll-snap-align: center;
     transition: color ${({ theme }) => theme.motion.duration.hover} linear;
 
     ${media.down("md")} {
       flex: none;
-      min-width: 120px;
+      min-width: 132px;
     }
   }
 
@@ -128,15 +118,15 @@ const Tabs = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: min(100%, 132px);
-    height: 68px;
-    padding: ${({ theme }) => theme.space(2.5)};
-    border-radius: ${({ theme }) => theme.radii.md};
-    background: ${({ theme }) => theme.colors.white};
-    opacity: 0.55;
+    width: 100%;
+    height: 84px;
+    padding: ${({ theme }) => theme.space(3)};
+    border: 1px solid rgba(196, 181, 245, 0.35);
+    border-radius: 16px;
+    background: rgba(244, 242, 248, 0.26);
     transition:
       transform ${({ theme }) => theme.motion.duration.hover} linear,
-      opacity ${({ theme }) => theme.motion.duration.hover} linear;
+      background-color ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
   .tile img {
@@ -145,6 +135,8 @@ const Tabs = styled.div`
     width: auto;
     height: auto;
     object-fit: contain;
+    opacity: 0.8;
+    transition: opacity ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
   .name {
@@ -152,25 +144,33 @@ const Tabs = styled.div`
     font-weight: ${({ theme }) => theme.weights.semibold};
   }
 
-  .tab:hover .tile,
-  .tab[aria-selected="true"] .tile {
-    opacity: 1;
+  .tab:hover .tile {
     transform: translateY(-3px);
+    background: rgba(244, 242, 248, 0.42);
   }
 
   .tab[aria-selected="true"] {
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.b2b.text};
+  }
+
+  .tab[aria-selected="true"] .tile {
+    background: ${({ theme }) => theme.b2b.text};
+    border-color: transparent;
+  }
+
+  .tab[aria-selected="true"] .tile img {
+    opacity: 1;
   }
 
   .tab::after {
     content: "";
     position: absolute;
-    left: 12%;
-    right: 12%;
+    left: 0;
+    right: 0;
     bottom: -1px;
     height: 3px;
     border-radius: 3px;
-    background: ${({ theme }) => theme.colors.aiventViolet};
+    background: ${({ theme }) => theme.b2b.purpleLight};
     transform: scaleX(0);
     transition: transform ${({ theme }) => theme.motion.duration.base} ease;
   }
@@ -180,7 +180,7 @@ const Tabs = styled.div`
   }
 
   .tab:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.white};
+    outline: 2px solid ${({ theme }) => theme.b2b.teal};
     outline-offset: 3px;
     border-radius: ${({ theme }) => theme.radii.sm};
   }
@@ -189,8 +189,7 @@ const Tabs = styled.div`
 // Todos los casos ocupan la misma celda de la rejilla: la altura es la del más largo y el carrusel no "salta".
 const Stage = styled.div`
   display: grid;
-  max-width: 1040px;
-  margin: ${({ theme }) => theme.space(10)} auto 0;
+  margin-top: ${({ theme }) => theme.space(10)};
 `;
 
 const Slide = styled.div<{ $active: boolean }>`
@@ -201,8 +200,8 @@ const Slide = styled.div<{ $active: boolean }>`
   visibility: ${({ $active }) => ($active ? "visible" : "hidden")};
 
   ${media.up("md")} {
-    grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
-    gap: ${({ theme }) => `${theme.space(8)} ${theme.space(12)}`};
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: ${({ theme }) => `${theme.space(8)} ${theme.space(10)}`};
     align-items: center;
   }
 
@@ -221,14 +220,14 @@ const LogoTile = styled.div`
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
-  max-width: 260px;
+  max-width: 300px;
   width: 100%;
   margin-inline: auto;
-  padding: ${({ theme }) => theme.space(8)};
+  padding: ${({ theme }) => theme.space(10)};
   overflow: hidden;
-  border-radius: ${({ theme }) => theme.radii.lg};
-  background: ${({ theme }) => theme.colors.white};
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  border-radius: 28px;
+  background: ${({ theme }) => theme.b2b.text};
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 
   img {
     max-width: 100%;
@@ -237,7 +236,7 @@ const LogoTile = styled.div`
   }
 
   &:hover img {
-    transform: scale(1.08);
+    transform: scale(1.06);
   }
 `;
 
@@ -245,110 +244,60 @@ const Story = styled.div`
   .badge {
     display: inline-block;
     margin-bottom: ${({ theme }) => theme.space(5)};
-    padding: ${({ theme }) => `${theme.space(1.5)} ${theme.space(5)}`};
-    border: 1px solid ${({ theme }) => theme.colors.aiventViolet};
+    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(5)}`};
+    border: 1px solid ${({ theme }) => theme.b2b.purpleLight};
     border-radius: ${({ theme }) => theme.radii.pill};
-    background: rgba(118, 77, 240, 0.18);
+    background: rgba(110, 60, 200, 0.25);
     font-size: 0.75rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
-    letter-spacing: 0.08em;
-    color: ${({ theme }) => theme.colors.white};
+    letter-spacing: 0.1em;
+    color: ${({ theme }) => theme.b2b.text};
   }
 
   p.text {
     font-size: 1.125rem;
     line-height: 1.7;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.b2b.text};
   }
 `;
 
-// Resultados: las cifras que abren la frase ("+40 profesionales") van como tarjeta con el número grande; el resto, como
-// viñeta con visto (ul-check de AIvent). El texto de cada resultado se mantiene completo.
+// Resultados: todas las cifras y datos del caso van como tarjetas iguales con visto. El texto se mantiene completo.
 const Results = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: ${({ theme }) => theme.space(4)};
 
   ${media.up("md")} {
     grid-column: 1 / -1;
-    padding-top: ${({ theme }) => theme.space(8)};
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   }
 
   li {
+    ${glassCard}
+    display: flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.space(3.5)};
+    min-height: 88px;
+    padding: ${({ theme }) => `${theme.space(5)} ${theme.space(6)}`};
+    font-size: 1.0625rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    line-height: 1.35;
+    color: ${({ theme }) => theme.b2b.text};
     transition:
       border-color ${({ theme }) => theme.motion.duration.hover} linear,
       transform ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
   li:hover {
+    border-color: ${({ theme }) => theme.b2b.cardBorderActive};
     transform: translateY(-3px);
   }
 
-  /* Todas las tarjetas de resultado comparten forma: rectángulo con radio md, mismo relleno, borde y alto mínimo. */
-  .stat,
-  .chip {
-    flex: 1 1 200px;
-    min-width: 0;
-    min-height: 72px;
-    padding: ${({ theme }) => `${theme.space(4)} ${theme.space(5)}`};
-
-    ${media.up("md")} {
-      min-height: 112px;
-      padding: ${({ theme }) => `${theme.space(5)} ${theme.space(6)}`};
-    }
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: ${({ theme }) => theme.radii.md};
-    background: ${({ theme }) => theme.colors.aiventDark};
-  }
-
-  .stat:hover,
-  .chip:hover {
-    border-color: ${({ theme }) => theme.colors.aiventViolet};
-  }
-
-  .stat b {
-    display: block;
-    font-size: clamp(2.25rem, 1.6rem + 2vw, 3rem);
-    font-weight: ${({ theme }) => theme.weights.bold};
-    line-height: 1.1;
-    background-image: linear-gradient(180deg, #c7b0ff 0%, #adf3e6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
-
-  .stat span {
-    display: block;
-    margin-top: ${({ theme }) => theme.space(1)};
-    font-size: 0.9375rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    color: ${({ theme }) => theme.colors.white};
-  }
-
-  .chip {
-    display: flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.space(3)};
-    font-size: 1.0625rem;
-    font-weight: ${({ theme }) => theme.weights.semibold};
-    line-height: 1.35;
-    color: ${({ theme }) => theme.colors.white};
-  }
-
-  .chip svg {
-    flex: none;
-    width: 28px;
-    height: 28px;
-    padding: 5px;
-    border-radius: ${({ theme }) => theme.radii.sm};
-    background: rgba(118, 77, 240, 0.28);
-    color: ${({ theme }) => theme.colors.accentOnDark};
-  }
-
-  .chip b {
-    color: ${({ theme }) => theme.colors.accentOnDark};
+  .check {
+    ${iconTile}
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: ${({ theme }) => theme.b2b.teal};
   }
 `;
 
@@ -361,21 +310,21 @@ const Controls = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(196, 181, 245, 0.55);
     border-radius: 50%;
-    color: ${({ theme }) => theme.colors.white};
-    transition: background-color ${({ theme }) => theme.motion.duration.hover} linear, color ${({ theme }) => theme.motion.duration.hover} linear;
+    color: ${({ theme }) => theme.b2b.text};
+    transition: background-color ${({ theme }) => theme.motion.duration.hover} linear, border-color ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
   .toggle:hover {
-    background: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.aiventDark};
+    background: rgba(110, 60, 200, 0.3);
+    border-color: ${({ theme }) => theme.b2b.lavender};
   }
 
   .toggle:focus-visible {
-    outline: 3px solid ${({ theme }) => theme.colors.white};
+    outline: 2px solid ${({ theme }) => theme.b2b.teal};
     outline-offset: 3px;
   }
 `;
@@ -393,15 +342,6 @@ const PlayIcon = () => (
 );
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-// "+40 profesionales" -> cifra "+40" y descripción; "decisiones 22X más rápidas" no abre con cifra y se resalta en línea.
-const splitLead = (text: string) => {
-  const m = /^(\+?\d[\d.,]*[A-Za-z%]?)\s+(.+)$/.exec(text);
-  return m ? { num: m[1], rest: m[2] } : null;
-};
-
-const highlightInline = (text: string) =>
-  text.split(/(\d+[A-Za-z]?X)/).map((part, i) => (/^\d+[A-Za-z]?X$/.test(part) ? <b key={i}>{part}</b> : part));
 
 export const CaseStudies = () => {
   const [headRef, visible] = useInView<HTMLDivElement>();
@@ -485,19 +425,14 @@ export const CaseStudies = () => {
                       <p className="text">{c.text}</p>
                     </Story>
                     <Results aria-label="Resultados del programa">
-                      {c.tags.map((t) => {
-                        const lead = splitLead(t);
-                        return lead ? (
-                          <li key={t} className="stat">
-                            <b>{lead.num}</b> <span>{lead.rest}</span>
-                          </li>
-                        ) : (
-                          <li key={t} className="chip">
-                            <Check size={18} aria-hidden="true" />
-                            <span>{highlightInline(t)}</span>
-                          </li>
-                        );
-                      })}
+                      {c.tags.map((t) => (
+                        <li key={t}>
+                          <span className="check">
+                            <Check size={16} aria-hidden="true" />
+                          </span>
+                          <span>{t}</span>
+                        </li>
+                      ))}
                     </Results>
                   </Slide>
                 ))}

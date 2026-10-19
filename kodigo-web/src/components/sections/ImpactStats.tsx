@@ -4,7 +4,7 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { HERO_OVERLAP } from "./AlliancesHero";
-import { silverText } from "../ui/AiventKit";
+import { glassCard, headlineText } from "../ui/B2bKit";
 import { Container, Section } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
@@ -15,7 +15,6 @@ const Overlap = styled(Section)`
   z-index: 2;
   padding-top: 0;
   margin-top: calc(${HERO_OVERLAP} * -1);
-  background: linear-gradient(180deg, transparent ${HERO_OVERLAP}, ${({ theme }) => theme.colors.aiventDark} ${HERO_OVERLAP});
 `;
 
 const Grid = styled.ul`
@@ -27,39 +26,34 @@ const Grid = styled.ul`
   }
 `;
 
-// Contador de Eduhall: número grande en el violeta de Kodigo y etiqueta en mayúsculas debajo.
+// Tarjeta de cifra: vidrio morado con borde lavanda, número grande en blanco y etiqueta en teal con mayúsculas.
 const Item = styled(Reveal)`
+  ${glassCard}
   height: 100%;
-  padding: ${({ theme }) => `${theme.space(9)} ${theme.space(5)}`};
-  text-align: center;
-  background: ${({ theme }) => theme.colors.aiventDark2};
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: ${({ theme }) => theme.radii.lg};
-  box-shadow: 0 14px 36px rgba(7, 20, 49, 0.45);
+  padding: ${({ theme }) => `${theme.space(8)} ${theme.space(8)}`};
   transition: border-color ${({ theme }) => theme.motion.duration.hover} linear,
     box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.aiventViolet};
-    box-shadow: 0 14px 36px rgba(118, 77, 240, 0.35);
+    border-color: ${({ theme }) => theme.b2b.cardBorderActive};
+    box-shadow: 0 20px 60px -20px rgba(110, 60, 200, 0.6);
   }
 
   .number {
     display: block;
-    font-size: clamp(2.75rem, 2rem + 3vw, 4rem);
-    font-weight: ${({ theme }) => theme.weights.bold};
+    font-size: clamp(2.5rem, 1.8rem + 2.4vw, 3.5rem);
     line-height: 1.1;
-    ${silverText}
+    ${headlineText}
   }
 
   .label {
     display: block;
     margin-top: ${({ theme }) => theme.space(3)};
-    font-size: 0.9375rem;
+    font-size: 0.75rem;
     font-weight: ${({ theme }) => theme.weights.semibold};
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.accentOnDark};
+    color: ${({ theme }) => theme.b2b.teal};
   }
 `;
 

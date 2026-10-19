@@ -23,9 +23,11 @@ export const workshop = {
     { icon: "bulb", title: "Conocé casos de uso aplicables a tu equipo" },
     { icon: "path", title: "Definí cómo llevarlos a la práctica" },
   ] as const,
+  // Etiqueta que acompaña al logo en la cabecera del pase de registro.
+  ticketTag: "Workshop · IA para empresas",
   form: {
     emailLabel: "Correo corporativo",
-    emailPlaceholder: "Correo corporativo",
+    emailPlaceholder: "nombre@empresa.com",
     submit: "Registrarme al Workshop",
   },
 };

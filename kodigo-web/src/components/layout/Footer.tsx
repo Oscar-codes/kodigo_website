@@ -24,22 +24,24 @@ const Wrap = styled.footer`
   padding-top: ${({ theme }) => theme.space(20)};
   overflow: hidden;
 
-  /* Variante AIvent (solo página de Alianzas): fondo índigo con resplandor violeta, hilo de luz arriba y sin mapa. */
-  &[data-variant="aivent"] {
+  /* Variante B2B (solo página de Alianzas): fondo morado con resplandor abajo, hilo de luz arriba, Matimo y sin mapa. */
+  &[data-variant="b2b"] {
     background:
-      radial-gradient(50% 70% at 50% 0%, rgba(118, 77, 240, 0.22), transparent 70%),
-      ${({ theme }) => theme.colors.aiventDark};
+      radial-gradient(60% 90% at 50% 100%, rgba(110, 60, 200, 0.5), transparent 70%),
+      ${({ theme }) => theme.b2b.bg1};
+    color: ${({ theme }) => theme.b2b.text2};
+    font-family: ${({ theme }) => theme.fonts.b2b};
     padding-top: ${({ theme }) => theme.space(16)};
   }
 
-  &[data-variant="aivent"]::before {
+  &[data-variant="b2b"]::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, ${({ theme }) => theme.colors.aiventViolet}, transparent);
+    background: linear-gradient(90deg, transparent, ${({ theme }) => theme.b2b.purpleLight}, transparent);
   }
 `;
 
@@ -84,8 +86,8 @@ const Grid = styled(Container)`
     text-decoration: underline;
   }
 
-  /* Disposición del footer de AIvent: bloque de enlaces a cada lado y, al centro, logo y datos, todo centrado. */
-  &[data-variant="aivent"] {
+  /* Disposición del footer B2B: bloque de enlaces a cada lado y, al centro, logo y datos, todo centrado. */
+  &[data-variant="b2b"] {
     text-align: center;
     padding-bottom: ${({ theme }) => theme.space(12)};
 
@@ -132,6 +134,8 @@ const Grid = styled(Container)`
 
     h2 {
       font-size: 1.25rem;
+      font-weight: ${({ theme }) => theme.weights.bold};
+      color: ${({ theme }) => theme.b2b.text};
     }
 
     li + li {
@@ -143,8 +147,17 @@ const Grid = styled(Container)`
     }
 
     a:hover {
-      color: ${({ theme }) => theme.colors.lilac};
+      color: ${({ theme }) => theme.b2b.mint};
       text-decoration: none;
+    }
+
+    /* "Ver todos los bootcamps" y el dominio de contacto resaltan en teal / lavanda. */
+    .bootcamps li:last-child a {
+      color: ${({ theme }) => theme.b2b.teal};
+    }
+
+    #contacto p {
+      color: ${({ theme }) => theme.b2b.lavender};
     }
   }
 `;
@@ -163,10 +176,11 @@ const Bottom = styled.div`
     font-weight: ${({ theme }) => theme.weights.semibold};
   }
 
-  /* Subfooter de AIvent: franja más oscura con el copyright centrado. */
-  &[data-variant="aivent"] {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.22);
+  /* Subfooter B2B: franja más oscura con el copyright centrado. */
+  &[data-variant="b2b"] {
+    border-top: 1px solid ${({ theme }) => theme.b2b.line};
+    background: rgba(10, 5, 30, 0.45);
+    font-family: ${({ theme }) => theme.fonts.b2b};
   }
 `;
 
@@ -174,11 +188,11 @@ const FEATURED = 5; // bootcamps listados en el pie
 
 export const Footer = () => {
   const { pathname } = useLocation();
-  const aivent = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
-  const variant = aivent ? "aivent" : undefined;
+  const b2b = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
+  const variant = b2b ? "b2b" : undefined;
   return (
     <Wrap data-variant={variant}>
-      {aivent ? null : <Map aria-hidden="true" />}
+      {b2b ? null : <Map aria-hidden="true" />}
       <Grid data-variant={variant}>
         <div className="brand">
           <img className="logo" src={logoWhite} alt={siteConfig.name} width={brand.logoWhite.width} height={brand.logoWhite.height} />

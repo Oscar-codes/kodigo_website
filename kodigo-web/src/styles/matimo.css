@@ -1,0 +1,6 @@
+/* Matimo: tipografía de marca de la landing B2B (autoalojada; se descarga solo en las páginas que la usan). */
+@font-face { font-family: Matimo; font-weight: 400; font-style: normal; font-display: swap; src: url("../assets/fonts/matimo/Matimo-Regular.woff2") format("woff2"); }
+@font-face { font-family: Matimo; font-weight: 500; font-style: normal; font-display: swap; src: url("../assets/fonts/matimo/Matimo-Medium.woff2") format("woff2"); }
+@font-face { font-family: Matimo; font-weight: 600; font-style: normal; font-display: swap; src: url("../assets/fonts/matimo/Matimo-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: Matimo; font-weight: 700; font-style: normal; font-display: swap; src: url("../assets/fonts/matimo/Matimo-Bold.woff2") format("woff2"); }
+@font-face { font-family: Matimo; font-weight: 800; font-style: normal; font-display: swap; src: url("../assets/fonts/matimo/Matimo-ExtraBold.woff2") format("woff2"); }

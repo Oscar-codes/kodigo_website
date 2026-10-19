@@ -1,10 +1,11 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import industry from "@/assets/aivent/bg-industry.webp";
+import alliesBg from "@/assets/b2b/aliados-bg.webp";
 import type { Partner } from "@/data/content";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
+import { imageBackdrop } from "../ui/B2bKit";
 import { Container, Section } from "../ui/Container";
 import { Marquee } from "../ui/Marquee";
 import { SectionTitle } from "../ui/SectionTitle";
@@ -44,35 +45,31 @@ const Grid = styled.ul`
   }
 `;
 
-// Muro de aliados estilo "sponsors" de AIvent (solo con `dark`): fondo con foto corporativa bajo velo índigo y bordes que
-// se funden con las secciones vecinas; los logos van en un panel de vidrio con filo violeta y entran escalonados.
+// Muro de aliados de la landing B2B (solo con `dark`): fondo ya tratado en morado cuyos bordes se funden con las secciones
+// vecinas; los logos van en un panel de vidrio morado, sobre tarjetas claras, y entran escalonados.
 const Wall = styled(Section)`
+  ${imageBackdrop(alliesBg, 0.3)}
   padding-block: ${({ theme }) => theme.section.dense};
-  position: relative;
-  isolation: isolate;
-  background:
-    linear-gradient(180deg, ${({ theme }) => theme.colors.aiventDark} 0%, rgba(16, 20, 53, 0.86) 20%, rgba(16, 20, 53, 0.9) 80%, ${({ theme }) => theme.colors.aiventDark} 100%),
-    url(${industry}) center / cover no-repeat,
-    ${({ theme }) => theme.colors.aiventDark};
+  font-family: ${({ theme }) => theme.fonts.b2b};
 `;
 
 const GlassPanel = styled.div`
   position: relative;
   padding: ${({ theme }) => theme.space(6)};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${({ theme }) => theme.radii.xl};
-  background: rgba(26, 30, 66, 0.55);
+  border: 1px solid ${({ theme }) => theme.b2b.cardBorder};
+  border-radius: 32px;
+  background: rgba(38, 20, 84, 0.55);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
 
   ${media.down("md")} {
     padding: ${({ theme }) => theme.space(4)};
-    border-radius: ${({ theme }) => theme.radii.lg};
+    border-radius: 24px;
   }
 
   ${media.up("md")} {
-    padding: ${({ theme }) => theme.space(10)};
+    padding: ${({ theme }) => theme.space(8)};
   }
 
   &::before {
@@ -82,12 +79,12 @@ const GlassPanel = styled.div`
     left: 12%;
     right: 12%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, ${({ theme }) => theme.colors.aiventViolet}, transparent);
+    background: linear-gradient(90deg, transparent, ${({ theme }) => theme.b2b.purpleLight}, transparent);
   }
 `;
 
 // Entrada escalonada de los logos al llegar a la vista (con movimiento reducido se ven de inmediato) y brillo violeta
-// al pasar el cursor, como las tarjetas de AIvent.
+// al pasar el cursor.
 const WallGrid = styled(Grid)<{ $visible: boolean }>`
   /* En móvil caben dos logos por fila (sin esto el panel quedaba en una sola columna de 49 filas). */
   grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
@@ -117,7 +114,9 @@ const WallGrid = styled(Grid)<{ $visible: boolean }>`
   }
 
   ${Pill} {
-    border-color: rgba(255, 255, 255, 0.14);
+    background: #edebf5;
+    border: 1px solid rgba(196, 181, 245, 0.4);
+    border-radius: 16px;
     transition:
       transform ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing},
       box-shadow ${({ theme }) => theme.motion.duration.base} ease;
@@ -125,7 +124,7 @@ const WallGrid = styled(Grid)<{ $visible: boolean }>`
 
   li:hover ${Pill}, a:focus-visible ${Pill} {
     transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(118, 77, 240, 0.45), 0 0 0 2px ${({ theme }) => theme.colors.aiventViolet};
+    box-shadow: 0 12px 28px rgba(110, 60, 200, 0.5), 0 0 0 2px ${({ theme }) => theme.b2b.purpleLight};
   }
 `;
 
@@ -177,7 +176,7 @@ interface PartnersProps {
   variant?: "marquee" | "grid";
   /** Sin relleno superior: cuando la sección anterior ya es blanca y aporta su propio relleno inferior. */
   flushTop?: boolean;
-  /** Fondo índigo oscuro (estilo AIvent) con título plateado. */
+  /** Fondo morado oscuro de la landing B2B con título claro. */
   dark?: boolean;
 }
 
