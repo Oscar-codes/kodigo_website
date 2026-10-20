@@ -379,7 +379,7 @@ export const CaseStudies = () => {
   };
 
   return (
-    <Block aria-labelledby="cases-title">
+    <Block id="casos" aria-labelledby="cases-title">
       <Container>
         <Panel>
           <Head ref={headRef} $visible={visible}>

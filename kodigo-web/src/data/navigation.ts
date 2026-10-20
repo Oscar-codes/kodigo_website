@@ -48,6 +48,21 @@ const nosotrosChildren: { label: string; to: string }[] = [
   { label: "PPD", to: "/profesional/ppd" },
 ];
 
+// Menú de la landing de Alianzas (/profesional/alianzas): distinto al del resto del sitio, navega entre las secciones de la
+// propia página (anclas; ids en cada sección) y sale al Inicio con "Inicio" y con el logo de Kodigo. "Aplicar" baja al
+// formulario. Si se agrega o renombra una sección, se ajusta aquí y su `id` en el componente.
+const ALIANZAS = "/profesional/alianzas";
+export const b2bNavigation: NavItem[] = [
+  { label: "Inicio", to: "/" },
+  { label: "Workshop", to: `${ALIANZAS}#workshop` },
+  { label: "Próximos", to: `${ALIANZAS}#proximos` },
+  { label: "Casos de éxito", to: `${ALIANZAS}#casos` },
+  { label: "Adaptación", to: `${ALIANZAS}#adaptacion` },
+  { label: "Equipo", to: `${ALIANZAS}#equipo` },
+  { label: "Aliados", to: `${ALIANZAS}#aliados` },
+  { label: "Aplicar", to: `${ALIANZAS}#aplicar` },
+];
+
 export const navigation: NavItem[] = [
   // ATRAER: slide del Hero + GoalsCard. Atraer al usuario y mostrarle las rutas disponibles.
   { label: "Inicio", to: "/" },

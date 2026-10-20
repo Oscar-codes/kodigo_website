@@ -120,7 +120,7 @@ const Soon = styled.span`
 `;
 
 export const UpcomingWorkshops = () => (
-  <Block aria-labelledby="events-title">
+  <Block id="proximos" aria-labelledby="events-title">
     <Container>
       <Layout>
         <div>

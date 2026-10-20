@@ -153,7 +153,7 @@ const ProfileLink = styled.a`
 `;
 
 export const TeamBlock = () => (
-  <Block aria-labelledby="team-title">
+  <Block id="equipo" aria-labelledby="team-title">
     <Container>
       <SectionTitle id="team-title" tone="dark" label={team.label} title={team.title} lead={team.lead} />
       <Grid>

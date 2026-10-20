@@ -445,7 +445,7 @@ export const AdaptiveTraining = () => {
   const [featuresRef, featuresVisible] = useInView<HTMLUListElement>();
   const { badge } = adaptiveTraining;
   return (
-    <Block aria-labelledby="adaptive-title">
+    <Block id="adaptacion" aria-labelledby="adaptive-title">
       <Container>
         <Layout>
           <Reveal direction="right">

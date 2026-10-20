@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import logoDark from "@/assets/brand/kodigo-logo-dark.webp";
 import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
 import brand from "@/assets/brand/brand.json";
-import { navigation, type NavItem } from "@/data/navigation";
+import { b2bNavigation, navigation, type NavItem } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
@@ -511,13 +511,37 @@ export const Header = () => {
   const { hash } = useLocation();
   // Item activo = destino del último clic: ruta + ancla de la URL ("Inicio" cuando es la portada sin ancla). Un enlace de
   // ancla solo se activa con su propio hash, así que nunca hay dos activos a la vez.
+  const b2b = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
+  // En la landing de Alianzas el menú es el suyo (anclas de la propia página) y el activo sigue a la sección visible.
+  const items = b2b ? b2bNavigation : navigation;
+  const [spy, setSpy] = useState("");
   const isActive = (to: string) => {
     const id = hashOf(to);
+    if (b2b) return !!id && spy === id;
     if (id) return pathname === "/" && hash === `#${id}`;
     if (to === "/") return pathname === "/" && !hash;
     return pathname === to || pathname.startsWith(`${to}/`);
   };
-  const b2b = pathname.replace(/\/+$/, "") === "/profesional/alianzas";
+
+  // Scroll-spy: la última sección cuyo borde superior ya pasó por debajo de la cabecera es la activa.
+  useEffect(() => {
+    if (!b2b) {
+      setSpy("");
+      return;
+    }
+    const ids = b2bNavigation.map((n) => hashOf(n.to)).filter(Boolean);
+    const update = () => {
+      let current = "";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 160) current = id;
+      }
+      setSpy(current);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [b2b]);
 
   useEffect(() => {
     setOpen(false);
@@ -570,7 +594,7 @@ export const Header = () => {
         </Toggle>
         <Menu id="main-menu" aria-label="Principal" $open={open}>
           <ul className="top">
-            {navigation.map((item) =>
+            {items.map((item) =>
               item.children ? (
                 <Dropdown key={`${item.label}-${item.to}`} item={item} />
               ) : (
@@ -582,7 +606,7 @@ export const Header = () => {
                       "Aplicar" es el CTA final del menu: pill con gradient
                       purpleLight->purpleDeep, texto blanco y lift en hover. */}
                   <Link
-                    to={b2b && item.label === "Aplicar" ? "/profesional/alianzas#aplicar" : item.to}
+                    to={item.to}
                     data-cta={item.label === "Aplicar" ? "true" : undefined}
                     className={isActive(item.to) ? "active" : undefined}
                     aria-current={isActive(item.to) ? (hashOf(item.to) ? "location" : "page") : undefined}

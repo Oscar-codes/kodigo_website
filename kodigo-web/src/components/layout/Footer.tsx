@@ -4,7 +4,7 @@ import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
 import worldMap from "@/assets/brand/world-map.webp";
 import brand from "@/assets/brand/brand.json";
 import { bootcamps } from "@/data/bootcamps";
-import { navigation } from "@/data/navigation";
+import { b2bNavigation, navigation } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
@@ -201,13 +201,11 @@ export const Footer = () => {
         <nav className="secciones" aria-label="Secciones">
           <h2>Secciones</h2>
           <ul>
-            {navigation
-              .filter((n) => !FOOTER_EXCLUDED.has(n.label))
-              .map((n) => (
-                <li key={n.to}>
-                  <Link to={b2b && n.label === "Aplicar" ? "/profesional/alianzas#aplicar" : n.to}>{n.label}</Link>
-                </li>
-              ))}
+            {(b2b ? b2bNavigation : navigation.filter((n) => !FOOTER_EXCLUDED.has(n.label))).map((n) => (
+              <li key={n.to}>
+                <Link to={n.to}>{n.label}</Link>
+              </li>
+            ))}
           </ul>
         </nav>
         <nav className="bootcamps" aria-label="Bootcamps destacados">

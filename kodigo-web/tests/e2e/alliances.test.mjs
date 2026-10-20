@@ -142,6 +142,15 @@ const open = async (width) => {
   // orden de las secciones
   const order = await p.evaluate(() => ["h1", "#impact-title", "#workshop-title", "form"].map((s) => document.querySelector(s)).map((e, i, a) => i === 0 || !!(a[i - 1].compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING)));
   t("orden: banner > cifras > workshop > formulario", order.every(Boolean));
+
+  // ---- 9. Menú propio de la landing (anclas de la página; Inicio y el logo salen al home)
+  const menu = p.getByRole("navigation", { name: "Principal" });
+  const hrefs = await menu.getByRole("link").evaluateAll((l) => l.map((e) => e.getAttribute("href")));
+  t("menú: Inicio + 6 secciones de la página + Aplicar (distinto al del home)", JSON.stringify(hrefs) === JSON.stringify(["/", "/profesional/alianzas#workshop", "/profesional/alianzas#proximos", "/profesional/alianzas#casos", "/profesional/alianzas#adaptacion", "/profesional/alianzas#equipo", "/profesional/alianzas#aliados", "/profesional/alianzas#aplicar"]), JSON.stringify(hrefs));
+  t("menú: cada ancla apunta a una sección existente", await p.evaluate(() => ["workshop", "proximos", "casos", "adaptacion", "equipo", "aliados", "aplicar"].every((id) => !!document.getElementById(id))));
+  t("logo de Kodigo vuelve al Inicio", (await p.getByRole("link", { name: "Kodigo - Inicio" }).getAttribute("href")) === "/");
+  await menu.getByRole("link", { name: "Casos de éxito", exact: true }).click(); await sleep(1500);
+  t("menú: 'Casos de éxito' lleva a la sección y queda activo", (await p.evaluate(() => Math.abs(document.getElementById("casos").getBoundingClientRect().top - 92) < 40)) && (await menu.locator("a.active").innerText()).toLowerCase() === "casos de éxito");
   await p.context().close();
 }
 

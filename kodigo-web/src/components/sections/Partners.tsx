@@ -188,7 +188,7 @@ export const Partners = ({ items, variant = "marquee", flushTop = false, dark = 
   const Root = dark && variant === "grid" ? Wall : Section;
 
   return (
-    <Root aria-labelledby="partners-title" $compact={variant === "marquee"} style={flushTop ? { paddingTop: 0 } : undefined}>
+    <Root id={dark && variant === "grid" ? "aliados" : undefined} aria-labelledby="partners-title" $compact={variant === "marquee"} style={flushTop ? { paddingTop: 0 } : undefined}>
       <Container>
         <SectionTitle id="partners-title" label="Alianzas" title="Nuestros aliados" tone={dark ? "dark" : "light"} />
       </Container>

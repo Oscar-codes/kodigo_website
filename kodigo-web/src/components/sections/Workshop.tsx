@@ -19,6 +19,7 @@ const icons = { target: iconTarget, bulb: iconBulb, path: iconPath } as const;
 // Fondo de sección ya tratado en morado; los bordes se funden con el fondo de la página.
 const Band = styled.section`
   ${imageBackdrop(workshopBg, 0.1)}
+  scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeight} + 8px);
   overflow: hidden;
   padding-block: ${({ theme }) => theme.section.dense};
   color: ${({ theme }) => theme.b2b.text};
@@ -173,7 +174,7 @@ const emphasize = (title: string) => {
 };
 
 export const Workshop = () => (
-  <Band aria-labelledby="workshop-title">
+  <Band id="workshop" aria-labelledby="workshop-title">
     <Container>
       <Layout>
         <Head>
