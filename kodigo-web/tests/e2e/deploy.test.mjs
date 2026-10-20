@@ -18,7 +18,7 @@ const isSpa = async (res) => (await res.text()).includes('<div id="root">');
   t("raíz: 200 con la SPA", r.status === 200 && body.includes('<div id="root">'));
   t("raíz: NO muestra listado de archivos del servidor", !/Files within|Index of/i.test(body));
 }
-for (const path of ["/bootcamps", "/bootcamps/sql-ai", "/bootcamps/full-stack-jr", "/nosotros/", "/nosotros", "/profesional", "/profesional/ppd", "/ruta-inventada"]) {
+for (const path of ["/bootcamps", "/bootcamps/ai-data-trainee", "/bootcamps/ai-for-developers-jr", "/nosotros/", "/nosotros", "/profesional", "/profesional/ppd", "/ruta-inventada"]) {
   const r = await get(path);
   t(`ruta directa ${path}: 200 con la SPA`, r.status === 200 && (r.headers.get("content-type") ?? "").includes("text/html") && (await isSpa(r)));
 }

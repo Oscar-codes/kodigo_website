@@ -6,12 +6,12 @@ const out = []; const t = (n, ok, x = "") => { const r = `${ok ? "PASS" : "FAIL"
 for (const [w, h] of [[1280, 900], [360, 900]]) {
   const page = await (await browser.newContext({ viewport: { width: w, height: h } })).newPage();
   const errs = []; page.on("pageerror", (e) => errs.push(e.message));
-  await page.goto(base + "/bootcamps/sql-ai");
+  await page.goto(base + "/bootcamps/ai-data-trainee");
   const txt = await page.locator("main").innerText();
   const crumbs = page.getByRole("navigation", { name: "Migas de pan" });
-  t(`${w} migas: Inicio > Bootcamps > SQL AI`, (await crumbs.locator("li").allInnerTexts()).join("|") === "Inicio|Bootcamps|SQL AI");
+  t(`${w} migas: Inicio > Bootcamps > AI Data Trainee`, (await crumbs.locator("li").allInnerTexts()).join("|") === "Inicio|Bootcamps|AI Data Trainee");
   t(`${w} migas: enlaces correctos`, (await crumbs.getByRole("link", { name: "Inicio" }).getAttribute("href")) === "/" && (await crumbs.getByRole("link", { name: "Bootcamps" }).getAttribute("href")) === "/bootcamps");
-  t(`${w} migas: pagina actual con aria-current y sin enlace`, (await crumbs.locator("[aria-current=page]").innerText()) === "SQL AI" && (await crumbs.getByRole("link").count()) === 2);
+  t(`${w} migas: pagina actual con aria-current y sin enlace`, (await crumbs.locator("[aria-current=page]").innerText()) === "AI Data Trainee" && (await crumbs.getByRole("link").count()) === 2);
   const crumbText = (await crumbs.innerText()).split(String.fromCharCode(10)).join(" ");
   t(`${w} migas: sin marcadores de lista ni numeracion`, (await crumbs.locator("ol").evaluate((o) => getComputedStyle(o).listStyleType === "none" && getComputedStyle(o).paddingLeft === "0px")) && !/[0-9]\./.test(crumbText), `("${crumbText}")`);
   t(`${w} sin h2 vacios`, (await page.locator("main h2").evaluateAll((hs) => hs.filter((x) => !x.textContent.trim()).length)) === 0);
@@ -28,6 +28,6 @@ for (const [w, h] of [[1280, 900], [360, 900]]) {
 }
 // teclado en migas
 const kp = await (await browser.newContext({ viewport: { width: 1280, height: 800 } })).newPage();
-await kp.goto(base + "/bootcamps/sql-ai"); await kp.getByRole("navigation", { name: "Migas de pan" }).getByRole("link", { name: "Bootcamps" }).focus(); await kp.keyboard.press("Enter");
+await kp.goto(base + "/bootcamps/ai-data-trainee"); await kp.getByRole("navigation", { name: "Migas de pan" }).getByRole("link", { name: "Bootcamps" }).focus(); await kp.keyboard.press("Enter");
 t("teclado: Enter en miga navega a /bootcamps", kp.url().endsWith("/bootcamps"));
 await browser.close(); process.exit(out.some((r) => r.includes("FAIL")) ? 1 : 0);

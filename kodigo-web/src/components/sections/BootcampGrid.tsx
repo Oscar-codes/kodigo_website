@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import isotype from "@/assets/brand/isotype-white.webp";
+import { bootcampForms } from "@/data/bootcampForms";
 import type { Bootcamp } from "@/data/bootcamps";
 import { media } from "@/styles/theme";
 import { Card } from "../ui/Card";
+import { FormModal } from "../ui/FormModal";
+import { HubspotFrameForm } from "../ui/HubspotForm";
 import { ArrowRight, Clock, Laptop, Signal } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
 
@@ -238,6 +242,44 @@ export const Item = styled(Card)`
   &:hover .more svg {
     transform: translateX(4px);
   }
+
+  /* Con formulario, el pie lleva controles reales (ficha y "Aplicar"); van por encima del enlace extendido del título. */
+  .more a,
+  .more button {
+    position: relative;
+    z-index: 1;
+  }
+
+  .more a.sheet:hover {
+    color: ${({ theme }) => theme.colors.accentOnLight};
+    text-decoration: underline;
+  }
+
+  .more .apply {
+    display: inline-flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.space(1.5)};
+    padding: 9px 18px;
+    border-radius: ${({ theme }) => theme.radii.pill};
+    background: ${({ theme }) => theme.colors.gradientCta};
+    color: ${({ theme }) => theme.colors.white};
+    font-size: 0.875rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    box-shadow: 0 6px 16px rgba(117, 87, 250, 0.3);
+    transition:
+      filter ${({ theme }) => theme.motion.duration.hover} linear,
+      box-shadow ${({ theme }) => theme.motion.duration.hover} linear;
+  }
+
+  .more .apply:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 10px 24px rgba(117, 87, 250, 0.45);
+  }
+
+  .more .apply:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.main};
+    outline-offset: 2px;
+  }
 `;
 
 const Cell = styled(Reveal)`
@@ -254,58 +296,80 @@ interface BootcampGridProps {
   headingLevel?: "h2" | "h3";
 }
 
-export const BootcampGrid = ({ items, headingLevel = "h2" }: BootcampGridProps) => (
-  <Grid>
-    {items.map((b, i) => {
-      const copy = areaStyle[b.area];
-      const meta = [
-        b.duration && { Icon: Clock, text: b.duration },
-        b.modality && { Icon: Laptop, text: b.modality },
-        b.level && { Icon: Signal, text: b.level },
-      ].filter(Boolean) as { Icon: typeof Clock; text: string }[];
-      return (
-        // Escalonado por columna (3 por fila) para que no se acumule retraso en listas largas.
-        <Cell key={b.slug} tag="li" index={i % 3} direction={i % 3 === 0 ? "right" : i % 3 === 2 ? "left" : "up"}>
-          <Item>
-            <VisualWrap aria-hidden="true">
-              <Visual $area={b.area} $image={coverOf(b.slug)}>
-                <div className="zoom" />
-                <span className="glyph">{copy.glyph}</span>
-                <span className="pill">{copy.badge}</span>
-              </Visual>
-              <Seal>
-                <img src={isotype} alt="" width={22} height={22} />
-              </Seal>
-            </VisualWrap>
-            <div className="body">
-              <Chips $area={b.area}>
-                <span>{copy.chip}</span>
-                <span>Ruta práctica</span>
-              </Chips>
-              <Name as={headingLevel}>
-                <Link to={`/bootcamps/${b.slug}`}>{b.name}</Link>
-              </Name>
-              <p>{b.summary}</p>
-              {meta.length > 0 && (
-                <Meta aria-label="Datos del programa">
-                  {meta.map(({ Icon, text }) => (
-                    <li key={text}>
-                      <Icon size={18} />
-                      {text}
-                    </li>
-                  ))}
-                </Meta>
-              )}
-              <span className="more" aria-hidden="true">
-                <span className="sheet">Ficha del programa</span>
-                <span className="go">
-                  Ver detalles <ArrowRight />
-                </span>
-              </span>
-            </div>
-          </Item>
-        </Cell>
-      );
-    })}
-  </Grid>
-);
+export const BootcampGrid = ({ items, headingLevel = "h2" }: BootcampGridProps) => {
+  // Bootcamp cuyo formulario de HubSpot está abierto en la ventana modal (null = cerrada).
+  const [applying, setApplying] = useState<Bootcamp | null>(null);
+  const applyingForm = applying ? bootcampForms[applying.slug] : undefined;
+  return (
+    <>
+      <Grid>
+        {items.map((b, i) => {
+          const copy = areaStyle[b.area];
+          const form = bootcampForms[b.slug];
+          const meta = [
+            b.duration && { Icon: Clock, text: b.duration },
+            b.modality && { Icon: Laptop, text: b.modality },
+            b.level && { Icon: Signal, text: b.level },
+          ].filter(Boolean) as { Icon: typeof Clock; text: string }[];
+          return (
+            // Escalonado por columna (3 por fila) para que no se acumule retraso en listas largas.
+            <Cell key={b.slug} tag="li" index={i % 3} direction={i % 3 === 0 ? "right" : i % 3 === 2 ? "left" : "up"}>
+              <Item>
+                <VisualWrap aria-hidden="true">
+                  <Visual $area={b.area} $image={coverOf(b.slug)}>
+                    <div className="zoom" />
+                    <span className="glyph">{copy.glyph}</span>
+                    <span className="pill">{copy.badge}</span>
+                  </Visual>
+                  <Seal>
+                    <img src={isotype} alt="" width={22} height={22} />
+                  </Seal>
+                </VisualWrap>
+                <div className="body">
+                  <Chips $area={b.area}>
+                    <span>{copy.chip}</span>
+                    <span>Ruta práctica</span>
+                  </Chips>
+                  <Name as={headingLevel}>
+                    <Link to={`/bootcamps/${b.slug}`}>{b.name}</Link>
+                  </Name>
+                  <p>{b.summary}</p>
+                  {meta.length > 0 && (
+                    <Meta aria-label="Datos del programa">
+                      {meta.map(({ Icon, text }) => (
+                        <li key={text}>
+                          <Icon size={18} />
+                          {text}
+                        </li>
+                      ))}
+                    </Meta>
+                  )}
+                  {form ? (
+                    <div className="more">
+                      <Link to={`/bootcamps/${b.slug}`} className="sheet">
+                        Ficha del programa
+                      </Link>
+                      <button type="button" className="apply" aria-haspopup="dialog" aria-label={`Aplicar a ${b.name}`} onClick={() => setApplying(b)}>
+                        Aplicar <ArrowRight />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="more" aria-hidden="true">
+                      <span className="sheet">Ficha del programa</span>
+                      <span className="go">
+                        Ver detalles <ArrowRight />
+                      </span>
+                    </span>
+                  )}
+                </div>
+              </Item>
+            </Cell>
+          );
+        })}
+      </Grid>
+      <FormModal open={!!applyingForm} onClose={() => setApplying(null)} eyebrow="Aplicar a" title={applying?.name ?? ""}>
+        {applyingForm && <HubspotFrameForm key={applyingForm.formId} formId={applyingForm.formId} />}
+      </FormModal>
+    </>
+  );
+};

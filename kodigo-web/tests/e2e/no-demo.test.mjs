@@ -21,7 +21,7 @@ for (const s of FORBIDDEN) t(`bundle sin "${s}"`, !code.includes(s));
 // --- 2) En el navegador: ni banner de demo ni secciones que dependen de contenido aún inexistente
 const b = await launchBrowser();
 const p = await (await b.newContext({ viewport: { width: 1280, height: 900 } })).newPage();
-for (const route of ["/", "/nosotros/", "/profesional/alianzas", "/bootcamps/sql-ai"]) {
+for (const route of ["/", "/nosotros/", "/profesional/alianzas", "/bootcamps/ai-data-trainee"]) {
   await p.goto(BASE + route); await p.waitForTimeout(250);
   t(`${route}: sin banner de demostración`, (await p.locator("aside[aria-label*=demostración]").count()) === 0);
   t(`${route}: sin texto "de ejemplo" visible`, !/de ejemplo|\(ejemplo\)/i.test(await p.locator("body").innerText()));

@@ -21,9 +21,9 @@ let r = run(readFileSync(join(ROOT, "content/bootcamps.csv"), "utf8"));
 t("plantilla real: valida y reproduce el JSON actual exacto", r.code === 0 && r.json === readFileSync(real, "utf8"), r.text.split("\n")[0]);
 
 // 2 contenido completo con comillas, comas, saltos de linea y acentos
-const full = allRows((b) => b.slug === "sql-ai" ? { ...b, duration: "8 semanas", modality: "Virtual, en vivo", level: 'Nivel "inicial"', requirements: "Computadora; Internet estable", syllabus: "Fundamentos: Consultas básicas; Filtros | Modelado: Joins\nsubconsultas | Cierre", enrollmentUrl: "https://example.com/x?a=1&b=2" } : b);
+const full = allRows((b) => b.slug === "ai-data-trainee" ? { ...b, duration: "8 semanas", modality: "Virtual, en vivo", level: 'Nivel "inicial"', requirements: "Computadora; Internet estable", syllabus: "Fundamentos: Consultas básicas; Filtros | Modelado: Joins\nsubconsultas | Cierre", enrollmentUrl: "https://example.com/x?a=1&b=2" } : b);
 r = run([H, ...full].join("\r\n") + "\r\n");
-const sql = JSON.parse(r.json).find((b) => b.slug === "sql-ai");
+const sql = JSON.parse(r.json).find((b) => b.slug === "ai-data-trainee");
 t("completo: exit 0 y 10 bootcamps", r.code === 0 && JSON.parse(r.json).length === 10);
 t("completo: coma, comillas dobles y acentos conservados", sql?.modality === "Virtual, en vivo" && sql?.level === 'Nivel "inicial"');
 t("completo: requisitos separados por ;", JSON.stringify(sql?.requirements) === JSON.stringify(["Computadora", "Internet estable"]));
@@ -37,17 +37,17 @@ t("Excel (BOM + ; + CRLF) se importa igual", r.code === 0 && r.json === readFile
 
 // 4 validaciones: cada una debe fallar con mensaje claro y SIN escribir
 const fail = (name, csv, re, extra = []) => { const before = readFileSync(real, "utf8"); const x = run(csv, extra); t(name, x.code === 1 && re.test(x.text) && x.json === before, `(${(x.text.match(re) || [""])[0].slice(0, 80)})`); };
-fail("slug invalido (mayusculas/espacios)", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, slug: "SQL AI" } : b)].join("\n"), /slug inválido "SQL AI"/);
+fail("slug invalido (mayusculas/espacios)", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, slug: "AI Data Trainee" } : b)].join("\n"), /slug inválido "AI Data Trainee"/);
 fail("slug repetido", [H, ...allRows(), row(base[0])].join("\n"), /slug "gen-ai-to-agents" está repetido/);
-fail("area no valida", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, area: "Marketing" } : b)].join("\n"), /área "Marketing" no válida/);
-fail("falta descripcion", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, summary: "" } : b)].join("\n"), /falta la descripción corta/);
-fail("falta nombre", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, name: "" } : b)].join("\n"), /falta el nombre/);
-fail("URL http (no https)", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, enrollmentUrl: "http://x.com" } : b)].join("\n"), /enrollmentUrl debe ser una URL https/);
-fail("URL sin protocolo", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, enrollmentUrl: "www.x.com" } : b)].join("\n"), /enrollmentUrl debe ser una URL https/);
-fail("temas repetidos en un modulo", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, syllabus: "A: x; x" } : b)].join("\n"), /temas repetidos en "A": x/);
-fail("modulos repetidos", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, syllabus: "A: x | A: y" } : b)].join("\n"), /módulos repetidos: A/);
-fail("requisitos repetidos", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, requirements: "PC; PC" } : b)].join("\n"), /requisitos repetidos: PC/);
-fail("modulo sin titulo (': tema')", [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, syllabus: ": solo temas" } : b)].join("\n"), /no tiene título/);
+fail("area no valida", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, area: "Marketing" } : b)].join("\n"), /área "Marketing" no válida/);
+fail("falta descripcion", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, summary: "" } : b)].join("\n"), /falta la descripción corta/);
+fail("falta nombre", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, name: "" } : b)].join("\n"), /falta el nombre/);
+fail("URL http (no https)", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, enrollmentUrl: "http://x.com" } : b)].join("\n"), /enrollmentUrl debe ser una URL https/);
+fail("URL sin protocolo", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, enrollmentUrl: "www.x.com" } : b)].join("\n"), /enrollmentUrl debe ser una URL https/);
+fail("temas repetidos en un modulo", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, syllabus: "A: x; x" } : b)].join("\n"), /temas repetidos en "A": x/);
+fail("modulos repetidos", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, syllabus: "A: x | A: y" } : b)].join("\n"), /módulos repetidos: A/);
+fail("requisitos repetidos", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, requirements: "PC; PC" } : b)].join("\n"), /requisitos repetidos: PC/);
+fail("modulo sin titulo (': tema')", [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, syllabus: ": solo temas" } : b)].join("\n"), /no tiene título/);
 fail("columna desconocida", [H + ",extra", ...base.map((b) => row(b) + ",x")].join("\n"), /Columnas desconocidas: extra/);
 fail("columna faltante", ["slug,name,area,summary", ...base.map((b) => [b.slug, b.name, b.area, b.summary].join(","))].join("\n"), /Faltan columnas: duration/);
 fail("comillas sin cerrar", [H, ...allRows(), 'x,"abierta'].join("\n"), /no se cierra/);
@@ -58,10 +58,10 @@ t("--allow-removal permite eliminar", r.code === 0 && JSON.parse(r.json).length 
 r = run([H, ...allRows(), row({ slug: "nuevo-programa", name: "Nuevo", area: "IA", summary: "Descripcion" })].join("\n"));
 t("slug nuevo se agrega sin problema (11)", r.code === 0 && JSON.parse(r.json).length === 11);
 const reord = run([H, ...allRows().reverse()].join("\n"));
-t("el orden del CSV define el orden del sitio", reord.code === 0 && JSON.parse(reord.json)[0].slug === "full-stack-jr");
+t("el orden del CSV define el orden del sitio", reord.code === 0 && JSON.parse(reord.json)[0].slug === "ai-for-developers-jr");
 
 // 5 --check no escribe; archivo inexistente
-copyFileSync(real, out); writeFileSync(join(dir, "c.csv"), [H, ...allRows((b) => b.slug === "sql-ai" ? { ...b, duration: "9 sem" } : b)].join("\n"));
+copyFileSync(real, out); writeFileSync(join(dir, "c.csv"), [H, ...allRows((b) => b.slug === "ai-data-trainee" ? { ...b, duration: "9 sem" } : b)].join("\n"));
 r = spawnSync("node", [SCRIPT, join(dir, "c.csv"), "--out", out, "--check"], { encoding: "utf8" });
 t("--check valida y NO escribe", r.status === 0 && /no se escribió/.test(r.stdout) && readFileSync(out, "utf8") === readFileSync(real, "utf8"));
 r = spawnSync("node", [SCRIPT, join(dir, "no-existe.csv")], { encoding: "utf8" });

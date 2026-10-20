@@ -47,7 +47,7 @@ El importador se detiene **sin cambiar nada** si encuentra un problema, e indica
 
 ## Pendiente de confirmar
 
-- ¿"Full Stack Jr" y "Full Stack AI Jr" son un programa o dos? Hoy hay una sola fila (`full-stack-jr`).
+- Python Analyst, SQL AI y Full Stack Jr salieron del listado (no tienen formulario de HubSpot); en su lugar están Gen AI Skills, Claude y AI for Developers Jr. Sus URLs anteriores ya no existen.
 - Las descripciones (`summary`) actuales son **provisionales**: reemplázalas con las oficiales.
 
 ---

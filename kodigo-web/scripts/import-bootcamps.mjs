@@ -15,7 +15,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const AREAS = ["IA", "Datos", "Desarrollo", "Educación"];
+const AREAS = ["IA", "Datos", "Desarrollo", "Programación", "Educación"]; // "Desarrollo" se publica como "Programación"
 const COLUMNS = ["slug", "name", "area", "summary", "duration", "modality", "level", "requirements", "syllabus", "enrollmentUrl"];
 
 // ---------- CSV ----------
@@ -88,7 +88,8 @@ export const convert = (rows, { existingSlugs = [], allowRemoval = false } = {})
     if (!AREAS.includes(area)) errors.push(`${where}: área "${area}" no válida. Opciones: ${AREAS.join(", ")}.`);
     if (!summary) errors.push(`${where}: falta la descripción corta (summary).`);
 
-    const out = { slug, name, area, summary };
+    // La plantilla dice "Desarrollo"; el sitio (filtros, estilos de tarjeta) usa el área "Programación".
+    const out = { slug, name, area: area === "Desarrollo" ? "Programación" : area, summary };
     for (const f of ["duration", "modality", "level"]) if (get(f)) out[f] = get(f);
 
     const requirements = parseList(get("requirements"));

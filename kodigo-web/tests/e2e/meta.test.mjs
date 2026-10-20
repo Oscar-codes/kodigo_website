@@ -5,7 +5,7 @@ const out = []; const t = (n, ok, x = "") => { const r = `${ok ? "PASS" : "FAIL"
 const desc = () => p.evaluate(() => [...document.querySelectorAll('meta[name="description"]')].map((m) => m.content));
 const robots = () => p.evaluate(() => [...document.querySelectorAll('meta[name="robots"]')].map((m) => m.content));
 const SITE = "Kodigo: formación en tecnología e inteligencia artificial para El Salvador y Latinoamérica.";
-const cases = [["/", SITE], ["/bootcamps", "Programas de formación en IA, datos y desarrollo."], ["/bootcamps/sql-ai", "Aprende a consultar, organizar y analizar información almacenada en bases de datos relacionales."],
+const cases = [["/", SITE], ["/bootcamps", "Programas de formación en IA, datos y desarrollo."], ["/bootcamps/ai-data-trainee", "Desarrolla capacidades de análisis de información y empieza a utilizar IA en tareas relacionadas con datos."],
   ["/nosotros/", "Formamos talento tech en El Salvador y Latinoamérica"], ["/profesional", SITE], ["/profesional/ppd", "Contenido de PPD pendiente de definir."]];
 for (const [r, d] of cases) { await p.goto(base + r); await p.waitForTimeout(150); const x = await desc(); t(`descripcion ${r}`, x.length === 1 && x[0] === d, `(${x.length} meta: "${x[0]?.slice(0, 50)}")`); t(`robots ${r}: sin noindex`, (await robots()).length === 0); }
 for (const r of ["/bootcamps/no-existe", "/profesional/no-existe", "/ruta-inventada"]) { await p.goto(base + r); await p.waitForTimeout(150); t(`404 ${r}: noindex y descripcion del sitio`, (await robots()).join() === "noindex" && (await desc())[0] === SITE); }

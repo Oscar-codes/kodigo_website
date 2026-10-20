@@ -21,7 +21,8 @@ for (const bad of ["/bootcamps/no-existe", "/profesional/no-existe", "/ruta-inve
 }
 await page.goto(base + "/bootcamps");
 t("listado: 10 tarjetas", (await page.locator("main ul > li").count()) === 10, `(${await page.locator("main ul > li").count()})`);
-const hrefs = await page.locator("main ul > li a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
+// El enlace del título es el primero de cada tarjeta (las que tienen formulario añaden "Ficha del programa" y el botón "Aplicar").
+const hrefs = await page.locator("main ul > li").evaluateAll((lis) => lis.map((li) => li.querySelector("a").getAttribute("href")));
 t("listado: enlaces == datos", JSON.stringify(hrefs) === JSON.stringify(bootcamps.map((b) => `/bootcamps/${b.slug}`)));
 await page.goto(base + "/");
 await page.getByRole("button", { name: /Profesional/ }).hover();
@@ -29,7 +30,7 @@ const menuLinks = await page.locator("#submenu-profesional a").evaluateAll((as) 
 t("menu: Profesional tiene Ver todo + 2 secciones", menuLinks.length === 3 && menuLinks[0] === "/profesional", `(${menuLinks.length})`);
 await page.goBack(); await page.goForward();
 t("back/forward funcionan", page.url().endsWith("/nosotros/") && (await h1()) === "Nosotros");
-await page.goto(base + "/bootcamps/sql-ai"); await page.getByRole("navigation", { name: "Migas de pan" }).getByRole("link", { name: "Bootcamps" }).click();
+await page.goto(base + "/bootcamps/ai-data-trainee"); await page.getByRole("navigation", { name: "Migas de pan" }).getByRole("link", { name: "Bootcamps" }).click();
 t("detalle -> miga Bootcamps vuelve al listado", page.url().endsWith("/bootcamps"));
 await page.evaluate(() => window.scrollTo(0, 400)); await page.getByRole("link", { name: "Gen AI to Agents" }).first().click();
 t("scroll arriba al cambiar de ruta", (await page.evaluate(() => scrollY)) === 0);

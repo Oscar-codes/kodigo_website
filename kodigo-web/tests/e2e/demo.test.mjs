@@ -26,7 +26,7 @@ const scrollTo = async (p, sel) => { await p.locator(sel).first().evaluate((e) =
 // ============ aviso y salvaguardas ============
 {
   const p = await newPage();
-  for (const r of ["/", "/bootcamps", "/nosotros/", "/profesional/alianzas", "/bootcamps/sql-ai", "/ruta-inventada"]) {
+  for (const r of ["/", "/bootcamps", "/nosotros/", "/profesional/alianzas", "/bootcamps/ai-data-trainee", "/ruta-inventada"]) {
     await p.goto(BASE + r); await p.waitForTimeout(200);
     const banner = await p.locator("aside[aria-label*=demostración]").first().innerText().catch(() => "");
     t(`${r}: banner de demostración visible`, /Modo demostración.*no oficial.*no publicar/.test(banner));
@@ -154,7 +154,7 @@ const scrollTo = async (p, sel) => { await p.locator(sel).first().evaluate((e) =
 // ============ Encabezados sin saltos y sin desborde en móvil ============
 {
   const p = await newPage({ viewport: { width: 360, height: 740 } });
-  for (const r of ["/", "/nosotros/", "/profesional/alianzas", "/bootcamps/sql-ai"]) {
+  for (const r of ["/", "/nosotros/", "/profesional/alianzas", "/bootcamps/ai-data-trainee"]) {
     await p.goto(BASE + r); await p.waitForTimeout(250);
     await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 400) { scrollTo(0, y); await new Promise((x) => setTimeout(x, 60)); } });
     const levels = await p.evaluate(() => [...document.querySelectorAll("h1,h2,h3,h4")].filter((h) => !h.hidden && getComputedStyle(h).display !== "none").map((h) => +h.tagName[1]));

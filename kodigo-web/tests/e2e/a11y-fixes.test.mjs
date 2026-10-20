@@ -6,13 +6,13 @@ const page = await (await browser.newContext({ viewport: { width: 1280, height: 
 const errs = []; page.on("pageerror", (e) => errs.push(e.message));
 
 // ---- títulos por ruta (WCAG 2.4.2)
-const titles = [["/", "Kodigo | Bootcamps de tecnología e IA"], ["/bootcamps", "Bootcamps | Kodigo"], ["/bootcamps/sql-ai", "SQL AI | Kodigo"],
+const titles = [["/", "Kodigo | Bootcamps de tecnología e IA"], ["/bootcamps", "Bootcamps | Kodigo"], ["/bootcamps/ai-data-trainee", "AI Data Trainee | Kodigo"],
   ["/nosotros/", "Nosotros | Kodigo"], ["/profesional", "Profesional | Kodigo"], ["/profesional/ppd", "PPD | Kodigo"],
   ["/bootcamps/no-existe", "Página no encontrada | Kodigo"], ["/profesional/no-existe", "Página no encontrada | Kodigo"], ["/ruta-inventada", "Página no encontrada | Kodigo"]];
 for (const [r, title] of titles) { await page.goto(base + r); await page.waitForTimeout(150); t(`titulo ${r}`, (await page.title()) === title, `("${await page.title()}")`); }
 await page.goto(base + "/"); await page.getByRole("link", { name: "Explorar bootcamps" }).click(); await page.waitForTimeout(150);
 t("titulo se actualiza en navegacion cliente", (await page.title()) === "Bootcamps | Kodigo");
-const all = []; for (const r of ["/", "/bootcamps", "/nosotros/", "/profesional", "/profesional/ppd", "/profesional/alianzas", "/bootcamps/sql-ai"]) { await page.goto(base + r); await page.waitForTimeout(100); all.push(await page.title()); }
+const all = []; for (const r of ["/", "/bootcamps", "/nosotros/", "/profesional", "/profesional/ppd", "/profesional/alianzas", "/bootcamps/ai-data-trainee"]) { await page.goto(base + r); await page.waitForTimeout(100); all.push(await page.title()); }
 t("titulos unicos entre paginas distintas", new Set(all).size === all.length);
 
 // ---- enlace saltar al contenido (WCAG 2.4.1)
@@ -28,7 +28,7 @@ await page.keyboard.press("Tab");
 t("skip: siguiente Tab cae dentro del contenido (no en el header)", await page.evaluate(() => !!document.activeElement?.closest("main")));
 
 // ---- encabezados
-const routes = ["/", "/bootcamps", "/nosotros/", "/profesional", "/profesional/ppd", "/bootcamps/sql-ai", "/ruta-inventada"];
+const routes = ["/", "/bootcamps", "/nosotros/", "/profesional", "/profesional/ppd", "/bootcamps/ai-data-trainee", "/ruta-inventada"];
 for (const r of routes) {
   await page.goto(base + r); await page.waitForTimeout(150);
   const levels = await page.evaluate(() => [...document.querySelectorAll("h1,h2,h3,h4")].filter((h) => !h.hidden && getComputedStyle(h).display !== "none").map((h) => +h[0 === 0 ? "tagName" : "tagName"][1]));

@@ -30,7 +30,7 @@ Estado: la configuración está lista y **verificada localmente**. Lo que ocurre
 
 `npm run test:e2e:prod` sirve `dist/` con `serve` y comprueba, además de todas las pruebas de navegador:
 
-- La raíz y las rutas internas (`/bootcamps/sql-ai`, `/nosotros/`…) devuelven la SPA con 200; abrir una URL interna directamente funciona.
+- La raíz y las rutas internas (`/bootcamps/ai-data-trainee`, `/nosotros/`…) devuelven la SPA con 200; abrir una URL interna directamente funciona.
 - **La raíz nunca muestra el listado de archivos del servidor.** Esto falló en una configuración intermedia y quedó cubierto por una prueba.
 - Archivos o assets inexistentes devuelven 404 real (no HTML con 200).
 - `/index.html` e `/index` redirigen a `/` sin pasar por la página 404 de la SPA.

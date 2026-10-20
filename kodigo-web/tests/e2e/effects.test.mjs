@@ -44,7 +44,7 @@ const style = (p, sel, prop, pseudo) => p.locator(sel).first().evaluate((e, [pr,
   t("tarjeta: blanca, con borde y 16px de radio como course-item", await bc.locator("article").evaluate((e) => { const s = getComputedStyle(e); return s.backgroundColor === "rgb(255, 255, 255)" && s.borderRadius === "16px" && s.borderTopWidth === "1px"; }));
   t("tarjeta: la imagen tiene 12px de radio", (await bc.locator("article > div > div").first().evaluate((e) => getComputedStyle(e).borderRadius)) === "12px");
   t("tarjeta: sin datos oficiales no hay filas de datos vacías", (await bc.locator("ul[aria-label]").count()) === 0);
-  t("tarjeta: separador punteado, 'Ficha del programa' y enlace 'Ver detalles'", (await bc.locator(".more").evaluate((e) => getComputedStyle(e).borderTopStyle)) === "dashed" && /Ficha del programa/.test(await bc.locator(".more").innerText()) && /Ver detalles/.test(await bc.locator(".more").innerText()));
+  t("tarjeta: separador punteado, 'Ficha del programa' y acción ('Aplicar' con formulario o 'Ver detalles')", (await bc.locator(".more").evaluate((e) => getComputedStyle(e).borderTopStyle)) === "dashed" && /Ficha del programa/.test(await bc.locator(".more").innerText()) && /Aplicar|Ver detalles/.test(await bc.locator(".more").innerText()));
   await bc.hover(); await sleep(500);
   t("tarjeta: al pasar el cursor la imagen hace zoom x1.1", (await style(p, "section[aria-labelledby=bootcamps-title] ul > li:first-child .zoom", "transform")) === "matrix(1.1, 0, 0, 1.1, 0, 0)");
   t("tarjeta: la flecha avanza 4px al pasar el cursor", (await bc.locator(".more svg").evaluate((e) => getComputedStyle(e).transform)) === "matrix(1, 0, 0, 1, 4, 0)");
