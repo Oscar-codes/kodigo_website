@@ -70,7 +70,7 @@ const open = async (width) => {
   await email.fill("persona@gmail.com"); await submit.click();
   t("error: correo personal (gmail) rechazado", (await p.getByRole("alert").innerText()).includes("correo corporativo, no uno personal"));
   await email.fill("persona@empresa.com"); await submit.click(); await sleep(150);
-  t("válido: sin destino configurado avisa que el registro no está habilitado (no simula éxito)", (await p.getByRole("status").last().innerText()).includes("aún no está habilitado") && (await email.getAttribute("aria-invalid")) === null);
+  t("válido: sin destino configurado avisa que el registro no está habilitado (no simula éxito)", (await p.locator("section[aria-labelledby=workshop-title]").getByRole("status").innerText()).includes("aún no está habilitado") && (await email.getAttribute("aria-invalid")) === null);
   t("sin errores de consola", p.errors.length === 0, p.errors.join(" | "));
 
 

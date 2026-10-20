@@ -107,6 +107,14 @@ export const adaptiveTraining = {
   photoSmallAlt: "Instructor de Kodigo presentando en un taller de IA",
 };
 
+// Sección "Aplicar" con el formulario de HubSpot (destino del botón "Aplicar" del menú en esta página).
+export const applySection = {
+  label: "Aplicar",
+  title: "Aplica a Kodigo para empresas",
+  loading: "Cargando formulario…",
+  error: "No pudimos cargar el formulario. Recarga la página o inténtalo de nuevo en unos minutos.",
+};
+
 export const team = {
   label: "Nuestro equipo",
   title: "Un equipo que entiende los retos de tu empresa",

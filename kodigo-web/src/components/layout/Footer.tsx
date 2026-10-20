@@ -205,7 +205,7 @@ export const Footer = () => {
               .filter((n) => !FOOTER_EXCLUDED.has(n.label))
               .map((n) => (
                 <li key={n.to}>
-                  <Link to={n.to}>{n.label}</Link>
+                  <Link to={b2b && n.label === "Aplicar" ? "/profesional/alianzas#aplicar" : n.to}>{n.label}</Link>
                 </li>
               ))}
           </ul>

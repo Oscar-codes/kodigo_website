@@ -10,4 +10,6 @@ export const siteConfig = {
   // avisa que el registro aún no está habilitado (no simula un envío).
   advisoryUrl: undefined as string | undefined,
   workshopEndpoint: undefined as string | undefined,
+  // Formulario de HubSpot (embed v2) de la sección "Aplicar" de la página Alianzas. Son identificadores públicos del portal.
+  hubspotForm: { portalId: "14535110", formId: "20d00be5-bb70-4875-b13a-eb4cc6528c82", region: "na1" },
 };

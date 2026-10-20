@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { AdaptiveTraining } from "@/components/sections/AdaptiveTraining";
 import { CaseStudies } from "@/components/sections/CaseStudies";
+import { ApplyB2b } from "@/components/sections/ApplyB2b";
 import { AlliancesHero } from "@/components/sections/AlliancesHero";
 import { ImpactStats } from "@/components/sections/ImpactStats";
 import { PageHeader } from "@/components/sections/PageHeader";
@@ -105,7 +106,7 @@ export const ProfessionalPage = () => {
   if (!section) return <NotFoundPage />;
 
   // Alianzas = "Kodigo para empresas": banner, cifras de impacto, workshop con formulario, próximos workshops, casos de
-  // éxito, adaptación a la operación, equipo y, al final, los aliados (orden de la guía "Landing B2B Kodigo").
+  // éxito, adaptación a la operación, equipo, aliados y, al final, el formulario de "Aplicar" (HubSpot) (orden de la guía "Landing B2B Kodigo").
   if (section.slug === "alianzas") {
     return (
       <B2bPage>
@@ -117,6 +118,7 @@ export const ProfessionalPage = () => {
         <AdaptiveTraining />
         <TeamBlock />
         {content.partners?.length ? <Partners items={content.partners} variant="grid" dark /> : null}
+        <ApplyB2b />
       </B2bPage>
     );
   }

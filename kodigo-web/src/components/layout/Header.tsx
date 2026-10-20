@@ -582,7 +582,7 @@ export const Header = () => {
                       "Aplicar" es el CTA final del menu: pill con gradient
                       purpleLight->purpleDeep, texto blanco y lift en hover. */}
                   <Link
-                    to={item.to}
+                    to={b2b && item.label === "Aplicar" ? "/profesional/alianzas#aplicar" : item.to}
                     data-cta={item.label === "Aplicar" ? "true" : undefined}
                     className={isActive(item.to) ? "active" : undefined}
                     aria-current={isActive(item.to) ? (hashOf(item.to) ? "location" : "page") : undefined}
