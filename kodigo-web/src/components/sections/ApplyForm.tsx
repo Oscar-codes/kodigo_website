@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, Check } from "../ui/Icons";
 // Formulario "Aplicar" en 4 fases para captar leads con interés formativo en Kodigo:
 //   1 Perfil (datos de contacto) · 2 Experiencia (quién es y su nivel) · 3 Interés (qué quiere aprender y lograr) ·
 //   4 Aplicación (cuándo, cuánto tiempo, cómo nos conoció y consentimiento).
-// Se valida cada fase antes de avanzar. El envío pasa por `submitLead` (src/lib/leads.ts): hoy es estático y se
+// Se valida cada fase antes de avanzar. El envío pasa por `submitLead` (src/lib/leads.ts): hoy llega por correo vía FormSubmit y se
 // conectará a HubSpot después. Tarjeta blanca sobre el panel oscuro, con los chips y botones de la línea gráfica de Kodigo.
 
 const STEPS = ["Perfil", "Experiencia", "Interés", "Aplicación"] as const;
