@@ -233,7 +233,7 @@ const WatchButton = styled.button`
   }
 `;
 
-const Backdrop = styled.div`
+const Backdrop = styled.div<{ $vertical?: boolean }>`
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -244,8 +244,9 @@ const Backdrop = styled.div`
 
   .frame {
     position: relative;
-    width: min(960px, 100%);
-    aspect-ratio: 16 / 9;
+    /* Video vertical (Short): 9:16 limitado a la altura de la ventana; horizontal: 16:9. */
+    width: ${({ $vertical }) => ($vertical ? "min(405px, 100%, calc((100dvh - 2.5rem) * 9 / 16))" : "min(960px, 100%)")};
+    aspect-ratio: ${({ $vertical }) => ($vertical ? "9 / 16" : "16 / 9")};
     border-radius: ${({ theme }) => theme.radii.lg};
     background: #000;
     overflow: hidden;
@@ -357,52 +358,34 @@ const Controls = styled.div`
 // Datos editoriales de respaldo. Cuando Kodigo entregue testimonios reales en `content.ts`, esos sustituyen a estos.
 const fallbackStories: Story[] = [
   {
-    kind: "estudiantes",
-    quote:
-      "En Kodigo encontré a coaches que se toman el tiempo de entender por qué me cuesta algo, no solo de decirme la respuesta. Eso me cambió la forma de aprender.",
-    name: "Mariana Cabrera",
-    role: "Estudiante · Bootcamp de Desarrollo Web",
-    tag: "Cohorte 2025",
-  },
-  {
-    kind: "estudiantes",
-    quote:
-      "Llegué sin experiencia en programación y en pocas semanas ya estaba entregando proyectos funcionales. El método es muy aplicado, no se queda en la teoría.",
-    name: "Luis Figueroa",
-    role: "Estudiante · Bootcamp de Datos",
-    tag: "Cohorte 2025",
-  },
-  {
-    kind: "proyectos",
-    quote:
-      "Construimos un tablero de analítica con datos reales para una empresa local. El equipo lo presentó y la organización lo puso en uso a la semana siguiente.",
-    name: "Equipo cohorte · Bootcamp de Datos",
-    role: "Proyecto final",
-    tag: "Cliente: Alianza comercial",
-  },
-  {
-    kind: "proyectos",
-    quote:
-      "La aplicación que diseñamos resolvió un problema real de inventario de una pyme local. Pasamos de la idea al producto en seis semanas.",
-    name: "Equipo cohorte · Bootcamp de Desarrollo",
-    role: "Proyecto final",
-    tag: "Cliente: Empresa aliada",
+    kind: "graduados",
+    // Borrador editorial (no es una cita textual): pendiente de que Kodigo confirme el texto, el rol y la etiqueta.
+    quote: "De Kodigo a nuevas oportunidades: conoce la historia de Paola Garay y su paso a RSM.",
+    name: "Paola Garay",
+    role: "Graduada Kodigo · RSM",
+    tag: "Graduada · Insertada laboralmente",
+    video: "https://www.youtube.com/embed/H1iV2EmSi9E?rel=0&playsinline=1&autoplay=1",
+    vertical: true,
   },
   {
     kind: "graduados",
-    quote:
-      "Después de graduarme conseguí mi primera oportunidad como desarrolladora. Lo que me abrió puertas fue el portafolio de proyectos que armé en Kodigo.",
-    name: "Andrea Rivas",
-    role: "Graduada · Bootcamp de Desarrollo Web",
-    tag: "2024 · Insertada laboralmente",
+    // Borrador editorial (no es una cita textual): pendiente de que Kodigo confirme el texto, el rol y la etiqueta.
+    quote: "De un bootcamp de Kodigo a RSM: conoce la historia de Carlos Puente y cómo dio el salto a su carrera profesional.",
+    name: "Carlos Puente",
+    role: "Graduado Kodigo · RSM",
+    tag: "Graduado · Insertado laboralmente",
+    video: "https://www.youtube.com/embed/G2nrLLpwFyg?rel=0&playsinline=1&autoplay=1",
+    vertical: true,
   },
   {
-    kind: "graduados",
-    quote:
-      "El acompañamiento después de graduarse no termina con el diploma: seguimos recibiendo mentoría y conexiones con empresas aliadas.",
-    name: "Carlos Méndez",
-    role: "Graduado · Bootcamp de Datos",
-    tag: "2024 · Insertado laboralmente",
+    kind: "conexiones",
+    // Borrador editorial (no es una cita textual): pendiente de que Kodigo confirme el texto, el rol y la etiqueta.
+    quote: "De tardar semanas a crear en horas con inteligencia artificial: conoce la experiencia de Yansy Aguilar.",
+    name: "Yansy Aguilar",
+    role: "Comunidad Kodigo",
+    tag: "Testimonio · Inteligencia artificial",
+    video: "https://www.youtube.com/embed/YNA-IckN7VE?rel=0&playsinline=1&autoplay=1",
+    vertical: true,
   },
   {
     kind: "conexiones",
@@ -411,6 +394,8 @@ const fallbackStories: Story[] = [
     name: "Mario Quintanilla",
     role: "Coordinador de Gestión de Talento · Vidrí",
     tag: "Empresa aliada · Bootcamp para equipos",
+    video: "https://www.youtube.com/embed/iVHvP8S9l1o?rel=0&playsinline=1&autoplay=1",
+    vertical: true,
   },
   {
     kind: "conexiones",
@@ -419,22 +404,8 @@ const fallbackStories: Story[] = [
     name: "Roberto Carlos Méndez",
     role: "Gerente de Informática · COMERSAL",
     tag: "Empresa aliada · Taller de IA",
-  },
-  {
-    kind: "conexiones",
-    quote:
-      "Nos acercaron perfiles listos para integrarse a nuestro equipo. El nivel técnico y humano de los graduados Kodigo nos sorprendió desde la primera entrevista.",
-    name: "Patricia Soto",
-    role: "People Lead · Empresa aliada",
-    tag: "Empresa aliada 2025",
-  },
-  {
-    kind: "conexiones",
-    quote:
-      "Como mentora puedo devolver algo de lo que recibí. Acompañar a estudiantes en sus proyectos me mantiene cerca de lo que importa: aprender y enseñar.",
-    name: "Jorge Salinas",
-    role: "Mentor Kodigo",
-    tag: "Mentor activo",
+    video: "https://www.youtube.com/embed/6UhoEVe05mg?rel=0&playsinline=1&autoplay=1",
+    vertical: true,
   },
 ];
 
@@ -588,12 +559,13 @@ const CounterCard = ({ card: c, index: i, visible }: { card: (typeof counterCard
 
 export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
   // Mezcla los testimonios oficiales (si llegan) con los editoriales de respaldo. Lo real gana.
+  // Solo se muestran los testimonios que tienen video.
   const stories: Story[] = (() => {
     if (items && items.length) {
       const remaining = fallbackStories.filter((f) => !items.some((t) => t.name === f.name && t.quote === f.quote));
-      return [...items, ...remaining];
+      return [...items, ...remaining].filter((s) => s.video);
     }
-    return fallbackStories;
+    return fallbackStories.filter((s) => s.video);
   })();
 
   const trackRef = useRef<HTMLUListElement>(null);
@@ -728,7 +700,7 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
         </Band>
       </Container>
       {playing?.video ? (
-        <Backdrop role="dialog" aria-modal="true" aria-label={`Testimonio de ${playing.name}`} onClick={() => setPlaying(null)}>
+        <Backdrop $vertical={playing.vertical} role="dialog" aria-modal="true" aria-label={`Testimonio de ${playing.name}`} onClick={() => setPlaying(null)}>
           <div className="frame" onClick={(e) => e.stopPropagation()}>
             {/\.(mp4|webm)$/i.test(playing.video) ? (
               <video
@@ -745,7 +717,13 @@ export const Testimonials = ({ items }: { items?: Testimonial[] }) => {
                 title={`Testimonio de ${playing.name}`}
               />
             ) : (
-              <iframe src={playing.video} title={`Testimonio de ${playing.name}`} allow="autoplay; fullscreen" allowFullScreen />
+              <iframe
+                src={playing.video}
+                title={`Testimonio de ${playing.name}`}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
             )}
             <button type="button" className="close" onClick={() => setPlaying(null)} aria-label="Cerrar video" autoFocus>
               ×

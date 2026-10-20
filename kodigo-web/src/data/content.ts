@@ -46,6 +46,8 @@ export interface Testimonial {
   image?: string;
   /** URL de video incrustable (iframe) que se abre en una ventana al pulsar "Ver testimonio". */
   video?: string;
+  /** El video es vertical (9:16, p. ej. YouTube Shorts): la ventana lo muestra en formato vertical. */
+  vertical?: boolean;
 }
 
 export interface Step {
