@@ -10,9 +10,10 @@ import { workshop } from "@/data/alliances";
 import { flipInY } from "@/styles/effects";
 import { media } from "@/styles/theme";
 import { bracketLabel, headlineText, iconTile, imageBackdrop, keywordText } from "../ui/B2bKit";
+import { ButtonAction } from "../ui/Button";
 import { Container } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
-import { WorkshopForm } from "./WorkshopForm";
+import { useWorkshopRegistration } from "./WorkshopRegistration";
 
 const icons = { target: iconTarget, bulb: iconBulb, path: iconPath } as const;
 
@@ -119,8 +120,21 @@ const Ticket = styled.div`
   }
 
   .body {
+    display: grid;
+    gap: ${({ theme }) => theme.space(5)};
     padding: ${({ theme }) => `${theme.space(6)} ${theme.space(6)} ${theme.space(7)}`};
     border-top: 2px dashed rgba(196, 181, 245, 0.3);
+  }
+
+  .body p {
+    font-size: 0.9375rem;
+    color: ${({ theme }) => theme.b2b.text2};
+  }
+
+  .body button {
+    width: 100%;
+    border-radius: 14px;
+    padding: 16px 28px;
   }
 `;
 
@@ -173,7 +187,9 @@ const emphasize = (title: string) => {
   );
 };
 
-export const Workshop = () => (
+export const Workshop = () => {
+  const openRegistration = useWorkshopRegistration();
+  return (
   <Band id="workshop" aria-labelledby="workshop-title">
     <Container>
       <Layout>
@@ -189,7 +205,10 @@ export const Workshop = () => (
               <span className="tag">{workshop.ticketTag}</span>
             </div>
             <div className="body">
-              <WorkshopForm />
+              <p>{workshop.pass.text}</p>
+              <ButtonAction variant="gradient" arrow="right" haspopup="dialog" onClick={openRegistration}>
+                {workshop.pass.submit}
+              </ButtonAction>
             </div>
           </Ticket>
         </TicketSlot>
@@ -206,4 +225,5 @@ export const Workshop = () => (
       </Layout>
     </Container>
   </Band>
-);
+  );
+};

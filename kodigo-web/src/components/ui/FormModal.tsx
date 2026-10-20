@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 // Ventana modal con el estilo del sitio (panel navy → violeta, como el resto de bloques oscuros), sobre el elemento nativo <dialog>: el navegador aporta el foco atrapado, el cierre
 // con Escape y la inertización del fondo. Se cierra también con la X y al pulsar fuera de la tarjeta. El contenido solo se
@@ -15,7 +15,7 @@ const fade = keyframes`
   to { opacity: 1; }
 `;
 
-const Dialog = styled.dialog`
+const Dialog = styled.dialog<{ $b2b: boolean }>`
   width: min(640px, calc(100vw - 2rem));
   max-height: min(90dvh, 920px);
   margin: auto;
@@ -118,6 +118,33 @@ const Dialog = styled.dialog`
       padding-inline: ${({ theme }) => theme.space(1)};
     }
   }
+
+  /* Tono de la landing B2B (Alianzas): fondo morado profundo, borde lavanda y filo/acento con el degradado lavanda → teal. */
+  ${({ $b2b, theme }) =>
+    $b2b &&
+    css`
+      border: 1px solid ${theme.b2b.cardBorder};
+      border-radius: 28px;
+      background: ${theme.b2b.bgGradient};
+      color: ${theme.b2b.text};
+      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6), 0 0 60px -20px rgba(110, 60, 200, 0.5);
+
+      &::backdrop {
+        background: rgba(26, 15, 69, 0.72);
+      }
+
+      &::before {
+        background: ${theme.b2b.gradientKey};
+      }
+
+      .eyebrow {
+        color: ${theme.b2b.teal};
+      }
+
+      h2 {
+        color: ${theme.b2b.text};
+      }
+    `}
 `;
 
 interface FormModalProps {
@@ -126,10 +153,12 @@ interface FormModalProps {
   /** Línea pequeña sobre el título (p. ej. "Aplicar"). */
   eyebrow?: string;
   title: string;
+  /** "b2b" = paleta morada de la landing Alianzas; por defecto, el panel navy del resto del sitio. */
+  tone?: "default" | "b2b";
   children: ReactNode;
 }
 
-export const FormModal = ({ open, onClose, eyebrow, title, children }: FormModalProps) => {
+export const FormModal = ({ open, onClose, eyebrow, title, tone = "default", children }: FormModalProps) => {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -150,6 +179,7 @@ export const FormModal = ({ open, onClose, eyebrow, title, children }: FormModal
   return (
     <Dialog
       ref={ref}
+      $b2b={tone === "b2b"}
       aria-labelledby={titleId}
       onClose={onClose}
       // Pulsar fuera de la tarjeta (el <dialog> ocupa solo la tarjeta; el resto es el fondo) cierra la ventana.

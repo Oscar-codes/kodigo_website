@@ -25,11 +25,13 @@ export const workshop = {
   ] as const,
   // Etiqueta que acompaña al logo en la cabecera del pase de registro.
   ticketTag: "Workshop · IA para empresas",
-  form: {
-    emailLabel: "Correo corporativo",
-    emailPlaceholder: "nombre@empresa.com",
+  // Pase de registro: texto breve y botón que abre el modal con el formulario de HubSpot.
+  pass: {
+    text: "Reserva tu lugar: completa el formulario de registro y te confirmamos los detalles de la sesión.",
     submit: "Registrarme al Workshop",
   },
+  modalTitle: "Regístrate al Workshop",
+  modalIntro: "Déjanos tus datos para recibir más detalles del evento.",
 };
 
 export const upcomingWorkshops = {

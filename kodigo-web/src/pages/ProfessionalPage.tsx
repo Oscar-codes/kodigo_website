@@ -10,6 +10,7 @@ import { Partners } from "@/components/sections/Partners";
 import { TeamBlock } from "@/components/sections/TeamBlock";
 import { UpcomingWorkshops } from "@/components/sections/UpcomingWorkshops";
 import { Workshop } from "@/components/sections/Workshop";
+import { WorkshopRegistrationProvider } from "@/components/sections/WorkshopRegistration";
 import { Card } from "@/components/ui/Card";
 import { Container, Section } from "@/components/ui/Container";
 import { ArrowRight } from "@/components/ui/Icons";
@@ -110,15 +111,17 @@ export const ProfessionalPage = () => {
   if (section.slug === "alianzas") {
     return (
       <B2bPage>
-        <AlliancesHero />
-        <ImpactStats />
-        <Workshop />
-        <UpcomingWorkshops />
-        <CaseStudies />
-        <AdaptiveTraining />
-        <TeamBlock />
-        {content.partners?.length ? <Partners items={content.partners} variant="grid" dark /> : null}
-        <ApplyB2b />
+        <WorkshopRegistrationProvider>
+          <AlliancesHero />
+          <ImpactStats />
+          <Workshop />
+          <UpcomingWorkshops />
+          <CaseStudies />
+          <AdaptiveTraining />
+          <TeamBlock />
+          {content.partners?.length ? <Partners items={content.partners} variant="grid" dark /> : null}
+          <ApplyB2b />
+        </WorkshopRegistrationProvider>
       </B2bPage>
     );
   }

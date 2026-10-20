@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { upcomingWorkshops } from "@/data/alliances";
 import { media } from "@/styles/theme";
-import { ButtonLink } from "../ui/Button";
+import { ButtonAction } from "../ui/Button";
 import { Container, Section } from "../ui/Container";
 import { Clock, MapPin } from "../ui/Icons";
 import { Plexus, type GlobeOptions } from "../ui/Plexus";
 import { Reveal } from "../ui/Reveal";
 import { SectionTitle } from "../ui/SectionTitle";
+import { useWorkshopRegistration } from "./WorkshopRegistration";
 
 // Agenda de la landing B2B: filas separadas por líneas finas (fecha a la izquierda, modalidad y título al centro, acción
 // debajo) y, a la derecha, un globo plexus (canvas) girando despacio.
@@ -119,7 +120,9 @@ const Soon = styled.span`
   color: ${({ theme }) => theme.b2b.text2};
 `;
 
-export const UpcomingWorkshops = () => (
+export const UpcomingWorkshops = () => {
+  const openRegistration = useWorkshopRegistration();
+  return (
   <Block id="proximos" aria-labelledby="events-title">
     <Container>
       <Layout>
@@ -149,9 +152,9 @@ export const UpcomingWorkshops = () => (
                   {e.soon ? (
                     <Soon>{upcomingWorkshops.soon}</Soon>
                   ) : (
-                    <ButtonLink to="#workshop-title" variant="gradient" arrow>
+                    <ButtonAction variant="gradient" arrow haspopup="dialog" onClick={openRegistration}>
                       {upcomingWorkshops.cta}
-                    </ButtonLink>
+                    </ButtonAction>
                   )}
                 </Event>
               </Reveal>
@@ -166,4 +169,5 @@ export const UpcomingWorkshops = () => (
       </Layout>
     </Container>
   </Block>
-);
+  );
+};

@@ -109,6 +109,28 @@ const StyledAnchor = styled.a<{ $variant: Variant }>`
   ${buttonStyles}
 `;
 
+const StyledButton = styled.button<{ $variant: Variant }>`
+  ${buttonStyles}
+  cursor: pointer;
+`;
+
+interface ButtonActionProps {
+  variant?: Variant;
+  arrow?: boolean | "right";
+  onClick: () => void;
+  /** Indica que el botón abre una ventana modal. */
+  haspopup?: "dialog";
+  children: React.ReactNode;
+}
+
+/** Mismo aspecto que <ButtonLink>, pero como <button> que ejecuta una acción (p. ej. abrir un modal). */
+export const ButtonAction = ({ variant = "primary", arrow = false, onClick, haspopup, children }: ButtonActionProps) => (
+  <StyledButton type="button" $variant={variant} onClick={onClick} aria-haspopup={haspopup}>
+    {children}
+    {arrow === "right" ? <ArrowRight size={18} /> : arrow && <ArrowUpRight />}
+  </StyledButton>
+);
+
 interface ButtonLinkProps {
   /** Ruta interna ("/bootcamps") o URL externa ("https://..."). */
   to: string;
