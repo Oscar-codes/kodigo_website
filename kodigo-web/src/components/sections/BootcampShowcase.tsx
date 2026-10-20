@@ -10,7 +10,7 @@ import { ArrowRight } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
 import { SectionTitle } from "../ui/SectionTitle";
 import { VisuallyHidden } from "../ui/VisuallyHidden";
-import { areaCardStyle, BootcampGrid, Chips, Item, Name, Seal, Visual, VisualWrap } from "./BootcampGrid";
+import { areaCardStyle, BootcampGrid, Chips, coverOf, Item, Name, Seal, Visual, VisualWrap } from "./BootcampGrid";
 
 // Bloque "cursos populares" de Eduhall (ExploreCourseOne): título a la izquierda, texto y enlace "ver todos" a la derecha,
 // barra blanca de filtros en píldora y cuadrícula de tarjetas. Copy de Kodigo: "Aprende con propósito".
@@ -31,19 +31,23 @@ const byArea = (a: Bootcamp, b: Bootcamp) => AREA_ORDER.indexOf(a.area) - AREA_O
 // Se muestran cuando el filtro activo es "Rutas formativas" (index 0). Cada tarjeta alude
 // a su ruta con el visual (gradiente + glyph + pill) y el body (chips + título + copy + CTA)
 // idénticos a los de BootcampGrid, para que se lean como parte de la misma familia.
-const routeCards: { area: Area; title: string; text: string }[] = [
+// `cover` = slug del bootcamp cuya ilustración representa la ruta.
+const routeCards: { area: Area; title: string; text: string; cover: string }[] = [
   {
     area: "IA",
+    cover: "gen-ai-to-agents",
     title: "Ruta de Inteligencia Artificial",
     text: "De la IA generativa a los agentes inteligentes: aprende a usarla y a crear soluciones con ella.",
   },
   {
     area: "Datos",
+    cover: "bi-analyst-ai",
     title: "Ruta de Data Analyst",
     text: "Analiza, visualiza e interpreta datos para tomar mejores decisiones de negocio.",
   },
   {
     area: "Programación",
+    cover: "full-stack-jr",
     title: "Ruta de Programación",
     text: "Construye aplicaciones web desde el frontend hasta el full stack con proyectos reales.",
   },
@@ -234,7 +238,7 @@ export const BootcampShowcase = ({ items, flushTop = true }: { items: Bootcamp[]
                 <Reveal key={r.title} tag="li" index={i % 3} direction={i % 3 === 0 ? "right" : i % 3 === 2 ? "left" : "up"}>
                   <Item>
                     <VisualWrap aria-hidden="true">
-                      <Visual $area={r.area}>
+                      <Visual $area={r.area} $image={coverOf(r.cover)}>
                         <div className="zoom" />
                         <span className="glyph">{copy.glyph}</span>
                         <span className="pill">{copy.badge}</span>

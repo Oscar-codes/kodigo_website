@@ -4,7 +4,7 @@
 //
 // Uso:
 //   npm run assets:build                       (usa ../Recursos kodigo)
-//   node scripts/build-assets.mjs --src "ruta/a/Recursos kodigo" [--only partners|brand|icons|photos|team|b2b]
+//   node scripts/build-assets.mjs --src "ruta/a/Recursos kodigo" [--only partners|brand|icons|photos|team|b2b|formaciones]
 //
 // Genera (se versiona el resultado optimizado, no los originales de 29 MB):
 //   src/assets/partners/<slug>.webp + src/data/partners.json   (logos de aliados, recortados y normalizados)
@@ -231,7 +231,23 @@ const buildB2b = async () => {
   console.log(`b2b: ${jobs.length} imágenes (${kb(total)}), ${icons.length + 1} íconos SVG, fuente Matimo -> src/assets/b2b y src/assets/fonts/matimo`);
 };
 
+// ---------- Formaciones ----------
+// Fondos de las tarjetas de bootcamps (carpeta FORMACIONES, 1200x560, ya tratados en morado). El nombre del archivo lleva
+// el orden y el slug del bootcamp ("03-gen-ai-to-agents.png"); se guardan como src/assets/formaciones/<slug>.webp.
+const buildFormaciones = async () => {
+  const srcDir = join(SRC, "FORMACIONES");
+  const outDir = join(ROOT, "src/assets/formaciones"); rmSync(outDir, { recursive: true, force: true }); ensure(outDir);
+  let total = 0, n = 0;
+  for (const f of readdirSync(srcDir).filter((x) => /^\d+-.+\.png$/i.test(x))) {
+    const slug = f.replace(/^\d+-/, "").replace(/\.png$/i, "");
+    const buf = await sharp(join(srcDir, f)).resize({ width: 800, withoutEnlargement: true }).webp({ quality: 78, effort: 5 }).toBuffer();
+    writeFileSync(join(outDir, `${slug}.webp`), buf); total += buf.length; n++;
+  }
+  console.log(`formaciones: ${n} fondos -> src/assets/formaciones (${kb(total)} en total)`);
+};
+
 try {
+  if (want("formaciones")) await buildFormaciones();
   if (want("b2b")) await buildB2b();
   if (want("partners")) await buildPartners();
   if (want("photos")) await buildPhotos();

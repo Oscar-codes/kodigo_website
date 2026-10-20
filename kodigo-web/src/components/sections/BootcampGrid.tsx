@@ -7,6 +7,11 @@ import { Card } from "../ui/Card";
 import { ArrowRight, Clock, Laptop, Signal } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
 
+// Fondos de las tarjetas (generados por `npm run assets:build`): un archivo por bootcamp, nombrado con su slug.
+const covers = import.meta.glob<string>("../../assets/formaciones/*.webp", { eager: true, query: "?url", import: "default" });
+/** Fondo de la tarjeta de un bootcamp, si existe imagen para ese slug. */
+export const coverOf = (slug: string): string | undefined => covers[`../../assets/formaciones/${slug}.webp`];
+
 const Grid = styled.ul`
   display: grid;
   gap: ${({ theme }) => theme.space(6)};
@@ -39,7 +44,7 @@ export const VisualWrap = styled.div`
   margin-bottom: ${({ theme }) => theme.space(7)};
 `;
 
-export const Visual = styled.div<{ $area: Bootcamp["area"] }>`
+export const Visual = styled.div<{ $area: Bootcamp["area"]; $image?: string }>`
   position: relative;
   overflow: hidden;
   border-radius: ${({ theme }) => theme.radii.md};
@@ -49,19 +54,22 @@ export const Visual = styled.div<{ $area: Bootcamp["area"] }>`
   .zoom {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(55% 130% at 92% -15%, ${({ theme }) => theme.colors.lilac}, transparent 62%),
-      radial-gradient(45% 100% at 0% 125%, ${({ theme }) => theme.colors.main}, transparent 70%),
-      linear-gradient(120deg, ${({ theme }) => theme.colors.navy} 0%, ${({ theme }) => theme.colors.violetDeep} 55%, ${({ theme }) => theme.colors.main} 100%);
+    /* Con imagen (carpeta FORMACIONES) el fondo es la ilustración; sin ella, el degradado corporativo. */
+    background: ${({ theme, $image }) =>
+      $image
+        ? `url(${$image}) center / cover no-repeat, ${theme.colors.navy}`
+        : `radial-gradient(55% 130% at 92% -15%, ${theme.colors.lilac}, transparent 62%),
+      radial-gradient(45% 100% at 0% 125%, ${theme.colors.main}, transparent 70%),
+      linear-gradient(120deg, ${theme.colors.navy} 0%, ${theme.colors.violetDeep} 55%, ${theme.colors.main} 100%)`};
     transition: transform ${({ theme }) => theme.motion.duration.hover} linear;
   }
 
-  /* Línea diagonal fina que cruza el visual. */
+  /* Línea diagonal fina que cruza el visual (solo en el degradado; la ilustración ya trae su propio dibujo). */
   .zoom::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(105deg, transparent 58.6%, rgba(255, 255, 255, 0.28) 58.8%, transparent 59.1%);
+    background: ${({ $image }) => ($image ? "none" : "linear-gradient(105deg, transparent 58.6%, rgba(255, 255, 255, 0.28) 58.8%, transparent 59.1%)")};
   }
 
   /* Símbolo grande como marca de agua. */
@@ -75,6 +83,8 @@ export const Visual = styled.div<{ $area: Bootcamp["area"] }>`
     letter-spacing: -0.04em;
     color: rgba(255, 255, 255, 0.24);
     user-select: none;
+    /* Sobre la ilustración, el símbolo de marca de agua estorba. */
+    display: ${({ $image }) => ($image ? "none" : "block")};
   }
 
   .pill {
@@ -258,7 +268,7 @@ export const BootcampGrid = ({ items, headingLevel = "h2" }: BootcampGridProps) 
         <Cell key={b.slug} tag="li" index={i % 3} direction={i % 3 === 0 ? "right" : i % 3 === 2 ? "left" : "up"}>
           <Item>
             <VisualWrap aria-hidden="true">
-              <Visual $area={b.area}>
+              <Visual $area={b.area} $image={coverOf(b.slug)}>
                 <div className="zoom" />
                 <span className="glyph">{copy.glyph}</span>
                 <span className="pill">{copy.badge}</span>
