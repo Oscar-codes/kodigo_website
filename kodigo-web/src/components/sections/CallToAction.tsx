@@ -64,7 +64,7 @@ const Heading = styled.h2`
 
   em {
     font-style: normal;
-    color: ${({ theme }) => theme.colors.green};
+    color: ${({ theme }) => theme.colors.accentOnLight};
   }
 `;
 

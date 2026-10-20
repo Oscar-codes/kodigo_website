@@ -223,7 +223,8 @@ const Item = styled.details`
   }
 
   &[open] {
-    background: ${({ theme }) => theme.colors.main};
+    /* Mismo degradado que el botón "Aplicar" del menú. */
+    background: ${({ theme }) => theme.colors.gradientCta};
     border-color: transparent;
   }
 
