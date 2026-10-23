@@ -55,7 +55,6 @@ const ALIANZAS = "/profesional/alianzas";
 export const b2bNavigation: NavItem[] = [
   { label: "Inicio", to: "/" },
   { label: "Workshop", to: `${ALIANZAS}#workshop` },
-  { label: "Próximos", to: `${ALIANZAS}#proximos` },
   { label: "Casos de éxito", to: `${ALIANZAS}#casos` },
   { label: "Adaptación", to: `${ALIANZAS}#adaptacion` },
   { label: "Equipo", to: `${ALIANZAS}#equipo` },

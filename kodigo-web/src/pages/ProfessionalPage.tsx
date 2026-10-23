@@ -8,7 +8,6 @@ import { ImpactStats } from "@/components/sections/ImpactStats";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Partners } from "@/components/sections/Partners";
 import { TeamBlock } from "@/components/sections/TeamBlock";
-import { UpcomingWorkshops } from "@/components/sections/UpcomingWorkshops";
 import { Workshop } from "@/components/sections/Workshop";
 import { WorkshopRegistrationProvider } from "@/components/sections/WorkshopRegistration";
 import { Card } from "@/components/ui/Card";
@@ -106,7 +105,7 @@ export const ProfessionalPage = () => {
 
   if (!section) return <NotFoundPage />;
 
-  // Alianzas = "Kodigo para empresas": banner, cifras de impacto, workshop con formulario, próximos workshops, casos de
+  // Alianzas = "Kodigo para empresas": banner, cifras de impacto, workshop con agenda y registro (modal), casos de
   // éxito, adaptación a la operación, equipo, aliados y, al final, el formulario de "Aplicar" (HubSpot) (orden de la guía "Landing B2B Kodigo").
   if (section.slug === "alianzas") {
     return (
@@ -115,7 +114,6 @@ export const ProfessionalPage = () => {
           <AlliancesHero />
           <ImpactStats />
           <Workshop />
-          <UpcomingWorkshops />
           <CaseStudies />
           <AdaptiveTraining />
           <TeamBlock />

@@ -3,7 +3,9 @@
 
 export const alliancesHero = {
   title: "KODIGO PARA EMPRESAS",
-  question: "¿Tu equipo está listo para aplicar IA en su trabajo?",
+  question: "Aprende a aplicar IA en tu trabajo, con proyectos reales",
+  // Fragmento del titular que se resalta con el degradado de palabra clave.
+  questionEmphasis: "IA en tu trabajo",
   subtitle: "Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.",
   cta: "Agendar una asesoría",
 };
@@ -16,7 +18,7 @@ export const impactStats = [
 
 export const workshop = {
   label: "Workshop con IA para empresas",
-  title: "Descubrí cómo aplicar IA en tu empresa",
+  title: "¿Quieres aprender IA rápidamente? Únete a nuestros workshops",
   lead: "Una sesión práctica para identificar oportunidades reales de IA en tu operación y definir por dónde empezar.",
   steps: [
     { icon: "target", title: "Detectá oportunidades de IA en tu empresa" },
@@ -25,32 +27,27 @@ export const workshop = {
   ] as const,
   // Etiqueta que acompaña al logo en la cabecera del pase de registro.
   ticketTag: "Workshop · IA para empresas",
-  // Pase de registro: texto breve y botón que abre el modal con el formulario de HubSpot.
-  pass: {
-    text: "Reserva tu lugar: completa el formulario de registro y te confirmamos los detalles de la sesión.",
-    submit: "Registrarme al Workshop",
+  // Agenda dentro del pase de registro: cada workshop con fecha lleva su botón, que abre el modal con el formulario de HubSpot.
+  // Solo se muestra lo confirmado: sin año ni hora hasta recibirlos.
+  agenda: {
+    label: "Próximos workshops",
+    events: [
+      { day: "26", month: "NOV", title: "AI para equipos comerciales", mode: "Sesión Presencial INCAF" },
+      { soon: true, title: "Nuevo workshop", mode: "Fecha por anunciar" },
+    ] as { day?: string; month?: string; soon?: boolean; title: string; mode: string }[],
+    cta: "Registrarme",
+    soon: "Próximamente",
   },
   modalTitle: "Regístrate al Workshop",
   modalIntro: "Déjanos tus datos para recibir más detalles del evento.",
-};
-
-export const upcomingWorkshops = {
-  label: "Próximos workshops",
-  title: "Descubre nuestros workshops",
-  lead: "Sesiones prácticas para que tu equipo aplique IA en su trabajo.",
-  // Solo se muestra lo confirmado: sin año ni hora hasta recibirlos.
-  events: [
-    { day: "26", month: "NOV", title: "AI para equipos comerciales", mode: "Sesión Presencial INCAF" },
-    { soon: true, title: "Nuevo workshop", mode: "Fecha por anunciar" },
-  ] as { day?: string; month?: string; soon?: boolean; title: string; mode: string }[],
-  cta: "Registrarme",
-  soon: "Próximamente",
 };
 
 export const successCases = {
   label: "CASOS DE ÉXITO",
   titleStart: "Empresas que llevan ",
   titleEmphasis: "la formación a resultado",
+  // Tarjeta al final de las pestañas: lleva al muro de aliados.
+  more: "Y muchos más",
   lead: "Diseñamos programas a la medida para resolver necesidades reales de cada equipo y llevar nuevas habilidades al trabajo diario",
   // "partner" debe coincidir con el nombre en content/partners.csv (de ahí sale el logo).
   // Textos y cifras entregados por Kodigo, tal cual.

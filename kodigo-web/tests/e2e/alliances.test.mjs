@@ -24,7 +24,7 @@ const open = async (width) => {
   const p = await open(1280);
   // ---- 1. Banner
   t("banner: h1 'KODIGO PARA EMPRESAS'", (await p.locator("h1").innerText()).trim() === "KODIGO PARA EMPRESAS" && (await p.locator("h1").count()) === 1);
-  t("banner: pregunta exacta", (await p.getByText("¿Tu equipo está listo para aplicar IA en su trabajo?", { exact: true }).filter({ visible: true }).count()) === 1);
+  t("banner: titular exacto", (await p.getByText("Aprende a aplicar IA en tu trabajo, con proyectos reales", { exact: true }).filter({ visible: true }).count()) === 1);
   t("banner: subtítulo exacto", (await p.getByText("Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.", { exact: true }).filter({ visible: true }).count()) === 1);
   const cta = p.getByRole("link", { name: "Agendar una asesoría" }).first();
   t("banner: CTA 'Agendar una asesoría' con flecha (svg)", (await cta.isVisible()) && (await cta.locator("svg").count()) === 1);
@@ -41,50 +41,27 @@ const open = async (width) => {
   t("cifras: número grande (>= 44 px)", parseFloat(await items.first().locator(".number").evaluate((e) => getComputedStyle(e).fontSize)) >= 44);
 
   // ---- 3. Workshop
-  t("workshop: encabezado exacto", (await p.locator("#workshop-title").innerText()).trim() === "Descubrí cómo aplicar IA en tu empresa");
+  t("workshop: encabezado exacto", (await p.locator("#workshop-title").innerText()).trim() === "¿Quieres aprender IA rápidamente? Únete a nuestros workshops");
   t("workshop: descripción exacta", await p.getByText("Una sesión práctica para identificar oportunidades reales de IA en tu operación y definir por dónde empezar.", { exact: true }).isVisible());
   const steps = p.locator("section[aria-labelledby=workshop-title] ol li h3");
   t("workshop: tres pasos con el texto pedido", JSON.stringify(await steps.allInnerTexts()) === JSON.stringify(["Detectá oportunidades de IA en tu empresa", "Conocé casos de uso aplicables a tu equipo", "Definí cómo llevarlos a la práctica"]));
   t("workshop: cada paso con icono oficial cargado", await p.locator("section[aria-labelledby=workshop-title] ol .icon img").evaluateAll((l) => l.length === 3 && l.every((i) => i.complete && i.naturalWidth > 0)));
 
-  // ---- 4. Formulario (inmediatamente después de las tarjetas)
-  const form = p.locator("section[aria-labelledby=workshop-title] form");
-  t("formulario: está dentro de la banda del workshop, antes de los tres pasos", (await form.count()) === 1 && (await p.locator("section[aria-labelledby=workshop-title] ol").evaluate((ol) => !!(document.querySelector("section[aria-labelledby=workshop-title] form").compareDocumentPosition(ol) & Node.DOCUMENT_POSITION_FOLLOWING))));
-  t("banda: fondo con foto tratada (pseudo-elemento) y palabra clave 'empresa' en degradado", /url\(/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e, "::before").backgroundImage)) && (await p.locator("#workshop-title em").innerText()) === "empresa" && /gradient/.test(await p.locator("#workshop-title em").evaluate((e) => getComputedStyle(e).backgroundImage)));
-  const email = p.getByLabel("Correo corporativo");
-  const submit = p.getByRole("button", { name: "Registrarme al Workshop" });
-  t("formulario: campo con etiqueta 'Correo corporativo' y botón 'Registrarme al Workshop'", (await email.isVisible()) && (await submit.isVisible()));
-  t("formulario: tipo email, autocomplete y requerido", (await email.getAttribute("type")) === "email" && (await email.getAttribute("autocomplete")) === "email" && (await email.getAttribute("required")) !== null);
-
-  await email.focus();
-  t("formulario: foco visible (anillo)", (await email.evaluate((e) => getComputedStyle(e).boxShadow)) !== "none");
-  await submit.click();
-  t("error: vacío muestra mensaje, marca aria-invalid y devuelve el foco al campo", (await p.getByRole("alert").innerText()).includes("Ingresa tu correo corporativo") && (await email.getAttribute("aria-invalid")) === "true" && (await email.evaluate((e) => e === document.activeElement)));
-  t("error: el campo se asocia al mensaje (aria-describedby)", await email.evaluate((e) => !!document.getElementById(e.getAttribute("aria-describedby"))?.textContent));
-  await sleep(300);
-  t("error: borde de error (coral legible sobre el fondo morado)", (await email.evaluate((e) => getComputedStyle(e).borderColor)) === "rgb(255, 138, 122)");
-  await email.fill("sin-arroba");
-  t("error: al escribir, el error se limpia", (await email.getAttribute("aria-invalid")) === null);
-  await submit.click();
-  t("error: formato inválido", (await p.getByRole("alert").innerText()).includes("correo válido"));
-  await email.fill("persona@gmail.com"); await submit.click();
-  t("error: correo personal (gmail) rechazado", (await p.getByRole("alert").innerText()).includes("correo corporativo, no uno personal"));
-  await email.fill("persona@empresa.com"); await submit.click(); await sleep(150);
-  t("válido: sin destino configurado avisa que el registro no está habilitado (no simula éxito)", (await p.locator("section[aria-labelledby=workshop-title]").getByRole("status").innerText()).includes("aún no está habilitado") && (await email.getAttribute("aria-invalid")) === null);
+  // ---- 4. Agenda dentro del pase y registro en modal (formulario de HubSpot)
+  const ws = p.locator("section[aria-labelledby=workshop-title]");
+  const agenda = ws.getByRole("list", { name: "Próximos workshops" });
+  t("pase: agenda con dos filas, la segunda 'Próximamente'", (await agenda.locator("li").count()) === 2 && (await agenda.locator("li").nth(1).innerText()).includes("Próximamente"));
+  const at = (await agenda.locator("li").first().innerText()).replace(/\s+/g, " ");
+  t("pase: primera fila con 26 NOV, título y modalidad", /26/.test(at) && /NOV/.test(at) && at.includes("AI para equipos comerciales") && at.includes("Sesión Presencial INCAF"), at);
+  t("pase: la agenda está en el pase, antes de los tres pasos", await ws.locator("ol").evaluate((ol) => !!(document.querySelector("section[aria-labelledby=workshop-title] ul[aria-label]").compareDocumentPosition(ol) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  t("banda: fondo con foto tratada (pseudo-elemento) y palabra clave 'workshops' en degradado", /url\(/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e, "::before").backgroundImage)) && (await p.locator("#workshop-title em").innerText()) === "workshops" && /gradient/.test(await p.locator("#workshop-title em").evaluate((e) => getComputedStyle(e).backgroundImage)));
+  t("ya no hay sección 'Próximos workshops' aparte ni globo", (await p.locator("#events-title").count()) === 0 && (await p.locator("#proximos").count()) === 0);
+  await agenda.getByRole("button", { name: "Registrarme" }).click(); await sleep(600);
+  t("registro: 'Registrarme' abre el modal con el título del Workshop", (await p.locator("dialog[open]").count()) === 1 && (await p.locator("dialog[open] h2").innerText()).includes("Regístrate al Workshop"));
+  await p.keyboard.press("Escape"); await sleep(300);
+  t("registro: Escape cierra el modal", (await p.locator("dialog[open]").count()) === 0);
   t("sin errores de consola", p.errors.length === 0, p.errors.join(" | "));
 
-
-  // ---- 5. Próximos workshops (tarjeta de evento)
-  const ev = p.locator("section[aria-labelledby=events-title]");
-  t("eventos: encabezado 'Descubre nuestros workshops' y etiqueta 'Próximos workshops'", (await ev.locator("#events-title").innerText()).trim() === "Descubre nuestros workshops" && (await ev.getByText("Próximos workshops", { exact: true }).count()) === 1);
-  const card = ev.locator("li").first();
-  const ct = (await card.innerText()).replace(/\s+/g, " ");
-  t("eventos: dos tarjetas, la segunda 'Próximamente'", (await ev.locator("li").count()) === 2 && (await ev.locator("li").nth(1).innerText()).includes("Próximamente"));
-  t("eventos: globo plexus decorativo (canvas aria-hidden con tamaño)", await ev.locator("canvas[aria-hidden=true]").evaluateAll((l) => l.length === 1 && l[0].clientWidth > 100 && l[0].clientHeight > 100));
-  t("eventos: tarjeta con NOV 26, título y modalidad", /26/.test(ct) && /NOV/.test(ct) && ct.includes("AI para equipos comerciales") && ct.includes("Sesión Presencial INCAF"), ct);
-  t("eventos: título como h3 y fecha destacada (>= 40 px)", (await card.locator("h3").innerText()) === "AI para equipos comerciales" && parseFloat(await card.locator(".day").evaluate((e) => getComputedStyle(e).fontSize)) >= 40);
-  t("eventos: CTA 'Registrarme' lleva al registro", (await card.getByRole("link", { name: "Registrarme" }).getAttribute("href")) === "#workshop-title");
-  t("eventos: va inmediatamente después del bloque del workshop", await p.evaluate(() => document.querySelector("section[aria-labelledby=workshop-title]").nextElementSibling === document.querySelector("section[aria-labelledby=events-title]")));
 
   // ---- 6. Casos de éxito (carrusel)
   const cs = p.locator("section[aria-labelledby=cases-title]");
@@ -109,7 +86,7 @@ const open = async (width) => {
   await cs.getByRole("button", { name: "Reanudar el carrusel" }).click();
   await p.mouse.move(5, 5); await cs.getByRole("tab", { name: "Coderland" }).click(); await p.mouse.move(5, 5); await sleep(7800);
   t("casos: avanza solo tras ~7 s (carrusel automático)", JSON.stringify(await visibleCase()) === JSON.stringify(["VIDRI - EL SALVADOR"]), JSON.stringify(await visibleCase()));
-  t("casos: va después de los próximos workshops", await p.evaluate(() => document.querySelector("section[aria-labelledby=events-title]").nextElementSibling === document.querySelector("section[aria-labelledby=cases-title]")));
+  t("casos: va inmediatamente después del bloque del workshop", await p.evaluate(() => document.querySelector("section[aria-labelledby=workshop-title]").nextElementSibling === document.querySelector("section[aria-labelledby=cases-title]")));
   t("casos: los 11 resultados van como tarjetas iguales con visto", (await cs.locator("[role=tabpanel] ul li").count()) === 11 && (await cs.locator("[role=tabpanel] ul li .check svg").count()) === 11);
 
   // ---- 7. Nos adaptamos a tu operación
@@ -140,14 +117,14 @@ const open = async (width) => {
   t("equipo: va justo después del bloque de adaptación", await p.evaluate(() => document.querySelector("section[aria-labelledby=adaptive-title]").nextElementSibling === document.querySelector("section[aria-labelledby=team-title]")));
 
   // orden de las secciones
-  const order = await p.evaluate(() => ["h1", "#impact-title", "#workshop-title", "form"].map((s) => document.querySelector(s)).map((e, i, a) => i === 0 || !!(a[i - 1].compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  const order = await p.evaluate(() => ["h1", "#impact-title", "#workshop-title", "#apply-title"].map((s) => document.querySelector(s)).map((e, i, a) => i === 0 || !!(a[i - 1].compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING)));
   t("orden: banner > cifras > workshop > formulario", order.every(Boolean));
 
   // ---- 9. Menú propio de la landing (anclas de la página; Inicio y el logo salen al home)
   const menu = p.getByRole("navigation", { name: "Principal" });
   const hrefs = await menu.getByRole("link").evaluateAll((l) => l.map((e) => e.getAttribute("href")));
-  t("menú: Inicio + 6 secciones de la página + Aplicar (distinto al del home)", JSON.stringify(hrefs) === JSON.stringify(["/", "/profesional/alianzas#workshop", "/profesional/alianzas#proximos", "/profesional/alianzas#casos", "/profesional/alianzas#adaptacion", "/profesional/alianzas#equipo", "/profesional/alianzas#aliados", "/profesional/alianzas#aplicar"]), JSON.stringify(hrefs));
-  t("menú: cada ancla apunta a una sección existente", await p.evaluate(() => ["workshop", "proximos", "casos", "adaptacion", "equipo", "aliados", "aplicar"].every((id) => !!document.getElementById(id))));
+  t("menú: Inicio + 5 secciones de la página + Aplicar (distinto al del home)", JSON.stringify(hrefs) === JSON.stringify(["/", "/profesional/alianzas#workshop", "/profesional/alianzas#casos", "/profesional/alianzas#adaptacion", "/profesional/alianzas#equipo", "/profesional/alianzas#aliados", "/profesional/alianzas#aplicar"]), JSON.stringify(hrefs));
+  t("menú: cada ancla apunta a una sección existente", await p.evaluate(() => ["workshop", "casos", "adaptacion", "equipo", "aliados", "aplicar"].every((id) => !!document.getElementById(id))));
   t("logo de Kodigo vuelve al Inicio", (await p.getByRole("link", { name: "Kodigo - Inicio" }).getAttribute("href")) === "/");
   await menu.getByRole("link", { name: "Casos de éxito", exact: true }).click(); await sleep(1500);
   t("menú: 'Casos de éxito' lleva a la sección y queda activo", (await p.evaluate(() => Math.abs(document.getElementById("casos").getBoundingClientRect().top - 92) < 40)) && (await menu.locator("a.active").innerText()).toLowerCase() === "casos de éxito");
@@ -159,11 +136,10 @@ for (const width of [360, 768]) {
   await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 400) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } });
   await sleep(1200);
   t(`${width}px: sin scroll horizontal`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  const box = await p.getByLabel("Correo corporativo").boundingBox();
-  const btn = await p.getByRole("button", { name: "Registrarme al Workshop" }).boundingBox();
-  t(`${width}px: campo y botón dentro del ancho y con alto táctil >= 48`, box.x >= 0 && box.x + box.width <= width && btn.x + btn.width <= width && btn.height >= 48 && box.height >= 48);
-  const cardBox = await p.locator("section[aria-labelledby=events-title] li").first().boundingBox();
-  t(`${width}px: tarjeta de evento dentro del ancho`, cardBox.x >= 0 && cardBox.x + cardBox.width <= width);
+  const btn = await p.locator("section[aria-labelledby=workshop-title]").getByRole("button", { name: "Registrarme" }).boundingBox();
+  t(`${width}px: botón de registro dentro del ancho y con alto táctil >= 44`, btn.x >= 0 && btn.x + btn.width <= width && btn.height >= 44);
+  const cardBox = await p.locator("section[aria-labelledby=workshop-title] ul[aria-label] li").first().boundingBox();
+  t(`${width}px: fila de la agenda dentro del ancho`, cardBox.x >= 0 && cardBox.x + cardBox.width <= width);
   const adBox = await p.locator("section[aria-labelledby=adaptive-title] .badge").boundingBox();
   t(`${width}px: insignia y foto de adaptación dentro del ancho`, adBox.x >= 0 && adBox.x + adBox.width <= width);
   t(`${width}px: h1 dentro del ancho`, (await p.locator("h1").boundingBox()).width <= width);

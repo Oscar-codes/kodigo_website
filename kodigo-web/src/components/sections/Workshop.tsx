@@ -12,6 +12,7 @@ import { media } from "@/styles/theme";
 import { bracketLabel, headlineText, iconTile, imageBackdrop, keywordText } from "../ui/B2bKit";
 import { ButtonAction } from "../ui/Button";
 import { Container } from "../ui/Container";
+import { Clock, MapPin } from "../ui/Icons";
 import { Reveal } from "../ui/Reveal";
 import { useWorkshopRegistration } from "./WorkshopRegistration";
 
@@ -120,21 +121,85 @@ const Ticket = styled.div`
   }
 
   .body {
-    display: grid;
-    gap: ${({ theme }) => theme.space(5)};
-    padding: ${({ theme }) => `${theme.space(6)} ${theme.space(6)} ${theme.space(7)}`};
+    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(6)} ${theme.space(4)}`};
     border-top: 2px dashed rgba(196, 181, 245, 0.3);
   }
+`;
 
-  .body p {
-    font-size: 0.9375rem;
-    color: ${({ theme }) => theme.b2b.text2};
+// Agenda dentro del pase: filas separadas por líneas finas (fecha, modalidad y título, acción).
+const Agenda = styled.ul`
+  .event {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: ${({ theme }) => `${theme.space(3)} ${theme.space(4)}`};
+    padding: ${({ theme }) => `${theme.space(5)} 0`};
+    border-bottom: 1px solid ${({ theme }) => theme.b2b.line};
   }
 
-  .body button {
-    width: 100%;
-    border-radius: 14px;
-    padding: 16px 28px;
+  .event:last-child {
+    border-bottom: 0;
+  }
+
+  .date {
+    flex: none;
+    min-width: 48px;
+    text-align: center;
+    color: ${({ theme }) => theme.b2b.purpleLight};
+  }
+
+  .day {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    color: ${({ theme }) => theme.b2b.text};
+  }
+
+  .month {
+    display: block;
+    margin-top: ${({ theme }) => theme.space(1)};
+    font-size: 0.75rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    letter-spacing: 0.08em;
+  }
+
+  .info {
+    flex: 1;
+    min-width: 140px;
+    padding-left: ${({ theme }) => theme.space(4)};
+    border-left: 1px solid ${({ theme }) => theme.b2b.cardBorder};
+  }
+
+  .mode {
+    display: flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.space(1.5)};
+    margin-bottom: ${({ theme }) => theme.space(1)};
+    font-size: 0.8125rem;
+    color: ${({ theme }) => theme.b2b.text3};
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+    font-weight: ${({ theme }) => theme.weights.bold};
+    line-height: 1.3;
+    color: ${({ theme }) => theme.b2b.text};
+  }
+
+  button {
+    padding: 13px 20px;
+    font-size: 0.9375rem;
+  }
+
+  .soon {
+    flex: none;
+    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(4)}`};
+    border: 1px dashed rgba(196, 181, 245, 0.5);
+    border-radius: ${({ theme }) => theme.radii.pill};
+    font-size: 0.875rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    color: ${({ theme }) => theme.b2b.text2};
   }
 `;
 
@@ -205,10 +270,36 @@ export const Workshop = () => {
               <span className="tag">{workshop.ticketTag}</span>
             </div>
             <div className="body">
-              <p>{workshop.pass.text}</p>
-              <ButtonAction variant="gradient" arrow="right" haspopup="dialog" onClick={openRegistration}>
-                {workshop.pass.submit}
-              </ButtonAction>
+              <Agenda aria-label={workshop.agenda.label}>
+                {workshop.agenda.events.map((e) => (
+                  <li key={e.title} className="event">
+                    <div className="date">
+                      {e.soon ? (
+                        <Clock size={32} />
+                      ) : (
+                        <>
+                          <span className="day">{e.day}</span>
+                          <span className="month">{e.month}</span>
+                        </>
+                      )}
+                    </div>
+                    <div className="info">
+                      <p className="mode">
+                        <MapPin size={14} />
+                        {e.mode}
+                      </p>
+                      <h3>{e.title}</h3>
+                    </div>
+                    {e.soon ? (
+                      <span className="soon">{workshop.agenda.soon}</span>
+                    ) : (
+                      <ButtonAction variant="gradient" arrow haspopup="dialog" onClick={openRegistration}>
+                        {workshop.agenda.cta}
+                      </ButtonAction>
+                    )}
+                  </li>
+                ))}
+              </Agenda>
             </div>
           </Ticket>
         </TicketSlot>
