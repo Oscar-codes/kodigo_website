@@ -7,6 +7,7 @@ import { BootcampsPage } from "@/pages/BootcampsPage";
 import { HomePage } from "@/pages/HomePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ProfessionalPage } from "@/pages/ProfessionalPage";
+import { AnalyticsTracker } from "@/services/analytics";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { theme } from "@/styles/theme";
 
@@ -14,6 +15,7 @@ export const App = () => (
   <ThemeProvider theme={theme}>
     <GlobalStyle />
     <BrowserRouter>
+      <AnalyticsTracker />
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
