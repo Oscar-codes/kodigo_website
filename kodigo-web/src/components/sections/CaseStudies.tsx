@@ -84,7 +84,7 @@ const Head = styled.div<{ $visible: boolean }>`
 // Pestañas: logo en tarjeta clara (la activa, sólida; las demás, translúcidas) y nombre debajo; la activa lleva barra lavanda.
 const Tabs = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: ${({ theme }) => theme.space(4)};
   padding-bottom: ${({ theme }) => theme.space(6)};
   border-bottom: 1px solid ${({ theme }) => theme.b2b.line};
@@ -94,6 +94,25 @@ const Tabs = styled.div`
     overflow-x: auto;
     padding-bottom: ${({ theme }) => theme.space(5)};
     scroll-snap-type: x proximity;
+  }
+
+  /* El tablist solo agrupa las pestañas: sus botones y la tarjeta "Y muchos más" comparten la rejilla. */
+  .list {
+    display: contents;
+  }
+
+  /* Tarjeta final (enlace al muro de aliados): mismo recuadro que las pestañas, con texto en lugar de logo. */
+  .more .tile {
+    text-align: center;
+    font-size: 0.9375rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    line-height: 1.25;
+    color: ${({ theme }) => theme.b2b.text};
+  }
+
+  .more:hover .tile {
+    transform: translateY(-3px);
+    background: rgba(244, 242, 248, 0.42);
   }
 
   .tab {
@@ -392,7 +411,8 @@ export const CaseStudies = () => {
           </Head>
           <Reveal direction="up">
             <div ref={wrapRef} onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} onFocus={() => setHovering(true)} onBlur={() => setHovering(false)}>
-              <Tabs role="tablist" aria-label="Elegir caso" onKeyDown={onKeyDown}>
+              <Tabs>
+                <div className="list" role="tablist" aria-label="Elegir caso" onKeyDown={onKeyDown}>
                 {cases.map((c, i) => (
                   <button
                     key={c.partner}
@@ -415,6 +435,13 @@ export const CaseStudies = () => {
                     </span>
                   </button>
                 ))}
+                </div>
+                <a className="tab more" href="#aliados">
+                  <span className="tile">{successCases.more}</span>
+                  <span className="name" aria-hidden="true">
+                    &nbsp;
+                  </span>
+                </a>
               </Tabs>
               <Stage aria-roledescription="carrusel" aria-label="Casos de éxito">
                 {cases.map((c, i) => (

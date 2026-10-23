@@ -309,10 +309,10 @@ const assembleText = (text: string, counter: { i: number }): ReactNode =>
     );
   });
 
-// Resalta (sin cambiar el texto) desde " para " hasta el final de la pregunta.
-const splitQuestion = (text: string): [string, string] => {
-  const i = text.indexOf(" para ");
-  return i < 0 ? [text, ""] : [text.slice(0, i + 1), text.slice(i + 1)];
+// Parte el titular (sin cambiar el texto) en antes / resaltado / después del fragmento `questionEmphasis`.
+const splitQuestion = (text: string, emphasis: string): [string, string, string] => {
+  const i = text.indexOf(emphasis);
+  return i < 0 ? [text, "", ""] : [text.slice(0, i), emphasis, text.slice(i + emphasis.length)];
 };
 
 // Atributo `inert` (no tipado en React 18): bloquea foco y clics en copias salientes.
@@ -328,7 +328,7 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
   // Solo la diapositiva activa anima y expone el <h1>; las demás son decorativas para lectores de pantalla.
   const animated = mode === "current" || mode === "entering";
   const counter = { i: 0 };
-  const [start, emphasis] = splitQuestion(alliancesHero.question);
+  const [start, emphasis, end] = splitQuestion(alliancesHero.question, alliancesHero.questionEmphasis);
   const hidden = animated ? {} : { "aria-hidden": true, ...inertProps };
   const render = (text: string) => (animated ? assembleText(text, counter) : text);
 
@@ -340,6 +340,7 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
           <Question aria-label={animated ? alliancesHero.question : undefined}>
             <Fragment>{render(start)}</Fragment>
             {emphasis ? <em>{render(emphasis)}</em> : null}
+            {end ? <Fragment>{render(end)}</Fragment> : null}
           </Question>
           <Subtitle $animate={animated}>{alliancesHero.subtitle}</Subtitle>
           <Actions $animate={animated}>
