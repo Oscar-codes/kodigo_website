@@ -78,9 +78,10 @@ const buildPartners = async () => {
     // Se refuerza el color alejándolo del blanco (out = 2.2*in - 306: el blanco se mantiene y el trazo pálido se oscurece).
     if (/contraste/i.test(r.notes ?? "")) original = await sharp(original).linear(2.2, 255 * (1 - 2.2)).png().toBuffer();
     // El fondo liso (blanco u otro color) se quita para que el logo se vea sobre cualquier tarjeta. notes=conservar-fondo
-    // lo omite cuando el fondo es parte del logo (p. ej. un recuadro de color con el trazo en blanco).
+    // lo omite cuando el fondo es parte del logo (p. ej. un recuadro de color con el trazo en blanco); notes=fondo-total
+    // borra además los blancos encerrados dentro del logo (huecos de letras, centro de formas).
     if (!/conservar-fondo/i.test(r.notes ?? "")) {
-      const res = await removeBackground(original);
+      const res = await removeBackground(original, { global: /fondo-total/i.test(r.notes ?? "") });
       original = res.buffer;
       if (res.removed) bgRemoved.push(r.name);
     }

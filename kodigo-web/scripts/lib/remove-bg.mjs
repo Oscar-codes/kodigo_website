@@ -7,7 +7,9 @@ import sharp from "sharp";
 const TOLERANCE = 30; // diferencia máxima por canal para considerar "fondo"
 const FEATHER = 110; // por encima de esta distancia al fondo, el píxel de contorno queda opaco
 
-export const removeBackground = async (input) => {
+// { global: true } borra ese color en TODA la imagen (también los blancos encerrados dentro del logo, p. ej. el centro de una
+// estrella o el hueco de una letra); por defecto solo el fondo conectado con el borde.
+export const removeBackground = async (input, { global = false } = {}) => {
   const { data, info } = await sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const { width: w, height: h } = info;
   const at = (x, y) => (y * w + x) * 4;
@@ -31,6 +33,7 @@ export const removeBackground = async (input) => {
   };
   for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
   for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
+  if (global) for (let p = 0; p < w * h; p++) if (dist(p * 4) <= TOLERANCE) flooded[p] = 1;
   while (stack.length) {
     const p = stack.pop(), x = p % w, y = (p / w) | 0;
     if (x > 0) push(x - 1, y);
