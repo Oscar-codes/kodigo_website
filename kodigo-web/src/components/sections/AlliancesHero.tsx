@@ -8,7 +8,7 @@ import { alliancesHero } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
-import { bracketLabel, keywordText } from "../ui/B2bKit";
+import { bracketLabel } from "../ui/B2bKit";
 import { Container } from "../ui/Container";
 import { Pause, Play } from "../ui/Icons";
 import { Plexus, type BandOptions } from "../ui/Plexus";
@@ -166,9 +166,11 @@ const Question = styled.p`
   line-height: 1.04;
   color: ${({ theme }) => theme.b2b.text};
 
+  /* Color liso (no degradado con background-clip:text): cada letra es un inline-block animado y en Safari/iOS el recorte
+     del degradado deja el texto invisible y partido en varias líneas. */
   em {
     font-style: normal;
-    ${keywordText}
+    color: ${({ theme }) => theme.b2b.teal};
   }
 `;
 
