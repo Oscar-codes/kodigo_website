@@ -17,6 +17,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import { removeBackground } from "./lib/remove-bg.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -64,7 +65,7 @@ const buildPartners = async () => {
   const outDir = join(ROOT, "src/assets/partners");
   rmSync(outDir, { recursive: true, force: true }); ensure(outDir);
   const rows = parseCsv(readFileSync(join(ROOT, "content/partners.csv"), "utf8"));
-  const seen = new Set(); const out = []; let total = 0;
+  const seen = new Set(); const out = []; let total = 0; const bgRemoved = [];
   for (const r of rows) {
     if (!r.file || !r.name) throw new Error(`content/partners.csv: fila incompleta (${JSON.stringify(r)})`);
     if (r.url && !/^https:\/\/\S+$/i.test(r.url)) throw new Error(`content/partners.csv: la URL de "${r.name}" debe empezar con https://`);
@@ -76,6 +77,13 @@ const buildPartners = async () => {
     // notes=contraste: logos de trazo muy claro (p. ej. celeste pálido sobre blanco) no se leen en tarjetas blancas.
     // Se refuerza el color alejándolo del blanco (out = 2.2*in - 306: el blanco se mantiene y el trazo pálido se oscurece).
     if (/contraste/i.test(r.notes ?? "")) original = await sharp(original).linear(2.2, 255 * (1 - 2.2)).png().toBuffer();
+    // El fondo liso (blanco u otro color) se quita para que el logo se vea sobre cualquier tarjeta. notes=conservar-fondo
+    // lo omite cuando el fondo es parte del logo (p. ej. un recuadro de color con el trazo en blanco).
+    if (!/conservar-fondo/i.test(r.notes ?? "")) {
+      const res = await removeBackground(original);
+      original = res.buffer;
+      if (res.removed) bgRemoved.push(r.name);
+    }
     // El recorte se calcula sobre una copia aplanada en blanco y se aplica al original (conserva la transparencia).
     const { info } = await sharp(original).flatten({ background: "#ffffff" }).trim({ threshold: 14 }).toBuffer({ resolveWithObject: true });
     const box = { left: -(info.trimOffsetLeft ?? 0), top: -(info.trimOffsetTop ?? 0), width: info.width, height: info.height };
@@ -86,6 +94,7 @@ const buildPartners = async () => {
     out.push({ name: r.name, file: `${slug}.webp`, width: buf.info.width, height: buf.info.height, ...(r.url ? { url: r.url } : {}) });
   }
   writeFileSync(join(ROOT, "src/data/partners.json"), JSON.stringify(out, null, 2) + "\n");
+  console.log(`fondo quitado en ${bgRemoved.length}: ${bgRemoved.join(", ")}`);
   console.log(`aliados: ${out.length} logos -> src/assets/partners (${kb(total)} en total) + src/data/partners.json`);
 };
 
