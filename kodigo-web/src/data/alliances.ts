@@ -32,7 +32,7 @@ export const workshop = {
   agenda: {
     label: "Próximos workshops",
     events: [
-      { day: "26", month: "NOV", title: "AI para equipos comerciales", mode: "Sesión Presencial INCAF" },
+      { day: "26", month: "NOV", title: "AI para equipos comerciales", mode: "Sesión Presencial CONAMYPE" },
       { soon: true, title: "Nuevo workshop", mode: "Fecha por anunciar" },
     ] as { day?: string; month?: string; soon?: boolean; title: string; mode: string }[],
     cta: "Registrarme",
