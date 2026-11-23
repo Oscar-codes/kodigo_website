@@ -7,6 +7,10 @@ export const siteConfig = {
   enrollmentUrl: undefined as string | undefined,
   // PENDIENTE (página Alianzas): enlace para agendar la asesoría (calendario o formulario). Sin advisoryUrl el botón baja a "Aplicar" (#aplicar).
   advisoryUrl: undefined as string | undefined,
+  // PENDIENTE (FE-03, Marketing): URL o formulario de preinscripción a los workshops 2027. Mientras no exista, el CTA abre
+  // el mismo formulario de HubSpot del workshop en modo preinscripción (nunca una tercera ruta comercial). TODO(Marketing):
+  // sustituirlo por el formulario 2027; hoy comparte el formId del workshop y podría heredar campos ocultos del evento 2026.
+  workshop2027Url: undefined as string | undefined,
   // HubSpot (embed v2): identificadores públicos del portal y de cada formulario. "alianzas" es el de la sección Aplicar de
   // la página Alianzas y "workshop" el del registro al Workshop (modal, embed nuevo hs-form-frame); los formularios de los
   // bootcamps están en data/bootcampForms.ts.

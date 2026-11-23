@@ -43,6 +43,9 @@ export const impactStats = [
   { value: 80, label: "Alianzas estratégicas" },
 ];
 
+/** Intención con la que se abre el formulario del workshop (FE-03). */
+export type WorkshopIntent = "nov26_2026" | "workshops_2027";
+
 export const workshop = {
   label: "Workshop con IA para empresas",
   title: "¿Quieres aprender IA rápidamente? Únete a nuestros workshops",
@@ -54,19 +57,44 @@ export const workshop = {
   ] as const,
   // Etiqueta que acompaña al logo en la cabecera del pase de registro.
   ticketTag: "Workshop · IA para empresas",
-  // Agenda dentro del pase de registro: cada workshop con fecha lleva su botón, que abre el modal con el formulario de HubSpot.
-  // Solo se muestra lo confirmado: sin año ni hora hasta recibirlos.
-  agenda: {
-    label: "Próximos workshops",
-    events: [
-      { day: "26", month: "NOV", title: "AI para equipos comerciales", mode: "Sesión Presencial CONAMYPE" },
-      { soon: true, title: "Nuevo workshop", mode: "Fecha por anunciar" },
-    ] as { day?: string; month?: string; soon?: boolean; title: string; mode: string }[],
-    cta: "Registrarme",
-    soon: "Próximamente",
+  // FE-03: último workshop de 2026, con todos los datos como texto HTML (no solo en el arte del pase).
+  upcoming: {
+    id: "nov26_2026",
+    badge: "ÚLTIMO WORKSHOP EMPRESARIAL DE 2026",
+    title: "IA para equipos comerciales",
+    description:
+      "Una sesión práctica de nivel intermedio para explorar cómo integrar IA en procesos comerciales: prospección, forecast, propuestas y CRM.",
+    date: "26 de noviembre de 2026",
+    schedule: "1:00 p. m. - 4:00 p. m.",
+    location: "CONAMYPE",
+    speaker: "Óscar Guzmán, gerente de ventas",
+    investment: "USD 180 por mesa para 4 personas. Persona adicional: USD 45.",
+    cta: "Reservar mi lugar",
+    supporting: "Último workshop empresarial del año. Asegura la participación de tu equipo.",
   },
-  modalTitle: "Regístrate al Workshop",
-  modalIntro: "Déjanos tus datos para recibir más detalles del evento.",
+  // FE-03: preinscripción a la agenda 2027. Sin fechas ni temáticas inventadas: solo el interés.
+  preregistration2027: {
+    id: "workshops_2027",
+    badge: "WORKSHOPS EMPRESARIALES 2027",
+    title: "Prepárate para llevar nuevas habilidades a tu equipo en 2027.",
+    description:
+      "Estamos preparando una nueva agenda de workshops empresariales para 2027. Déjanos tus datos y sé de los primeros en conocer las fechas y temáticas.",
+    cta: "Preinscribir a mi empresa",
+    supporting: "Registra tu interés y recibe información antes de que abramos las próximas convocatorias",
+  },
+  // Contenido del modal de HubSpot según la intención del CTA.
+  registration: {
+    nov26_2026: {
+      eyebrow: "Workshop · IA para empresas",
+      title: "Regístrate al Workshop",
+      intro: "Déjanos tus datos para recibir más detalles del evento.",
+    },
+    workshops_2027: {
+      eyebrow: "Workshops empresariales 2027",
+      title: "Preinscribe a tu empresa",
+      intro: "Déjanos tus datos y te contactaremos cuando abramos las próximas convocatorias.",
+    },
+  } as Record<WorkshopIntent, { eyebrow: string; title: string; intro: string }>,
 };
 
 export const successCases = {

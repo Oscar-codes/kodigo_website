@@ -50,19 +50,30 @@ const open = async (width) => {
   t("workshop: tres pasos con el texto pedido", JSON.stringify(await steps.allInnerTexts()) === JSON.stringify(["Detectá oportunidades de IA en tu empresa", "Conocé casos de uso aplicables a tu equipo", "Definí cómo llevarlos a la práctica"]));
   t("workshop: cada paso con icono oficial cargado", await p.locator("section[aria-labelledby=workshop-title] ol .icon img").evaluateAll((l) => l.length === 3 && l.every((i) => i.complete && i.naturalWidth > 0)));
 
-  // ---- 4. Agenda dentro del pase y registro en modal (formulario de HubSpot)
+  // ---- 4. FE-03: workshop del 26 de noviembre de 2026 y preinscripción 2027
   const ws = p.locator("section[aria-labelledby=workshop-title]");
-  const agenda = ws.getByRole("list", { name: "Próximos workshops" });
-  t("pase: agenda con dos filas, la segunda 'Próximamente'", (await agenda.locator("li").count()) === 2 && (await agenda.locator("li").nth(1).innerText()).includes("Próximamente"));
-  const at = (await agenda.locator("li").first().innerText()).replace(/\s+/g, " ");
-  t("pase: primera fila con 26 NOV, título y modalidad", /26/.test(at) && /NOV/.test(at) && at.includes("AI para equipos comerciales") && at.includes("Sesión Presencial CONAMYPE"), at);
-  t("pase: la agenda está en el pase, antes de los tres pasos", await ws.locator("ol").evaluate((ol) => !!(document.querySelector("section[aria-labelledby=workshop-title] ul[aria-label]").compareDocumentPosition(ol) & Node.DOCUMENT_POSITION_FOLLOWING)));
-  t("banda: fondo con foto tratada (pseudo-elemento) y palabra clave 'workshops' en degradado", /url\(/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e, "::before").backgroundImage)) && (await p.locator("#workshop-title em").innerText()) === "workshops" && /gradient/.test(await p.locator("#workshop-title em").evaluate((e) => getComputedStyle(e).backgroundImage)));
+  const event = ws.locator("article");
+  t("workshop 2026: insignia de último workshop del año", (await event.getByText("ÚLTIMO WORKSHOP EMPRESARIAL DE 2026", { exact: true }).isVisible()));
+  t("workshop 2026: título y descripción exactos", (await event.getByRole("heading", { name: "IA para equipos comerciales" }).isVisible()) && (await event.getByText("Una sesión práctica de nivel intermedio para explorar cómo integrar IA en procesos comerciales: prospección, forecast, propuestas y CRM.", { exact: true }).isVisible()));
+  const facts = (await event.locator("dl").innerText()).replace(/\s+/g, " ");
+  t("workshop 2026: fecha, horario, lugar, ponente e inversión como texto HTML", ["26 de noviembre de 2026", "1:00 p. m. - 4:00 p. m.", "CONAMYPE", "Óscar Guzmán, gerente de ventas", "USD 180 por mesa para 4 personas. Persona adicional: USD 45."].every((s) => facts.includes(s)), facts);
+  t("workshop 2026: CTA 'Reservar mi lugar' con texto de apoyo", (await event.getByRole("button", { name: "Reservar mi lugar" }).isVisible()) && (await event.getByText("Último workshop empresarial del año. Asegura la participación de tu equipo.", { exact: true }).isVisible()));
+  const prereg = ws.locator("aside");
+  t("2027: insignia, título y descripción exactos", (await prereg.getByText("WORKSHOPS EMPRESARIALES 2027", { exact: true }).isVisible()) && (await prereg.locator("#workshop-2027-title").innerText()).trim() === "Prepárate para llevar nuevas habilidades a tu equipo en 2027." && (await prereg.getByText("Estamos preparando una nueva agenda de workshops empresariales para 2027. Déjanos tus datos y sé de los primeros en conocer las fechas y temáticas.", { exact: true }).isVisible()));
+  t("2027: CTA 'Preinscribir a mi empresa' con su texto de apoyo", (await prereg.getByRole("button", { name: "Preinscribir a mi empresa" }).isVisible()) && (await prereg.getByText("Registra tu interés y recibe información antes de que abramos las próximas convocatorias", { exact: true }).isVisible()));
+  t("2027: ya no existe el bloque 'Nuevo workshop' / 'Próximamente'", (await ws.getByText("Nuevo workshop", { exact: true }).count()) === 0 && (await ws.getByText("Próximamente", { exact: true }).count()) === 0);
+  t("workshop 2026: el pase va antes de los tres pasos", await ws.evaluate((s) => !!(s.querySelector("article").compareDocumentPosition(s.querySelector("ol")) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  t("2027: el bloque de preinscripción va después del workshop 2026", await ws.evaluate((s) => !!(s.querySelector("article").compareDocumentPosition(s.querySelector("aside")) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  t("banda: fondo con foto tratada (pseudo-elemento) y palabra clave 'workshops' en degradado", /url\(/.test(await ws.evaluate((e) => getComputedStyle(e, "::before").backgroundImage)) && (await p.locator("#workshop-title em").innerText()) === "workshops" && /gradient/.test(await p.locator("#workshop-title em").evaluate((e) => getComputedStyle(e).backgroundImage)));
   t("ya no hay sección 'Próximos workshops' aparte ni globo", (await p.locator("#events-title").count()) === 0 && (await p.locator("#proximos").count()) === 0);
-  await agenda.getByRole("button", { name: "Registrarme" }).click(); await sleep(600);
-  t("registro: 'Registrarme' abre el modal con el título del Workshop", (await p.locator("dialog[open]").count()) === 1 && (await p.locator("dialog[open] h2").innerText()).includes("Regístrate al Workshop"));
+  await event.getByRole("button", { name: "Reservar mi lugar" }).click(); await sleep(600);
+  t("registro 2026: 'Reservar mi lugar' abre el modal del Workshop", (await p.locator("dialog[open]").count()) === 1 && (await p.locator("dialog[open] h2").innerText()).includes("Regístrate al Workshop"));
   await p.keyboard.press("Escape"); await sleep(300);
-  t("registro: Escape cierra el modal", (await p.locator("dialog[open]").count()) === 0);
+  t("registro 2026: Escape cierra el modal", (await p.locator("dialog[open]").count()) === 0);
+  await prereg.getByRole("button", { name: "Preinscribir a mi empresa" }).click(); await sleep(600);
+  t("preinscripción 2027: abre el modal con el título de preinscripción", (await p.locator("dialog[open]").count()) === 1 && (await p.locator("dialog[open] h2").innerText()).includes("Preinscribe a tu empresa"));
+  await p.keyboard.press("Escape"); await sleep(300);
+  t("preinscripción 2027: Escape cierra el modal", (await p.locator("dialog[open]").count()) === 0);
   t("sin errores de consola", p.errors.length === 0, p.errors.join(" | "));
 
 
@@ -140,10 +151,12 @@ for (const width of [360, 768]) {
   await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 400) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } });
   await sleep(1200);
   t(`${width}px: sin scroll horizontal`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  const btn = await p.locator("section[aria-labelledby=workshop-title]").getByRole("button", { name: "Registrarme" }).boundingBox();
-  t(`${width}px: botón de registro dentro del ancho y con alto táctil >= 44`, btn.x >= 0 && btn.x + btn.width <= width && btn.height >= 44);
-  const cardBox = await p.locator("section[aria-labelledby=workshop-title] ul[aria-label] li").first().boundingBox();
-  t(`${width}px: fila de la agenda dentro del ancho`, cardBox.x >= 0 && cardBox.x + cardBox.width <= width);
+  const wsMobile = p.locator("section[aria-labelledby=workshop-title]");
+  const btn = await wsMobile.getByRole("button", { name: "Reservar mi lugar" }).boundingBox();
+  const preBtn = await wsMobile.getByRole("button", { name: "Preinscribir a mi empresa" }).boundingBox();
+  t(`${width}px: CTAs del workshop dentro del ancho y con alto táctil >= 44`, btn.x >= 0 && btn.x + btn.width <= width && btn.height >= 44 && preBtn.x >= 0 && preBtn.x + preBtn.width <= width && preBtn.height >= 44);
+  const cardBox = await wsMobile.locator("article").boundingBox();
+  t(`${width}px: tarjeta del workshop 2026 dentro del ancho`, cardBox.x >= 0 && cardBox.x + cardBox.width <= width);
   const adBox = await p.locator("section[aria-labelledby=adaptive-title] .badge").boundingBox();
   t(`${width}px: insignia y foto de adaptación dentro del ancho`, adBox.x >= 0 && adBox.x + adBox.width <= width);
   t(`${width}px: h1 dentro del ancho`, (await p.locator("h1").boundingBox()).width <= width);

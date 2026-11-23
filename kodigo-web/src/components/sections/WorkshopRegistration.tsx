@@ -1,14 +1,15 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import styled from "styled-components";
-import { workshop } from "@/data/alliances";
+import { workshop, type WorkshopIntent } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
 import { FormModal } from "../ui/FormModal";
 import { HubspotFrameForm } from "../ui/HubspotForm";
 
-// Registro al Workshop (landing B2B): un único modal con el formulario de HubSpot que se abre desde cualquier botón de
-// registro de la página (pase del Workshop y agenda de próximos workshops). El formulario solo se carga al abrirlo.
-// El formulario nuevo de HubSpot vive en un iframe: sus colores (etiquetas oscuras) solo se cambian desde HubSpot. Para que las
-// etiquetas se lean aquí, va sobre un panel claro lavanda dentro del modal morado; el texto introductorio va fuera, en blanco.
+// Registro al Workshop (landing B2B): un único modal con el formulario de HubSpot que se abre desde los CTAs de la sección
+// Workshops (reserva del 26 de noviembre y preinscripción 2027). El formulario solo se carga al abrirlo y el título/intro
+// cambian según la intención, con el mismo formulario base.
+// El formulario nuevo de HubSpot vive en un iframe: sus colores solo se cambian desde HubSpot. Este formulario usa etiquetas
+// blancas, así que va sobre un panel oscuro (no claro) para que se lean; el iframe se muestra completo, sin recortes.
 const Intro = styled.p`
   margin: 0 0 ${({ theme }) => theme.space(4)};
   padding-inline: ${({ theme }) => theme.space(2)};
@@ -17,42 +18,38 @@ const Intro = styled.p`
 
 const Panel = styled.div`
   padding: ${({ theme }) => `${theme.space(5)} ${theme.space(4)}`};
+  border: 1px solid ${({ theme }) => theme.b2b.cardBorder};
   border-radius: 20px;
-  background: #f4f1ff;
+  background: rgba(26, 15, 69, 0.55);
   box-shadow: 0 10px 40px -16px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 
-  /* El texto introductorio de HubSpot es blanco (invisible sobre este panel) pero ocupa espacio: se sube el iframe para
-     recortarlo por arriba. Ajuste visual; lo limpio es quitar ese texto en HubSpot (Contenido del formulario). */
-  .hs-form-frame {
-    margin-top: -90px;
-  }
-
   .status {
-    color: ${({ theme }) => theme.b2b.bg2};
+    color: ${({ theme }) => theme.b2b.text2};
   }
 
   .status.error {
-    color: #b42318;
+    color: #ffb4a8;
   }
 `;
 
-const WorkshopRegistrationContext = createContext<() => void>(() => undefined);
+const WorkshopRegistrationContext = createContext<(intent?: WorkshopIntent) => void>(() => undefined);
 
-/** Devuelve la función que abre el modal de registro al Workshop. */
+/** Devuelve la función que abre el modal de registro al Workshop (por defecto, el del 26 de noviembre de 2026). */
 export const useWorkshopRegistration = () => useContext(WorkshopRegistrationContext);
 
 export const WorkshopRegistrationProvider = ({ children }: { children: ReactNode }) => {
-  const [open, setOpen] = useState(false);
-  const openModal = useCallback(() => setOpen(true), []);
-  const closeModal = useCallback(() => setOpen(false), []);
+  const [intent, setIntent] = useState<WorkshopIntent | null>(null);
+  const openModal = useCallback((next: WorkshopIntent = "nov26_2026") => setIntent(next), []);
+  const closeModal = useCallback(() => setIntent(null), []);
   const value = useMemo(() => openModal, [openModal]);
+  const copy = workshop.registration[intent ?? "nov26_2026"];
 
   return (
     <WorkshopRegistrationContext.Provider value={value}>
       {children}
-      <FormModal open={open} onClose={closeModal} tone="b2b" eyebrow={workshop.ticketTag} title={workshop.modalTitle}>
-        <Intro>{workshop.modalIntro}</Intro>
+      <FormModal open={intent !== null} onClose={closeModal} tone="b2b" eyebrow={copy.eyebrow} title={copy.title}>
+        <Intro>{copy.intro}</Intro>
         <Panel>
           <HubspotFrameForm formId={siteConfig.hubspot.forms.workshop} />
         </Panel>
