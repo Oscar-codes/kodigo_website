@@ -26,10 +26,13 @@ const open = async (width) => {
   t("banner: h1 'KODIGO PARA EMPRESAS'", (await p.locator("h1").innerText()).trim() === "KODIGO PARA EMPRESAS" && (await p.locator("h1").count()) === 1);
   t("banner: titular exacto", (await p.getByText("Aprende a aplicar IA en tu trabajo, con proyectos reales", { exact: true }).filter({ visible: true }).count()) === 1);
   t("banner: subtítulo exacto", (await p.getByText("Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.", { exact: true }).filter({ visible: true }).count()) === 1);
-  const cta = p.getByRole("link", { name: "Agendar una asesoría" }).first();
-  t("banner: CTA 'Agendar una asesoría' con flecha (svg)", (await cta.isVisible()) && (await cta.locator("svg").count()) === 1);
-  t("banner: el CTA baja a Contacto mientras no haya URL de agenda", (await cta.getAttribute("href")) === "#contacto");
-  t("banner: el CTA es del tamaño de un botón (alto >= 48)", (await cta.boundingBox()).height >= 48);
+  const advisoryCta = p.getByRole("link", { name: "Agenda tu asesoría" }).first();
+  t("banner: ruta 'Asesoría gratuita' con su copy", (await p.getByRole("heading", { name: "Asesoría gratuita" }).count()) === 1 && (await p.getByText("Hablemos sobre tu empresa. Agenda una asesoría con nuestro equipo para identificar las necesidades de capacitación de tu organización y explorar una ruta de formación a medida.", { exact: true }).filter({ visible: true }).count()) === 1);
+  t("banner: CTA 'Agenda tu asesoría' con flecha y destino provisional #aplicar", (await advisoryCta.isVisible()) && (await advisoryCta.locator("svg").count()) === 1 && (await advisoryCta.getAttribute("href")) === "#aplicar");
+  const workshopCta = p.getByRole("link", { name: "Ver workshops" }).first();
+  t("banner: ruta 'Workshop empresarial' con su copy", (await p.getByRole("heading", { name: "Workshop empresarial" }).count()) === 1 && (await p.getByText("Vive la experiencia Kodigo. Participa en nuestros workshops empresariales y conoce cómo llevamos la IA y la tecnología a situaciones reales de trabajo.", { exact: true }).filter({ visible: true }).count()) === 1);
+  t("banner: CTA 'Ver workshops' con flecha y destino #workshops", (await workshopCta.isVisible()) && (await workshopCta.locator("svg").count()) === 1 && (await workshopCta.getAttribute("href")) === "#workshops");
+  t("banner: ambos CTAs con alto táctil >= 48", (await advisoryCta.boundingBox()).height >= 48 && (await workshopCta.boundingBox()).height >= 48);
 
   // ---- 2. Cifras
   const items = p.locator("section[aria-labelledby=impact-title] li");
@@ -52,7 +55,7 @@ const open = async (width) => {
   const agenda = ws.getByRole("list", { name: "Próximos workshops" });
   t("pase: agenda con dos filas, la segunda 'Próximamente'", (await agenda.locator("li").count()) === 2 && (await agenda.locator("li").nth(1).innerText()).includes("Próximamente"));
   const at = (await agenda.locator("li").first().innerText()).replace(/\s+/g, " ");
-  t("pase: primera fila con 26 NOV, título y modalidad", /26/.test(at) && /NOV/.test(at) && at.includes("AI para equipos comerciales") && at.includes("Sesión Presencial INCAF"), at);
+  t("pase: primera fila con 26 NOV, título y modalidad", /26/.test(at) && /NOV/.test(at) && at.includes("AI para equipos comerciales") && at.includes("Sesión Presencial CONAMYPE"), at);
   t("pase: la agenda está en el pase, antes de los tres pasos", await ws.locator("ol").evaluate((ol) => !!(document.querySelector("section[aria-labelledby=workshop-title] ul[aria-label]").compareDocumentPosition(ol) & Node.DOCUMENT_POSITION_FOLLOWING)));
   t("banda: fondo con foto tratada (pseudo-elemento) y palabra clave 'workshops' en degradado", /url\(/.test(await p.locator("section[aria-labelledby=workshop-title]").evaluate((e) => getComputedStyle(e, "::before").backgroundImage)) && (await p.locator("#workshop-title em").innerText()) === "workshops" && /gradient/.test(await p.locator("#workshop-title em").evaluate((e) => getComputedStyle(e).backgroundImage)));
   t("ya no hay sección 'Próximos workshops' aparte ni globo", (await p.locator("#events-title").count()) === 0 && (await p.locator("#proximos").count()) === 0);
@@ -123,8 +126,9 @@ const open = async (width) => {
   // ---- 9. Menú propio de la landing (anclas de la página; Inicio y el logo salen al home)
   const menu = p.getByRole("navigation", { name: "Principal" });
   const hrefs = await menu.getByRole("link").evaluateAll((l) => l.map((e) => e.getAttribute("href")));
-  t("menú: Inicio + 5 secciones de la página + Aplicar (distinto al del home)", JSON.stringify(hrefs) === JSON.stringify(["/", "/profesional/alianzas#workshop", "/profesional/alianzas#casos", "/profesional/alianzas#adaptacion", "/profesional/alianzas#equipo", "/profesional/alianzas#aliados", "/profesional/alianzas#aplicar"]), JSON.stringify(hrefs));
-  t("menú: cada ancla apunta a una sección existente", await p.evaluate(() => ["workshop", "casos", "adaptacion", "equipo", "aliados", "aplicar"].every((id) => !!document.getElementById(id))));
+  t("menú: Inicio + 5 secciones + CTA 'Comienza aquí' (distinto al del home)", JSON.stringify(hrefs) === JSON.stringify(["/", "/profesional/alianzas#workshops", "/profesional/alianzas#casos", "/profesional/alianzas#adaptacion", "/profesional/alianzas#equipo", "/profesional/alianzas#aliados", "/profesional/alianzas#hero"]), JSON.stringify(hrefs));
+  t("menú: etiquetas FE-01", (await menu.getByText("Workshops", { exact: true }).count()) === 1 && (await menu.getByText("Formación a tu medida", { exact: true }).count()) === 1 && (await menu.getByText("Comienza aquí", { exact: true }).count()) === 1);
+  t("menú: cada ancla apunta a una sección existente", await p.evaluate(() => ["hero", "workshops", "casos", "adaptacion", "equipo", "aliados"].every((id) => !!document.getElementById(id))));
   t("logo de Kodigo vuelve al Inicio", (await p.getByRole("link", { name: "Kodigo - Inicio" }).getAttribute("href")) === "/");
   await menu.getByRole("link", { name: "Casos de éxito", exact: true }).click(); await sleep(1500);
   t("menú: 'Casos de éxito' lleva a la sección y queda activo", (await p.evaluate(() => Math.abs(document.getElementById("casos").getBoundingClientRect().top - 92) < 40)) && (await menu.locator("a.active").innerText()).toLowerCase() === "casos de éxito");

@@ -255,7 +255,7 @@ const emphasize = (title: string) => {
 export const Workshop = () => {
   const openRegistration = useWorkshopRegistration();
   return (
-  <Band id="workshop" aria-labelledby="workshop-title">
+  <Band id="workshops" aria-labelledby="workshop-title">
     <Container>
       <Layout>
         <Head>

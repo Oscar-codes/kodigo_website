@@ -8,7 +8,7 @@ import { alliancesHero } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
-import { bracketLabel } from "../ui/B2bKit";
+import { bracketLabel, glassCard } from "../ui/B2bKit";
 import { Container } from "../ui/Container";
 import { Pause, Play } from "../ui/Icons";
 import { Plexus, type BandOptions } from "../ui/Plexus";
@@ -23,10 +23,11 @@ const MAX_CHAR_DELAY_MS = 900;
 const TEXT_START_DELAY_MS = 350;
 
 // Banner de la landing B2B: dos diapositivas con fotos ya tratadas en morado (versión de escritorio y de móvil, con el
-// texto a la izquierda / abajo), etiqueta entre corchetes, titular con palabra clave en degradado lavanda → teal, botón
-// primario, controles (anterior / pausa / siguiente) y contador "1 / 2". Efectos propios del Home de Kodigo: la
-// diapositiva sale hacia la izquierda y entra la siguiente, las letras del título "se ensamblan" y una red plexus
-// animada flota sobre la foto. El texto es el de Alianzas en ambas diapositivas (hasta tener copy distinto).
+// texto a la izquierda / abajo), etiqueta entre corchetes, titular con palabra clave en degradado lavanda → teal, las dos
+// rutas comerciales (FE-02: asesoría gratuita y workshop empresarial), controles (anterior / pausa / siguiente) y contador
+// "1 / 2". Efectos propios del Home de Kodigo: la diapositiva sale hacia la izquierda y entra la siguiente, las letras del
+// título "se ensamblan" y una red plexus animada flota sobre la foto. El texto es el de Alianzas en ambas diapositivas
+// (hasta tener copy distinto).
 interface SlideData {
   image: string;
   imageMobile: string;
@@ -73,6 +74,8 @@ const slideOut = keyframes`
 const Wrap = styled.section`
   position: relative;
   isolation: isolate;
+  /* Ancla de "Comienza aquí" (FE-01): el Hero queda bajo la cabecera fija. */
+  scroll-margin-top: calc(${({ theme }) => theme.layout.headerHeight} + 8px);
   background-color: ${({ theme }) => theme.b2b.bg1};
 `;
 
@@ -189,13 +192,53 @@ const Subtitle = styled.p<{ $animate: boolean }>`
   }
 `;
 
-const Actions = styled.div<{ $animate: boolean }>`
+// FE-02: las dos rutas comerciales, una al lado de la otra en escritorio y apiladas en móvil.
+const Routes = styled.div<{ $animate: boolean }>`
+  display: grid;
+  gap: ${({ theme }) => theme.space(4)};
+
+  ${media.up("md")} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: ${({ theme }) => theme.space(6)};
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     ${({ $animate }) =>
       $animate &&
       css`
         animation: ${fadeUp} 700ms ${({ theme }) => theme.motion.easing} ${TEXT_START_DELAY_MS + MAX_CHAR_DELAY_MS}ms backwards;
       `}
+  }
+`;
+
+const RouteCard = styled.article`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space(3)};
+  padding: ${({ theme }) => theme.space(5)};
+  ${glassCard}
+  border-radius: ${({ theme }) => theme.radii.lg};
+
+  ${media.up("md")} {
+    padding: ${({ theme }) => theme.space(6)};
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: ${({ theme }) => theme.weights.semibold};
+    line-height: 1.2;
+    color: ${({ theme }) => theme.b2b.text};
+  }
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: ${({ theme }) => theme.b2b.text2};
+  }
+
+  .cta {
+    margin-top: auto;
+    padding-top: ${({ theme }) => theme.space(2)};
   }
 `;
 
@@ -345,11 +388,23 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
             {end ? <Fragment>{render(end)}</Fragment> : null}
           </Question>
           <Subtitle $animate={animated}>{alliancesHero.subtitle}</Subtitle>
-          <Actions $animate={animated}>
-            <ButtonLink to={siteConfig.advisoryUrl ?? "#aplicar"} variant="gradient" arrow="right">
-              {alliancesHero.cta}
-            </ButtonLink>
-          </Actions>
+          <Routes $animate={animated}>
+            {alliancesHero.routes.map((route) => (
+              <RouteCard key={route.id}>
+                <h2>{route.title}</h2>
+                <p>{route.description}</p>
+                <div className="cta">
+                  <ButtonLink
+                    to={route.href ?? siteConfig.advisoryUrl ?? "#aplicar"}
+                    variant={route.id === "advisory" ? "gradient" : "ghost"}
+                    arrow="right"
+                  >
+                    {route.cta}
+                  </ButtonLink>
+                </div>
+              </RouteCard>
+            ))}
+          </Routes>
         </Content>
       </Body>
     </Slide>
@@ -387,6 +442,7 @@ export const AlliancesHero = () => {
 
   return (
     <Wrap
+      id="hero"
       aria-roledescription="carrusel"
       aria-label="Destacados de Alianzas"
       onMouseEnter={() => setHovered(true)}

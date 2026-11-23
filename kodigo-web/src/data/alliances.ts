@@ -1,13 +1,40 @@
 // Contenido de la página "Alianzas" (Kodigo para empresas). Textos y cifras entregados por Kodigo.
 // Las cifras se muestran tal cual; si cambian, se editan aquí.
 
+/** Ruta comercial del Hero. Solo se permiten dos: asesoría gratuita y workshops (RULE-01). */
+export interface HeroRoute {
+  id: "advisory" | "workshops";
+  title: string;
+  description: string;
+  cta: string;
+  /** Destino del CTA. La asesoría usa `siteConfig.advisoryUrl` (HubSpot) y, mientras no exista, el formulario de Aplicar. */
+  href?: string;
+}
+
 export const alliancesHero = {
   title: "KODIGO PARA EMPRESAS",
   question: "Aprende a aplicar IA en tu trabajo, con proyectos reales",
   // Fragmento del titular que se resalta con el degradado de palabra clave.
   questionEmphasis: "IA en tu trabajo",
   subtitle: "Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.",
-  cta: "Agendar una asesoría",
+  // FE-02: las dos rutas de conversión visibles desde el Hero. Los textos son los aprobados en el brief.
+  routes: [
+    {
+      id: "advisory",
+      title: "Asesoría gratuita",
+      description:
+        "Hablemos sobre tu empresa. Agenda una asesoría con nuestro equipo para identificar las necesidades de capacitación de tu organización y explorar una ruta de formación a medida.",
+      cta: "Agenda tu asesoría",
+    },
+    {
+      id: "workshops",
+      title: "Workshop empresarial",
+      description:
+        "Vive la experiencia Kodigo. Participa en nuestros workshops empresariales y conoce cómo llevamos la IA y la tecnología a situaciones reales de trabajo.",
+      cta: "Ver workshops",
+      href: "#workshops",
+    },
+  ] as HeroRoute[],
 };
 
 export const impactStats = [

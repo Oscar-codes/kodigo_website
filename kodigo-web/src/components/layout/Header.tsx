@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import logoDark from "@/assets/brand/kodigo-logo-dark.webp";
 import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
 import brand from "@/assets/brand/brand.json";
-import { b2bNavigation, navigation, type NavItem } from "@/data/navigation";
+import { b2bNavigation, isCtaLabel, navigation, type NavItem } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
@@ -23,8 +23,9 @@ const scrollToTop = (e: MouseEvent) => {
 };
 
 // Variante de la landing B2B (solo página de Alianzas): barra morada oscura con Matimo, logo blanco, menú en blanco con
-// subrayado en degradado lavanda → teal en el activo/hover, "Aplicar" como píldora con degradado en mayúsculas y
-// submenús oscuros. Se escribe con el atributo [data-variant] para ganar en especificidad sin tocar el estilo del resto del sitio.
+// subrayado en degradado lavanda → teal en el activo/hover, el CTA final ("Comienza aquí") como píldora con degradado en
+// mayúsculas y submenús oscuros. Se escribe con el atributo [data-variant] para ganar en especificidad sin tocar el estilo
+// del resto del sitio.
 const b2bSkin = css`
   &[data-variant="b2b"] {
     background: ${({ theme }) => theme.b2b.bg1};
@@ -50,6 +51,9 @@ const b2bSkin = css`
     font-family: inherit;
     font-weight: ${({ theme }) => theme.weights.medium};
     color: ${({ theme }) => theme.b2b.text};
+    /* FE-01: las etiquetas se muestran tal como están escritas ("Formación a tu medida", "Casos de éxito"), sin el
+       capitalize del menú general que pondría en mayúscula cada palabra. El CTA conserva sus mayúsculas más abajo. */
+    text-transform: none;
   }
 
   &[data-variant="b2b"] li > a:hover,
@@ -319,12 +323,12 @@ const Item = styled.li`
     color: ${({ theme }) => theme.colors.menuActive};
   }
 
-  /* CTA "Aplicar" (ultima opcion del menu): boton pill con degradado
-     purpleLight->purpleDeep, texto blanco y sombra suave. En hover, lift
-     translateY(-2px) para llamar la atencion + sombra mas profunda. El
-     bloque se escribe al final del rule para ganar en cascada frente a
-     los selectores simples (regla ui-ux-pro-max: jerarquia de
-     interacciones). */
+  /* CTA final del menú ("Aplicar" en el sitio, "Comienza aquí" en Alianzas):
+     boton pill con degradado purpleLight->purpleDeep, texto blanco y sombra
+     suave. En hover, lift translateY(-2px) para llamar la atencion + sombra
+     mas profunda. El bloque se escribe al final del rule para ganar en
+     cascada frente a los selectores simples (regla ui-ux-pro-max: jerarquia
+     de interacciones). */
   > a[data-cta="true"],
   > button[data-cta="true"] {
     color: ${({ theme }) => theme.colors.white};
@@ -529,7 +533,12 @@ export const Header = () => {
       setSpy("");
       return;
     }
-    const ids = b2bNavigation.map((n) => hashOf(n.to)).filter(Boolean);
+    // El CTA ("Comienza aquí") apunta al Hero, que está antes que todas las secciones: si entrara en el cálculo, sería
+    // siempre el último de la lista y quedaría activo en toda la página. Se excluye del scroll-spy.
+    const ids = b2bNavigation
+      .filter((n) => !isCtaLabel(n.label))
+      .map((n) => hashOf(n.to))
+      .filter(Boolean);
     const update = () => {
       let current = "";
       for (const id of ids) {
@@ -603,11 +612,12 @@ export const Header = () => {
                       React Router ignora navegaciones a la misma ruta, asi que el
                       handler fuerza el scroll incluso cuando ya estamos en /. El
                       bloque {behavior: "smooth"} respeta el scroll-behavior CSS.
-                      "Aplicar" es el CTA final del menu: pill con gradient
+                      El último item ("Aplicar" en el sitio, "Comienza aquí" en
+                      Alianzas) es el CTA final del menu: pill con gradient
                       purpleLight->purpleDeep, texto blanco y lift en hover. */}
                   <Link
                     to={item.to}
-                    data-cta={item.label === "Aplicar" ? "true" : undefined}
+                    data-cta={isCtaLabel(item.label) ? "true" : undefined}
                     className={isActive(item.to) ? "active" : undefined}
                     aria-current={isActive(item.to) ? (hashOf(item.to) ? "location" : "page") : undefined}
                     onClick={item.to === "/" ? scrollToTop : undefined}

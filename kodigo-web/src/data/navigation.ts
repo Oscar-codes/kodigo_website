@@ -49,18 +49,23 @@ const nosotrosChildren: { label: string; to: string }[] = [
 ];
 
 // Menú de la landing de Alianzas (/profesional/alianzas): distinto al del resto del sitio, navega entre las secciones de la
-// propia página (anclas; ids en cada sección) y sale al Inicio con "Inicio" y con el logo de Kodigo. "Aplicar" baja al
-// formulario. Si se agrega o renombra una sección, se ajusta aquí y su `id` en el componente.
+// propia página (anclas; ids en cada sección) y sale al Inicio con "Inicio" y con el logo de Kodigo. "Comienza aquí" es el
+// CTA final: baja al Hero, donde están las dos rutas comerciales (asesoría gratuita y workshops). Si se agrega o renombra
+// una sección, se ajusta aquí y su `id` en el componente.
 const ALIANZAS = "/profesional/alianzas";
 export const b2bNavigation: NavItem[] = [
   { label: "Inicio", to: "/" },
-  { label: "Workshop", to: `${ALIANZAS}#workshop` },
+  { label: "Workshops", to: `${ALIANZAS}#workshops` },
   { label: "Casos de éxito", to: `${ALIANZAS}#casos` },
-  { label: "Adaptación", to: `${ALIANZAS}#adaptacion` },
+  { label: "Formación a tu medida", to: `${ALIANZAS}#adaptacion` },
   { label: "Equipo", to: `${ALIANZAS}#equipo` },
   { label: "Aliados", to: `${ALIANZAS}#aliados` },
-  { label: "Aplicar", to: `${ALIANZAS}#aplicar` },
+  { label: "Comienza aquí", to: `${ALIANZAS}#hero` },
 ];
+
+/** Etiquetas que el menú pinta como CTA (píldora) y no usa para calcular la sección activa. */
+const CTA_LABELS = ["Aplicar", "Comienza aquí"];
+export const isCtaLabel = (label: string) => CTA_LABELS.includes(label);
 
 export const navigation: NavItem[] = [
   // ATRAER: slide del Hero + GoalsCard. Atraer al usuario y mostrarle las rutas disponibles.
