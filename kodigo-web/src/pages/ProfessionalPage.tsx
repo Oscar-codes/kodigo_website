@@ -117,7 +117,7 @@ export const ProfessionalPage = () => {
           <CaseStudies />
           <AdaptiveTraining />
           <TeamBlock />
-          {content.partners?.length ? <Partners items={content.partners} variant="grid" dark /> : null}
+          {content.partners?.length ? <Partners items={content.partners} variant="carousel" dark /> : null}
           <ApplyB2b />
         </WorkshopRegistrationProvider>
       </B2bPage>

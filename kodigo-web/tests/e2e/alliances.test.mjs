@@ -130,6 +130,11 @@ const open = async (width) => {
   t("equipo: al pasar el cursor la foto hace zoom y aparece el resplandor violeta", (await people.first().locator("img").evaluate((e) => getComputedStyle(e).transform)) !== "none" && Number(await people.first().locator(".glow").evaluate((e) => getComputedStyle(e).opacity)) > 0);
   t("equipo: va justo después del bloque de adaptación", await p.evaluate(() => document.querySelector("section[aria-labelledby=adaptive-title]").nextElementSibling === document.querySelector("section[aria-labelledby=team-title]")));
 
+  // ---- 8b. Aliados (FE-06 carrusel horizontal)
+  const al = p.locator("#aliados");
+  t("aliados: carrusel con controles anterior/siguiente visibles", (await al.getByRole("button", { name: "Anterior aliado" }).isVisible()) && (await al.getByRole("button", { name: "Siguiente aliado" }).isVisible()));
+  t("aliados: track horizontal con items de organizaciones aliadas", (await al.locator("ul[aria-label='Organizaciones aliadas'] li").count()) > 10);
+
   // orden de las secciones
   const order = await p.evaluate(() => ["h1", "#impact-title", "#workshop-title", "#apply-title"].map((s) => document.querySelector(s)).map((e, i, a) => i === 0 || !!(a[i - 1].compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING)));
   t("orden: banner > cifras > workshop > formulario", order.every(Boolean));

@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import alliesBg from "@/assets/b2b/aliados-bg.webp";
@@ -7,6 +7,7 @@ import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { imageBackdrop } from "../ui/B2bKit";
 import { Container, Section } from "../ui/Container";
+import { ArrowLeft, ArrowRight } from "../ui/Icons";
 import { Marquee } from "../ui/Marquee";
 import { SectionTitle } from "../ui/SectionTitle";
 
@@ -83,50 +84,209 @@ const GlassPanel = styled.div`
   }
 `;
 
-// Entrada escalonada de los logos al llegar a la vista (con movimiento reducido se ven de inmediato) y brillo violeta
-// al pasar el cursor.
-const WallGrid = styled(Grid)<{ $visible: boolean }>`
-  /* En móvil caben dos logos por fila (sin esto el panel quedaba en una sola columna de 49 filas). */
-  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+const CarouselWrap = styled.div`
+  display: flex;
+  align-items: center;
   gap: ${({ theme }) => theme.space(3)};
+  position: relative;
+`;
 
-  ${media.up("md")} {
-    grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
-    gap: ${({ theme }) => theme.space(4)};
+const Track = styled.ul`
+  display: flex;
+  gap: ${({ theme }) => theme.space(4)};
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: ${({ theme }) => `${theme.space(2)} 0`};
+  margin: 0;
+  list-style: none;
+  flex: 1;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  li {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   ${media.down("md")} {
-    ${Pill} {
-      width: 100%;
-      max-width: 176px;
-      height: 72px;
-    }
+    gap: ${({ theme }) => theme.space(3)};
+  }
+`;
+
+const NavBtn = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 181, 245, 0.4);
+  background: rgba(38, 20, 84, 0.7);
+  color: ${({ theme }) => theme.b2b.text};
+  cursor: pointer;
+  transition:
+    background-color ${({ theme }) => theme.motion.duration.hover} linear,
+    border-color ${({ theme }) => theme.motion.duration.hover} linear,
+    transform ${({ theme }) => theme.motion.duration.hover} linear;
+
+  &:hover {
+    background: rgba(110, 60, 200, 0.4);
+    border-color: ${({ theme }) => theme.b2b.lavender};
+    transform: scale(1.05);
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    li {
-      opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-      transform: ${({ $visible }) => ($visible ? "none" : "translateY(16px) scale(0.94)")};
-      transition:
-        opacity 0.6s ease calc(var(--i) * 40ms),
-        transform 0.6s ${({ theme }) => theme.motion.easing} calc(var(--i) * 40ms);
-    }
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.b2b.teal};
+    outline-offset: 3px;
   }
 
-  ${Pill} {
-    background: #edebf5;
-    border: 1px solid rgba(196, 181, 245, 0.4);
-    border-radius: 16px;
-    transition:
-      transform ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing},
-      box-shadow ${({ theme }) => theme.motion.duration.base} ease;
+  ${media.down("sm")} {
+    width: 36px;
+    height: 36px;
+  }
+`;
+
+const CarouselPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 176px;
+  height: 88px;
+  padding: ${({ theme }) => `${theme.space(3)} ${theme.space(4)}`};
+  background: #edebf5;
+  border: 1px solid rgba(196, 181, 245, 0.4);
+  border-radius: 16px;
+  user-select: none;
+  transition:
+    transform ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing},
+    box-shadow ${({ theme }) => theme.motion.duration.base} ease;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
-  li:hover ${Pill}, a:focus-visible ${Pill} {
+  ${media.down("md")} {
+    width: 140px;
+    height: 72px;
+    padding: ${({ theme }) => `${theme.space(2)} ${theme.space(3)}`};
+  }
+`;
+
+const ActionableLink = styled.a`
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover ${CarouselPill}, &:focus-visible ${CarouselPill} {
     transform: translateY(-4px);
     box-shadow: 0 12px 28px rgba(110, 60, 200, 0.5), 0 0 0 2px ${({ theme }) => theme.b2b.purpleLight};
   }
 `;
+
+const AlliesCarousel = ({ items }: { items: Partner[] }) => {
+  const trackRef = useRef<HTMLUListElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  const scroll = (direction: "prev" | "next") => {
+    const track = trackRef.current;
+    if (!track) return;
+    const offset = direction === "next" ? 220 : -220;
+    track.scrollBy({ left: offset, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const interval = window.setInterval(() => {
+      if (!isPaused && track) {
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+        if (atEnd) {
+          track.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          track.scrollBy({ left: 200, behavior: "smooth" });
+        }
+      }
+    }, 3500);
+
+    return () => window.clearInterval(interval);
+  }, [isPaused]);
+
+  return (
+    <CarouselWrap
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
+    >
+      <NavBtn type="button" aria-label="Anterior aliado" onClick={() => scroll("prev")}>
+        <ArrowLeft size={18} />
+      </NavBtn>
+      <Track
+        ref={trackRef}
+        aria-label="Organizaciones aliadas"
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={() => {
+          touchStartX.current = null;
+        }}
+      >
+        {items.map((p) => {
+          const pill = (
+            <CarouselPill>
+              {p.logo ? (
+                <img
+                  src={p.logo}
+                  alt={p.name}
+                  width={p.width}
+                  height={p.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                p.name
+              )}
+            </CarouselPill>
+          );
+
+          return (
+            <li key={p.name}>
+              {p.url ? (
+                <ActionableLink
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${p.name} (abre en una pestaña nueva)`}
+                >
+                  {pill}
+                </ActionableLink>
+              ) : (
+                pill
+              )}
+            </li>
+          );
+        })}
+      </Track>
+      <NavBtn type="button" aria-label="Siguiente aliado" onClick={() => scroll("next")}>
+        <ArrowRight size={18} />
+      </NavBtn>
+    </CarouselWrap>
+  );
+};
 
 const More = styled.p`
   margin-top: ${({ theme }) => theme.space(8)};
@@ -172,8 +332,8 @@ const PartnerItem = ({ partner, lazy }: { partner: Partner; lazy: boolean }) => 
 
 interface PartnersProps {
   items: Partner[];
-  /** "marquee": franja en movimiento (Inicio). "grid": todos los logos visibles (página de Alianzas). */
-  variant?: "marquee" | "grid";
+  /** "marquee": franja en movimiento (Inicio). "grid": todos los logos visibles (página de Profesional). "carousel": carrusel horizontal interactivo (Alianzas B2B). */
+  variant?: "marquee" | "grid" | "carousel";
   /** Sin relleno superior: cuando la sección anterior ya es blanca y aporta su propio relleno inferior. */
   flushTop?: boolean;
   /** Fondo morado oscuro de la landing B2B con título claro. */
@@ -184,35 +344,29 @@ export const Partners = ({ items, variant = "marquee", flushTop = false, dark = 
   // La franja solo se monta al acercarse a la pantalla: sus logos se cargan de golpe (eager) y no deben
   // competir con el contenido inicial de la página.
   const [ref, near] = useInView<HTMLDivElement>("0px 0px 200px 0px");
-  const [gridRef, gridVisible] = useInView<HTMLUListElement>();
-  const Root = dark && variant === "grid" ? Wall : Section;
+  const isCarousel = variant === "carousel" || dark;
+  const Root = isCarousel ? Wall : Section;
 
   return (
-    <Root id={dark && variant === "grid" ? "aliados" : undefined} aria-labelledby="partners-title" $compact={variant === "marquee"} style={flushTop ? { paddingTop: 0 } : undefined}>
+    <Root id={isCarousel ? "aliados" : undefined} aria-labelledby="partners-title" $compact={variant === "marquee"} style={flushTop ? { paddingTop: 0 } : undefined}>
       <Container>
         <SectionTitle id="partners-title" label="Alianzas" title="Nuestros aliados" tone={dark ? "dark" : "light"} />
       </Container>
-      {variant === "grid" ? (
+      {isCarousel ? (
         <Container>
-          {dark ? (
-            <GlassPanel>
-              <WallGrid ref={gridRef} $visible={gridVisible} aria-label="Organizaciones aliadas">
-                {items.map((p, i) => (
-                  <li key={p.name} style={{ "--i": Math.min(i, 24) } as CSSProperties}>
-                    <PartnerItem partner={p} lazy />
-                  </li>
-                ))}
-              </WallGrid>
-            </GlassPanel>
-          ) : (
-            <Grid aria-label="Organizaciones aliadas">
-              {items.map((p) => (
-                <li key={p.name}>
-                  <PartnerItem partner={p} lazy />
-                </li>
-              ))}
-            </Grid>
-          )}
+          <GlassPanel>
+            <AlliesCarousel items={items} />
+          </GlassPanel>
+        </Container>
+      ) : variant === "grid" ? (
+        <Container>
+          <Grid aria-label="Organizaciones aliadas">
+            {items.map((p) => (
+              <li key={p.name}>
+                <PartnerItem partner={p} lazy />
+              </li>
+            ))}
+          </Grid>
         </Container>
       ) : (
         <div ref={ref}>
