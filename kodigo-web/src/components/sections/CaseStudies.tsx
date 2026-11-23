@@ -247,15 +247,13 @@ const LogoTile = styled.div`
   border-radius: 28px;
   background: ${({ theme }) => theme.b2b.text};
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  cursor: default;
 
   img {
     max-width: 100%;
+    max-height: 140px;
     height: auto;
-    transition: transform ${({ theme }) => theme.motion.duration.hover} linear;
-  }
-
-  &:hover img {
-    transform: scale(1.06);
+    object-fit: contain;
   }
 `;
 
@@ -451,16 +449,18 @@ export const CaseStudies = () => {
                       <span className="badge">{c.badge}</span>
                       <p className="text">{c.text}</p>
                     </Story>
-                    <Results aria-label="Resultados del programa">
-                      {c.tags.map((t) => (
-                        <li key={t}>
-                          <span className="check">
-                            <Check size={16} aria-hidden="true" />
-                          </span>
-                          <span>{t}</span>
-                        </li>
-                      ))}
-                    </Results>
+                    {c.tags && c.tags.length > 0 ? (
+                      <Results aria-label="Resultados del programa">
+                        {c.tags.map((t) => (
+                          <li key={t}>
+                            <span className="check">
+                              <Check size={16} aria-hidden="true" />
+                            </span>
+                            <span>{t}</span>
+                          </li>
+                        ))}
+                      </Results>
+                    ) : null}
                   </Slide>
                 ))}
               </Stage>

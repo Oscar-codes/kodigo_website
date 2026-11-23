@@ -99,11 +99,11 @@ export const workshop = {
 
 export const successCases = {
   label: "CASOS DE ÉXITO",
-  titleStart: "Empresas que llevan ",
-  titleEmphasis: "la formación a resultado",
+  titleStart: "Empresas que ya están ",
+  titleEmphasis: "transformando sus equipos con Kodigo.",
   // Tarjeta al final de las pestañas: lleva al muro de aliados.
   more: "Y muchos más",
-  lead: "Diseñamos programas a la medida para resolver necesidades reales de cada equipo y llevar nuevas habilidades al trabajo diario",
+  lead: "Conoce algunas de las organizaciones que han confiado en Kodigo para desarrollar nuevas capacidades, impulsar el talento y llevar la IA a su operación.",
   // "partner" debe coincidir con el nombre en content/partners.csv (de ahí sale el logo).
   // Textos y cifras entregados por Kodigo, tal cual.
   cases: [
@@ -111,7 +111,7 @@ export const successCases = {
       partner: "Coderland",
       badge: "CODERLAND - PANAMÁ",
       text: "Desarrollamos junto a Coderland un programa de becas corporativas como parte de su estrategia de responsabilidad corporativa, brindando a mujeres en Panamá una ruta de formación Full Stack Jr. para fortalecer su desarrollo dentro del sector tecnológico.",
-      tags: ["Full Stack Jr.", "Becas corporativas", "Talento femenino", "Panamá"],
+      tags: [] as string[],
     },
     {
       partner: "Vidri",

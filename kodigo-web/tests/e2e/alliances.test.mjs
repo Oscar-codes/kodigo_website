@@ -79,11 +79,12 @@ const open = async (width) => {
 
   // ---- 6. Casos de éxito (carrusel)
   const cs = p.locator("section[aria-labelledby=cases-title]");
-  t("casos: título exacto con énfasis", (await cs.locator("#cases-title").innerText()).replace(/\s+/g, " ").trim() === "Empresas que llevan la formación a resultado" && (await cs.locator("#cases-title strong").innerText()) === "la formación a resultado");
+  t("casos: título exacto con énfasis", (await cs.locator("#cases-title").innerText()).replace(/\s+/g, " ").trim() === "Empresas que ya están transformando sus equipos con Kodigo." && (await cs.locator("#cases-title strong").innerText()) === "transformando sus equipos con Kodigo.");
+  t("casos: texto de apoyo FE-04", await cs.getByText("Conoce algunas de las organizaciones que han confiado en Kodigo para desarrollar nuevas capacidades, impulsar el talento y llevar la IA a su operación.", { exact: true }).isVisible());
   t("casos: 5 casos y 5 pestañas con el logo de cada empresa", (await cs.locator("[role=tabpanel]").count()) === 5 && JSON.stringify(await cs.locator("[role=tab]").evaluateAll((l) => l.map((e) => e.getAttribute("aria-label")))) === JSON.stringify(["Coderland", "Vidri", "CBC", "Telus", "Casa Muñoz"]));
   t("casos: fondo con foto tratada en morado (pseudo-elemento con velo)", /url\(/.test(await cs.locator("#cases-title").evaluate((e) => getComputedStyle(e.closest("section"), "::before").backgroundImage)));
   const visibleCase = async () => cs.locator("[role=tabpanel]").evaluateAll((l) => l.filter((e) => getComputedStyle(e).visibility === "visible").map((e) => e.querySelector(".badge").textContent));
-  t("casos: arranca en Coderland con una sola diapositiva visible", JSON.stringify(await visibleCase()) === JSON.stringify(["CODERLAND - PANAMÁ"]));
+  t("casos: arranca en Coderland con una sola diapositiva visible y sin etiquetas inferiores", JSON.stringify(await visibleCase()) === JSON.stringify(["CODERLAND - PANAMÁ"]) && (await cs.locator("#case-0 ul").count()) === 0);
   await cs.getByRole("tab", { name: "Vidri" }).click(); await sleep(700);
   t("casos: la pestaña Vidri muestra su texto y cifras", JSON.stringify(await visibleCase()) === JSON.stringify(["VIDRI - EL SALVADOR"]) && (await cs.getByText("+40 profesionales").isVisible()) && (await cs.getByText("8 casos de uso de IA implementados").isVisible()));
   await cs.getByRole("tab", { name: "CBC" }).click(); await sleep(700);
@@ -101,7 +102,7 @@ const open = async (width) => {
   await p.mouse.move(5, 5); await cs.getByRole("tab", { name: "Coderland" }).click(); await p.mouse.move(5, 5); await sleep(7800);
   t("casos: avanza solo tras ~7 s (carrusel automático)", JSON.stringify(await visibleCase()) === JSON.stringify(["VIDRI - EL SALVADOR"]), JSON.stringify(await visibleCase()));
   t("casos: va inmediatamente después del bloque del workshop", await p.evaluate(() => document.querySelector("section[aria-labelledby=workshop-title]").nextElementSibling === document.querySelector("section[aria-labelledby=cases-title]")));
-  t("casos: los 11 resultados van como tarjetas iguales con visto", (await cs.locator("[role=tabpanel] ul li").count()) === 11 && (await cs.locator("[role=tabpanel] ul li .check svg").count()) === 11);
+  t("casos: los 7 resultados van como tarjetas iguales con visto (sin las etiquetas de Coderland)", (await cs.locator("[role=tabpanel] ul li").count()) === 7 && (await cs.locator("[role=tabpanel] ul li .check svg").count()) === 7);
 
   // ---- 7. Nos adaptamos a tu operación
   const ad = p.locator("section[aria-labelledby=adaptive-title]");
