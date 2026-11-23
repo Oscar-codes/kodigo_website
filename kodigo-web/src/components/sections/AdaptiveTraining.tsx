@@ -32,6 +32,7 @@ const GLOBE: GlobeOptions = { seed: 5, count: 200, speed: 0.12 };
 const Block = styled(Section)`
   ${imageBackdrop(adaptationBg, 0.5)}
   padding-block: ${({ theme }) => theme.section.dense};
+  overflow: hidden;
 `;
 
 const Layout = styled.div`
@@ -186,28 +187,48 @@ const Collage = styled.div<{ $visible: boolean }>`
 `;
 
 const Text = styled.div<{ $visible: boolean }>`
+  min-width: 0;
+
   .label {
     ${bracketLabel}
     margin-bottom: ${({ theme }) => theme.space(4)};
   }
 
   h2 {
-    font-size: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
-    line-height: 1.08;
+    font-size: clamp(2rem, 1.25rem + 2.2vw, 3.25rem);
+    line-height: 1.12;
+    overflow-wrap: break-word;
     ${headlineText}
   }
 
   h2 em {
     font-style: normal;
-    white-space: nowrap;
     ${keywordText}
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   p.lead {
-    margin: ${({ theme }) => `${theme.space(5)} 0 ${theme.space(8)}`};
+    margin: ${({ theme }) => `${theme.space(5)} 0 ${theme.space(7)}`};
     max-width: 52ch;
     font-size: 1.0625rem;
+    line-height: 1.6;
+    overflow-wrap: break-word;
     color: ${({ theme }) => theme.b2b.text2};
+  }
+
+  .cta-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.space(3)};
+  }
+
+  .supporting {
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme.b2b.text3};
+    max-width: 44ch;
+    line-height: 1.45;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -230,44 +251,6 @@ const Text = styled.div<{ $visible: boolean }>`
           animation: ${bounceInUp} 0.9s ease 0.2s both;
         }
       `}
-  }
-`;
-
-// Nota de cierre: tarjeta de vidrio con un trazo teal junto al título.
-const Closing = styled.div`
-  margin-top: ${({ theme }) => theme.space(10)};
-  padding: ${({ theme }) => `${theme.space(6)} ${theme.space(7)}`};
-  border: 1px solid ${({ theme }) => theme.b2b.cardBorder};
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(110, 60, 200, 0.4), rgba(38, 20, 84, 0.55));
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-
-  h3 {
-    display: flex;
-    align-items: baseline;
-    gap: ${({ theme }) => theme.space(3)};
-    margin-bottom: ${({ theme }) => theme.space(2)};
-    font-size: 1.25rem;
-    font-weight: ${({ theme }) => theme.weights.bold};
-    line-height: 1.3;
-    color: ${({ theme }) => theme.b2b.text};
-  }
-
-  h3::before {
-    content: "";
-    flex: none;
-    width: 16px;
-    height: 3px;
-    border-radius: 3px;
-    background: ${({ theme }) => theme.b2b.teal};
-    transform: translateY(-4px);
-  }
-
-  p {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: ${({ theme }) => theme.b2b.text2};
   }
 `;
 
@@ -427,19 +410,6 @@ const Award = () => (
   </svg>
 );
 
-// Resalta la frase final del título ("No al revés.") con el degradado de palabra clave.
-const emphasizeLastSentence = (title: string) => {
-  const i = title.lastIndexOf(". ");
-  return i < 0 ? (
-    title
-  ) : (
-    <>
-      {title.slice(0, i + 2)}
-      <em>{title.slice(i + 2)}</em>
-    </>
-  );
-};
-
 export const AdaptiveTraining = () => {
   const [ref, visible] = useInView<HTMLDivElement>();
   const [featuresRef, featuresVisible] = useInView<HTMLUListElement>();
@@ -471,17 +441,17 @@ export const AdaptiveTraining = () => {
           <Reveal direction="left">
             <Text $visible={visible}>
               <span className="label">{adaptiveTraining.label}</span>
-              <h2 id="adaptive-title">{emphasizeLastSentence(adaptiveTraining.title)}</h2>
+              <h2 id="adaptive-title">
+                {adaptiveTraining.titleStart}
+                <em>{adaptiveTraining.titleEmphasis}</em>
+              </h2>
               <p className="lead">{adaptiveTraining.lead}</p>
-              <ButtonLink to={siteConfig.advisoryUrl ?? "#aplicar"} variant="gradient" arrow="right">
-                {adaptiveTraining.cta}
-              </ButtonLink>
-              <Reveal direction="up">
-                <Closing>
-                  <h3>{adaptiveTraining.closing.title}</h3>
-                  <p>{adaptiveTraining.closing.text}</p>
-                </Closing>
-              </Reveal>
+              <div className="cta-group">
+                <ButtonLink to={siteConfig.advisoryUrl ?? "#aplicar"} variant="gradient" arrow="right">
+                  {adaptiveTraining.cta}
+                </ButtonLink>
+                <span className="supporting">{adaptiveTraining.supporting}</span>
+              </div>
             </Text>
           </Reveal>
         </Layout>

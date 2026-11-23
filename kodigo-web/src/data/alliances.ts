@@ -141,21 +141,20 @@ export const successCases = {
 };
 
 export const adaptiveTraining = {
-  label: "Nos adaptamos a tu operación",
-  title: "La capacitación se adapta a tu empresa. No al revés.",
-  lead: "Diseñamos horarios, modalidad y ritmo alrededor de la operación de tu equipo. La formación se integra al trabajo, no compite con él.",
-  // Iconos oficiales de Kodigo (Contenido / Horarios / Modalidad / Ritmo).
+  label: "ASESORÍA GRATUITA PARA TU EMPRESA",
+  titleStart: "Antes de capacitar, ",
+  titleEmphasis: "identifica qué necesita realmente tu equipo.",
+  title: "Antes de capacitar, identifica qué necesita realmente tu equipo.",
+  lead: "Agenda una asesoría gratuita con nuestro equipo. Conversaremos sobre los retos, objetivos y necesidades de tu organización para ayudarte a identificar oportunidades de formación y definir una ruta alineada a tu operación.",
+  cta: "Agenda tu asesoria",
+  supporting: "Sin costo y sin compromiso. Da el primer paso para construir un plan de formación con sentido para tu empresa.",
+  // Iconos oficiales de Kodigo (Horarios / Ritmo / Modalidad / Contenido).
   features: [
     { icon: "horarios", title: "Horarios a la medida", text: "Bloques que respetan la jornada y los picos operativos." },
     { icon: "ritmo", title: "Ritmo adaptable", text: "Sesiones intensivas o distribuidas según la disponibilidad del equipo." },
-    { icon: "modalidad", title: "Modalidad flexible", text: "Presencial, virtual o híbrida según el equipo y el objetivo." },
-    { icon: "contenido", title: "Contenido aplicado", text: "Casos y ejercicios aterrizados a la realidad" },
+    { icon: "modalidad", title: "Modalidad flexible", text: "Presencial, virtual o híbrida según las necesidades de la organización." },
+    { icon: "contenido", title: "Contenido aplicado", text: "Casos y ejercicios conectados con los retos y procesos reales de la empresa." },
   ] as const,
-  cta: "Agendar una asesoría",
-  closing: {
-    title: "Formación diseñada alrededor de tu operación",
-    text: "Definimos contigo cuándo, cómo y con qué ritmo aprende el equipo para que la formación sea sostenible y aplicable.",
-  },
   badge: { value: "+360", label: "Empresas capacitadas" },
   photoAlt: "Equipo de una empresa en una sesión de capacitación de Kodigo",
   photoSmallAlt: "Instructor de Kodigo presentando en un taller de IA",
