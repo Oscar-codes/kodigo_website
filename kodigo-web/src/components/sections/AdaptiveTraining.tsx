@@ -473,7 +473,7 @@ export const AdaptiveTraining = () => {
               <span className="label">{adaptiveTraining.label}</span>
               <h2 id="adaptive-title">{emphasizeLastSentence(adaptiveTraining.title)}</h2>
               <p className="lead">{adaptiveTraining.lead}</p>
-              <ButtonLink to={siteConfig.advisoryUrl ?? "#contacto"} variant="gradient" arrow="right">
+              <ButtonLink to={siteConfig.advisoryUrl ?? "#aplicar"} variant="gradient" arrow="right">
                 {adaptiveTraining.cta}
               </ButtonLink>
               <Reveal direction="up">

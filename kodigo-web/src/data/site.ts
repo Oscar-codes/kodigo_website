@@ -5,7 +5,7 @@ export const siteConfig = {
   description: "Kodigo: formación en tecnología e inteligencia artificial para El Salvador y Latinoamérica.",
   // PENDIENTE (X-06): URL del formulario o plataforma de inscripción. Sin valor, no se muestra el botón.
   enrollmentUrl: undefined as string | undefined,
-  // PENDIENTE (página Alianzas): enlace para agendar la asesoría (calendario o formulario). Sin advisoryUrl el botón baja a "Contacto".
+  // PENDIENTE (página Alianzas): enlace para agendar la asesoría (calendario o formulario). Sin advisoryUrl el botón baja a "Aplicar" (#aplicar).
   advisoryUrl: undefined as string | undefined,
   // HubSpot (embed v2): identificadores públicos del portal y de cada formulario. "alianzas" es el de la sección Aplicar de
   // la página Alianzas y "workshop" el del registro al Workshop (modal, embed nuevo hs-form-frame); los formularios de los

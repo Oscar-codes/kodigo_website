@@ -346,7 +346,7 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
           </Question>
           <Subtitle $animate={animated}>{alliancesHero.subtitle}</Subtitle>
           <Actions $animate={animated}>
-            <ButtonLink to={siteConfig.advisoryUrl ?? "#contacto"} variant="gradient" arrow="right">
+            <ButtonLink to={siteConfig.advisoryUrl ?? "#aplicar"} variant="gradient" arrow="right">
               {alliancesHero.cta}
             </ButtonLink>
           </Actions>
