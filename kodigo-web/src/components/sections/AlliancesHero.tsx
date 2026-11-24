@@ -5,8 +5,7 @@ import hero1Mobile from "@/assets/b2b/hero-1-m.webp";
 import hero2 from "@/assets/b2b/hero-2.webp";
 import hero2Mobile from "@/assets/b2b/hero-2-m.webp";
 import { alliancesHero } from "@/data/alliances";
-import { siteConfig } from "@/data/site";
-import { trackB2BHeroAdvisoryClick, trackB2BHeroWorkshopsClick } from "@/services/analytics";
+import { trackB2BHeroWorkshopsClick } from "@/services/analytics";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
 import { bracketLabel, glassCard } from "../ui/B2bKit";
@@ -193,15 +192,11 @@ const Subtitle = styled.p<{ $animate: boolean }>`
   }
 `;
 
-// FE-02: las dos rutas comerciales, una al lado de la otra en escritorio y apiladas en móvil.
+// Tarjeta de conversión hacia Workshops.
 const Routes = styled.div<{ $animate: boolean }>`
   display: grid;
   gap: ${({ theme }) => theme.space(4)};
-
-  ${media.up("md")} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: ${({ theme }) => theme.space(6)};
-  }
+  max-width: 520px;
 
   @media (prefers-reduced-motion: no-preference) {
     ${({ $animate }) =>
@@ -396,19 +391,10 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
                 <p>{route.description}</p>
                 <div className="cta">
                   <ButtonLink
-                    to={route.href ?? siteConfig.advisoryUrl ?? "#aplicar"}
-                    variant={route.id === "advisory" ? "gradient" : "ghost"}
+                    to={route.href ?? "#workshops"}
+                    variant="gradient"
                     arrow="right"
-                    onClick={() => {
-                      if (route.id === "advisory") {
-                        trackB2BHeroAdvisoryClick(
-                          route.cta,
-                          route.href ?? siteConfig.advisoryUrl ?? "#aplicar",
-                        );
-                      } else {
-                        trackB2BHeroWorkshopsClick(route.cta);
-                      }
-                    }}
+                    onClick={() => trackB2BHeroWorkshopsClick(route.cta)}
                   >
                     {route.cta}
                   </ButtonLink>

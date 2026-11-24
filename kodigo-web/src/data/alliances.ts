@@ -1,13 +1,12 @@
 // Contenido de la página "Alianzas" (Kodigo para empresas). Textos y cifras entregados por Kodigo.
 // Las cifras se muestran tal cual; si cambian, se editan aquí.
 
-/** Ruta comercial del Hero. Solo se permiten dos: asesoría gratuita y workshops (RULE-01). */
+/** Ruta comercial del Hero: workshops empresariales. */
 export interface HeroRoute {
-  id: "advisory" | "workshops";
+  id: "workshops";
   title: string;
   description: string;
   cta: string;
-  /** Destino del CTA. La asesoría usa `siteConfig.advisoryUrl` (HubSpot) y, mientras no exista, el formulario de Aplicar. */
   href?: string;
 }
 
@@ -17,15 +16,8 @@ export const alliancesHero = {
   // Fragmento del titular que se resalta con el degradado de palabra clave.
   questionEmphasis: "IA en tu trabajo",
   subtitle: "Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.",
-  // FE-02: las dos rutas de conversión visibles desde el Hero. Los textos son los aprobados en el brief.
+  // Ruta de conversión hacia Workshops.
   routes: [
-    {
-      id: "advisory",
-      title: "Asesoría gratuita",
-      description:
-        "Hablemos sobre tu empresa. Agenda una asesoría con nuestro equipo para identificar las necesidades de capacitación de tu organización y explorar una ruta de formación a medida.",
-      cta: "Agenda tu asesoría",
-    },
     {
       id: "workshops",
       title: "Workshop empresarial",
@@ -141,13 +133,11 @@ export const successCases = {
 };
 
 export const adaptiveTraining = {
-  label: "ASESORÍA GRATUITA PARA TU EMPRESA",
+  label: "Formación a tu medida",
   titleStart: "Antes de capacitar, ",
   titleEmphasis: "identifica qué necesita realmente tu equipo.",
   title: "Antes de capacitar, identifica qué necesita realmente tu equipo.",
-  lead: "Agenda una asesoría gratuita con nuestro equipo. Conversaremos sobre los retos, objetivos y necesidades de tu organización para ayudarte a identificar oportunidades de formación y definir una ruta alineada a tu operación.",
-  cta: "Agenda tu asesoria",
-  supporting: "Sin costo y sin compromiso. Da el primer paso para construir un plan de formación con sentido para tu empresa.",
+  lead: "Diseñamos horarios, modalidad y ritmo alrededor de la operación de tu equipo. La formación se integra al trabajo, no compite con él.",
   // Iconos oficiales de Kodigo (Horarios / Ritmo / Modalidad / Contenido).
   features: [
     { icon: "horarios", title: "Horarios a la medida", text: "Bloques que respetan la jornada y los picos operativos." },

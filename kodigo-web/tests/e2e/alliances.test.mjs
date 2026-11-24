@@ -26,13 +26,11 @@ const open = async (width) => {
   t("banner: h1 'KODIGO PARA EMPRESAS'", (await p.locator("h1").innerText()).trim() === "KODIGO PARA EMPRESAS" && (await p.locator("h1").count()) === 1);
   t("banner: titular exacto", (await p.getByText("Aprende a aplicar IA en tu trabajo, con proyectos reales", { exact: true }).filter({ visible: true }).count()) === 1);
   t("banner: subtítulo exacto", (await p.getByText("Entrenamos a tus equipos para aplicar IA en procesos y necesidades reales de tu empresa.", { exact: true }).filter({ visible: true }).count()) === 1);
-  const advisoryCta = p.getByRole("link", { name: "Agenda tu asesoría" }).first();
-  t("banner: ruta 'Asesoría gratuita' con su copy", (await p.getByRole("heading", { name: "Asesoría gratuita" }).count()) === 1 && (await p.getByText("Hablemos sobre tu empresa. Agenda una asesoría con nuestro equipo para identificar las necesidades de capacitación de tu organización y explorar una ruta de formación a medida.", { exact: true }).filter({ visible: true }).count()) === 1);
-  t("banner: CTA 'Agenda tu asesoría' con flecha y destino provisional #aplicar", (await advisoryCta.isVisible()) && (await advisoryCta.locator("svg").count()) === 1 && (await advisoryCta.getAttribute("href")) === "#aplicar");
   const workshopCta = p.getByRole("link", { name: "Ver workshops" }).first();
-  t("banner: ruta 'Workshop empresarial' con su copy", (await p.getByRole("heading", { name: "Workshop empresarial" }).count()) === 1 && (await p.getByText("Vive la experiencia Kodigo. Participa en nuestros workshops empresariales y conoce cómo llevamos la IA y la tecnología a situaciones reales de trabajo.", { exact: true }).filter({ visible: true }).count()) === 1);
+  t("banner: ruta única 'Workshop empresarial' con su copy", (await p.getByRole("heading", { name: "Workshop empresarial" }).count()) === 1 && (await p.getByText("Vive la experiencia Kodigo. Participa en nuestros workshops empresariales y conoce cómo llevamos la IA y la tecnología a situaciones reales de trabajo.", { exact: true }).filter({ visible: true }).count()) === 1);
   t("banner: CTA 'Ver workshops' con flecha y destino #workshops", (await workshopCta.isVisible()) && (await workshopCta.locator("svg").count()) === 1 && (await workshopCta.getAttribute("href")) === "#workshops");
-  t("banner: ambos CTAs con alto táctil >= 48", (await advisoryCta.boundingBox()).height >= 48 && (await workshopCta.boundingBox()).height >= 48);
+  t("banner: sin card ni botón de asesoría", (await p.getByRole("heading", { name: "Asesoría gratuita" }).count()) === 0 && (await p.getByRole("link", { name: /Agenda tu asesoría/i }).count()) === 0);
+  t("banner: CTA con alto táctil >= 48", (await workshopCta.boundingBox()).height >= 48);
 
   // ---- 2. Cifras
   const items = p.locator("section[aria-labelledby=impact-title] li");
@@ -107,13 +105,13 @@ const open = async (width) => {
   // ---- 7. Formación a tu medida (FE-05)
   const ad = p.locator("section[aria-labelledby=adaptive-title]");
   await ad.scrollIntoViewIfNeeded(); await sleep(1500);
-  t("adaptación: título y etiqueta exactos", (await ad.locator("#adaptive-title").innerText()).replace(/\s+/g, " ").trim() === "Antes de capacitar, identifica qué necesita realmente tu equipo." && (await ad.getByText("ASESORÍA GRATUITA PARA TU EMPRESA", { exact: true }).isVisible()));
-  t("adaptación: descripción exacta", await ad.getByText("Agenda una asesoría gratuita con nuestro equipo. Conversaremos sobre los retos, objetivos y necesidades de tu organización para ayudarte a identificar oportunidades de formación y definir una ruta alineada a tu operación.", { exact: true }).isVisible());
+  t("adaptación: título y etiqueta exactos", (await ad.locator("#adaptive-title").innerText()).replace(/\s+/g, " ").trim() === "Antes de capacitar, identifica qué necesita realmente tu equipo." && (await ad.getByText("Formación a tu medida", { exact: true }).isVisible()));
+  t("adaptación: descripción exacta", await ad.getByText("Diseñamos horarios, modalidad y ritmo alrededor de la operación de tu equipo. La formación se integra al trabajo, no compite con él.", { exact: true }).isVisible());
   t("adaptación: cuatro ventajas con título y descripción", JSON.stringify(await ad.locator("ul li h3").allInnerTexts()) === JSON.stringify(["Horarios a la medida", "Ritmo adaptable", "Modalidad flexible", "Contenido aplicado"]) && (await ad.getByText("Bloques que respetan la jornada y los picos operativos.", { exact: true }).isVisible()) && (await ad.getByText("Casos y ejercicios conectados con los retos y procesos reales de la empresa.", { exact: true }).isVisible()));
   t("adaptación: iconos oficiales cargados", await ad.locator("ul .icon img").evaluateAll((l) => l.length === 4 && l.every((i) => i.complete && i.naturalWidth > 0)));
   t("adaptación: dos fotos reales cargadas con alt", await ad.locator("img.main, .small img").evaluateAll((l) => l.length === 2 && l.every((i) => i.complete && i.naturalWidth > 0 && i.alt.length > 10)));
   t("adaptación: insignia +360 Empresas capacitadas", (await ad.locator(".badge").innerText()).replace(/\s+/g, " ").includes("+360 Empresas capacitadas"));
-  t("adaptación: botón 'Agenda tu asesoria' con flecha y texto de apoyo", (await ad.getByRole("link", { name: "Agenda tu asesoria" }).locator("svg").count()) === 1 && (await ad.getByText("Sin costo y sin compromiso. Da el primer paso para construir un plan de formación con sentido para tu empresa.", { exact: true }).isVisible()));
+  t("adaptación: sin botón de asesoría", (await ad.getByRole("link", { name: /asesor/i }).count()) === 0);
   t("adaptación: foto pequeña flota (upDown)", (await ad.locator(".small").evaluate((e) => getComputedStyle(e).animationName)) !== "none");
   t("adaptación: va justo después de los casos de éxito", await p.evaluate(() => document.querySelector("section[aria-labelledby=cases-title]").nextElementSibling === document.querySelector("section[aria-labelledby=adaptive-title]")));
 

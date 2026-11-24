@@ -39,15 +39,6 @@ export const trackB2BSectionView = (eventName: string, sectionName: string) => {
 };
 
 // Clics en CTAs del Hero
-export const trackB2BHeroAdvisoryClick = (ctaText: string, destination: string) => {
-  pushDataLayer({
-    event: "b2b_hero_advisory_cta_click",
-    cta_text: ctaText,
-    cta_location: "hero",
-    destination,
-  });
-};
-
 export const trackB2BHeroWorkshopsClick = (ctaText: string) => {
   pushDataLayer({
     event: "b2b_hero_workshops_cta_click",
@@ -71,16 +62,6 @@ export const trackB2B2027PreregistrationClick = () => {
     event: "b2b_2027_preregistration_cta_click",
     program_id: "workshops_2027",
     cta_location: "workshops_section",
-  });
-};
-
-// Clic en CTA de Formación a tu medida
-export const trackB2BFormationAdvisoryClick = (ctaText: string, destination: string) => {
-  pushDataLayer({
-    event: "b2b_formation_to_measure_advisory_cta_click",
-    cta_text: ctaText,
-    cta_location: "formation_to_measure",
-    destination,
   });
 };
 

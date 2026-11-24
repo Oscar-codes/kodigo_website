@@ -11,12 +11,9 @@ import thumb4 from "@/assets/b2b/lista-04.webp";
 import smallPhoto from "@/assets/photos/hero-768.webp";
 import mainPhoto from "@/assets/photos/training.webp";
 import { adaptiveTraining } from "@/data/alliances";
-import { siteConfig } from "@/data/site";
-import { trackB2BFormationAdvisoryClick } from "@/services/analytics";
 import { useInView } from "@/hooks/useInView";
 import { bounceIn, bounceInDown, bounceInUp, flipInY, upDown } from "@/styles/effects";
 import { media } from "@/styles/theme";
-import { ButtonLink } from "../ui/Button";
 import { bracketLabel, headlineText, iconTile, imageBackdrop, keywordText } from "../ui/B2bKit";
 import { Container, Section } from "../ui/Container";
 import { Plexus, type GlobeOptions } from "../ui/Plexus";
@@ -210,26 +207,12 @@ const Text = styled.div<{ $visible: boolean }>`
   }
 
   p.lead {
-    margin: ${({ theme }) => `${theme.space(5)} 0 ${theme.space(7)}`};
+    margin: ${({ theme }) => `${theme.space(5)} 0 0`};
     max-width: 52ch;
     font-size: 1.0625rem;
     line-height: 1.6;
     overflow-wrap: break-word;
     color: ${({ theme }) => theme.b2b.text2};
-  }
-
-  .cta-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: ${({ theme }) => theme.space(3)};
-  }
-
-  .supporting {
-    font-size: 0.875rem;
-    color: ${({ theme }) => theme.b2b.text3};
-    max-width: 44ch;
-    line-height: 1.45;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -447,22 +430,6 @@ export const AdaptiveTraining = () => {
                 <em>{adaptiveTraining.titleEmphasis}</em>
               </h2>
               <p className="lead">{adaptiveTraining.lead}</p>
-              <div className="cta-group">
-                <ButtonLink
-                  to={siteConfig.advisoryUrl ?? "#aplicar"}
-                  variant="gradient"
-                  arrow="right"
-                  onClick={() =>
-                    trackB2BFormationAdvisoryClick(
-                      adaptiveTraining.cta,
-                      siteConfig.advisoryUrl ?? "#aplicar",
-                    )
-                  }
-                >
-                  {adaptiveTraining.cta}
-                </ButtonLink>
-                <span className="supporting">{adaptiveTraining.supporting}</span>
-              </div>
             </Text>
           </Reveal>
         </Layout>
