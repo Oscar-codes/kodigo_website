@@ -6,6 +6,7 @@ import hero2 from "@/assets/b2b/hero-2.webp";
 import hero2Mobile from "@/assets/b2b/hero-2-m.webp";
 import { alliancesHero } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
+import { trackB2BHeroAdvisoryClick, trackB2BHeroWorkshopsClick } from "@/services/analytics";
 import { media } from "@/styles/theme";
 import { ButtonLink } from "../ui/Button";
 import { bracketLabel, glassCard } from "../ui/B2bKit";
@@ -398,6 +399,16 @@ const SlideView = ({ slide, mode }: { slide: SlideData; mode: SlideProps["$mode"
                     to={route.href ?? siteConfig.advisoryUrl ?? "#aplicar"}
                     variant={route.id === "advisory" ? "gradient" : "ghost"}
                     arrow="right"
+                    onClick={() => {
+                      if (route.id === "advisory") {
+                        trackB2BHeroAdvisoryClick(
+                          route.cta,
+                          route.href ?? siteConfig.advisoryUrl ?? "#aplicar",
+                        );
+                      } else {
+                        trackB2BHeroWorkshopsClick(route.cta);
+                      }
+                    }}
                   >
                     {route.cta}
                   </ButtonLink>

@@ -6,6 +6,7 @@ import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
 import brand from "@/assets/brand/brand.json";
 import { b2bNavigation, isCtaLabel, navigation, type NavItem } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
+import { trackB2BNavigationClick } from "@/services/analytics";
 import { media } from "@/styles/theme";
 import { Container } from "../ui/Container";
 import { ChevronDown } from "../ui/Icons";
@@ -620,7 +621,21 @@ export const Header = () => {
                     data-cta={isCtaLabel(item.label) ? "true" : undefined}
                     className={isActive(item.to) ? "active" : undefined}
                     aria-current={isActive(item.to) ? (hashOf(item.to) ? "location" : "page") : undefined}
-                    onClick={item.to === "/" ? scrollToTop : undefined}
+                    onClick={(e) => {
+                      if (b2b) {
+                        const h = hashOf(item.to);
+                        if (h === "hero" || isCtaLabel(item.label)) {
+                          trackB2BNavigationClick("comienza_aqui", "hero");
+                        } else if (h === "workshops") {
+                          trackB2BNavigationClick("workshops", "workshops");
+                        } else if (h === "casos") {
+                          trackB2BNavigationClick("success_cases", "success_cases");
+                        } else if (h === "adaptacion") {
+                          trackB2BNavigationClick("formation_to_measure", "formation_to_measure");
+                        }
+                      }
+                      if (item.to === "/") scrollToTop(e);
+                    }}
                   >
                     {item.label}
                   </Link>

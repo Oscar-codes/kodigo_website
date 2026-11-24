@@ -1,0 +1,496 @@
+{
+  "project_metadata": {
+    "project_name": "Kodigo Landing B2B - Actualización y Tracking GTM/GA4",
+    "client": "Kodigo",
+    "target_stack": [
+      "React",
+      "TypeScript",
+      "Google Tag Manager (dataLayer)",
+      "GA4"
+    ],
+    "execution_context": {
+      "agent": "OpenCode",
+      "model": "Gemini 4 Argon",
+      "purpose": "Archivo de contexto técnico y lista de tareas ejecutables en frontend y capa de analítica (GTM), delimitando estrictamente lo que queda fuera de alcance por dependencia de HubSpot."
+    },
+    "sources": [
+      "Ajustes landing b2b.pdf (Brief técnico de implementación)",
+      "Analisis_ajustes_Landing_B2B_HubSpot.pdf (Matriz de viabilidad y alcance)"
+    ]
+  },
+  "scope_and_constraints": {
+    "in_scope": [
+      "Cambios de UI, copy, estructura, navegación, anclas y diseño responsive en React.",
+      "Reutilización de CTAs conectándolos a URLs/destinos de HubSpot ya existentes.",
+      "Implementación de carrusel horizontal en sección Aliados con autoplay, controles manuales y swipe táctil.",
+      "Emisión de eventos personalizados a window.dataLayer para vistas de sección (IntersectionObserver), clics de navegación, clics de CTAs, interacciones de carrusel y clics en casos de éxito.",
+      "Validación en GTM Preview y GA4 DebugView para los eventos de frontend."
+    ],
+    "out_of_scope_deferred_to_hubspot": [
+      "Crear, editar o rediseñar formularios internos, campos, estilos internos o validaciones de HubSpot.",
+      "Modificar propiedades del CRM, atribución u origen de conversión interno en HubSpot.",
+      "Controlar el renderizado o despliegue interno de formularios embebidos de HubSpot más allá de su contenedor/enlace.",
+      "Implementar eventos GA4 de formularios (form_start, form_submit, form_validation_error), ya que dependen de callbacks o confirmaciones reales de HubSpot y NO deben simularse con clics."
+    ],
+    "global_mandatory_rules": [
+      {
+        "id": "RULE-01",
+        "rule": "Mantener únicamente dos rutas comerciales visibles: (1) Workshops y (2) Asesoría gratuita.",
+        "details": "Las acciones de reserva (noviembre 2026) y preinscripción (2027) pertenecen a la ruta Workshops. No agregar una tercera ruta."
+      },
+      {
+        "id": "RULE-02",
+        "rule": "Prohibido crear CTAs que abran flujos distintos.",
+        "details": "No incluir botones como 'Aplicar', 'Contactar', 'Solicitar información', 'Cotizar' o 'Conocer más' si llevan a un destino diferente a Workshops o Asesoría gratuita."
+      },
+      {
+        "id": "RULE-03",
+        "rule": "Consistencia de CTAs repetidos.",
+        "details": "Los CTAs pueden repetirse en varias secciones, pero deben conservar exactamente la misma función y destino."
+      },
+      {
+        "id": "RULE-04",
+        "rule": "Diferenciación estricta entre microconversión (clic) y conversión final (envío confirmado).",
+        "details": "Un clic en un CTA o botón 'Enviar' jamás debe disparar un evento *_submit ni registrarse como conversión completada."
+      },
+      {
+        "id": "RULE-05",
+        "rule": "Privacidad y cero PII en dataLayer/GA4.",
+        "details": "No enviar nombres, correos electrónicos, teléfonos, nombres de empresas ni ningún dato personal identificable a dataLayer o GA4."
+      }
+    ]
+  },
+  "frontend_tasks": [
+    {
+      "task_id": "FE-01",
+      "section": "Navegación (Navbar)",
+      "status": "in_scope",
+      "description": "Actualizar etiquetas del menú y asegurar desplazamiento por anclas internas dentro de la misma landing sin abrir rutas comerciales adicionales.",
+      "items": [
+        {
+          "current_label": "Inicio",
+          "new_label": "Inicio",
+          "action": "Mantener sin cambios y verificar desplazamiento al inicio."
+        },
+        {
+          "current_label": "Workshop",
+          "new_label": "Workshops",
+          "action": "Cambiar etiqueta a plural y enlazar al ancla de la sección Workshops."
+        },
+        {
+          "current_label": "Casos de Éxito",
+          "new_label": "Casos de Éxito",
+          "action": "Mantener etiqueta y verificar desplazamiento a sección Casos de Éxito."
+        },
+        {
+          "current_label": "adaptacion",
+          "new_label": "Formación a tu medida",
+          "action": "Corregir etiqueta y enlazar al ancla de la sección Formación a tu medida."
+        },
+        {
+          "current_label": "Equipo",
+          "new_label": "Equipo",
+          "action": "Mantener etiqueta y validar desplazamiento si la sección continúa publicada."
+        },
+        {
+          "current_label": "Aliados",
+          "new_label": "Aliados",
+          "action": "Mantener etiqueta y validar desplazamiento a la sección Aliados."
+        },
+        {
+          "current_label": "Aplicar",
+          "new_label": "Comienza aquí",
+          "action": "Reemplazar etiqueta y desplazar al Hero (donde están las dos rutas). Prohibido abrir formularios nuevos o crear una tercera ruta."
+        }
+      ]
+    },
+    {
+      "task_id": "FE-02",
+      "section": "Hero",
+      "status": "in_scope_with_hubspot_caveat",
+      "objective": "Explicar rápidamente la propuesta B2B y mostrar ambas rutas de conversión desde el primer pantallazo (above the fold) en desktop y mobile.",
+      "requirements": [
+        "Construir dos tarjetas/bloques claros con titular, descripción breve y CTA.",
+        "Asegurar visibilidad, legibilidad y facilidad de toque en mobile para ambas opciones.",
+        "Evitar transiciones bruscas que oculten contenido o cambien de sección sin feedback visual claro.",
+        "Nota sobre formulario embebido: El brief solicita que al elegir una ruta el formulario se despliegue completo sin scroll excesivo; en alcance actual se implementa la UI/contenedor y enlace al destino existente de HubSpot sin alterar la estructura interna del formulario de HubSpot."
+      ],
+      "routes_copy": {
+        "advisory_route": {
+          "title_context": "Asesoría gratuita",
+          "copy": "Hablemos sobre tu empresa. Agenda una asesoria con nuestro equipo para identificar las necesidades de capacitación de tu organización y explorar una ruta de formación a medida.",
+          "cta_text": "Agenda tu asesoria",
+          "destination": "URL o formulario/agenda de asesoría gratuita existente en HubSpot"
+        },
+        "workshop_route": {
+          "title_context": "Workshop empresarial",
+          "copy": "Vive la experiencia Kodigo. Participa en nuestros workshops empresariales y conoce cómo llevamos la IA y la tecnología a situaciones reales de trabajo.",
+          "cta_text": "Ver workshops",
+          "destination": "#workshops (ancla interna a sección Workshops)"
+        }
+      }
+    },
+    {
+      "task_id": "FE-03",
+      "section": "Workshops",
+      "status": "in_scope_with_hubspot_caveat",
+      "objective": "Impulsar registros al último workshop de 2026 y captar leads interesados en la agenda 2027.",
+      "blocks": {
+        "november_2026_workshop": {
+          "requirements": [
+            "Mostrar todos los datos clave directamente como texto HTML en la tarjeta (no depender solo de imágenes/artes gráficos).",
+            "Destacar visualmente la etiqueta de último workshop del año sin generar una ruta comercial nueva.",
+            "Conectar el CTA al formulario de reserva de HubSpot existente."
+          ],
+          "content": {
+            "badge": "ÚLTIMO WORKSHOP EMPRESARIAL DE 2026",
+            "title": "IA para equipos comerciales",
+            "note_on_typo": "En el PDF original aparece 'Al para equipos comerciales' por OCR; usar 'IA para equipos comerciales'.",
+            "description": "Una sesión práctica de nivel intermedio para explorar cómo integrar IA en procesos comerciales: prospección, forecast, propuestas y CRM.",
+            "date": "26 de noviembre de 2026",
+            "schedule": "1:00 p. m. - 4:00 p. m.",
+            "location": "CONAMYPE",
+            "speaker": "Óscar Guzmán, gerente de ventas",
+            "investment": "USD 180 por mesa para 4 personas. Persona adicional: USD 45.",
+            "cta_text": "Reservar mi lugar",
+            "cta_alternative_in_matrix": "Reservar lugar para mi equipo (verificar texto exacto vigente en botón, mantener evento GA4 b2b_nov26_workshop_cta_click)",
+            "supporting_text": "Último workshop empresarial del año. Asegura la participación de tu equipo."
+          }
+        },
+        "workshops_2027_preregistration": {
+          "requirements": [
+            "Reemplazar el bloque actual 'Nuevo workshop' / 'Próximamente' por este bloque de preinscripción.",
+            "Prohibido publicar fechas, temáticas o detalles no confirmados para 2027.",
+            "Conectar el CTA a la URL/formulario de preinscripción 2027 proporcionado por Marketing."
+          ],
+          "content": {
+            "badge": "WORKSHOPS EMPRESARIALES 2027",
+            "title": "Prepárate para llevar nuevas habilidades a tu equipo en 2027.",
+            "description": "Estamos preparando una nueva agenda de workshops empresariales para 2027. Déjanos tus datos y sé de los primeros en conocer las fechas y temáticas.",
+            "cta_text": "Preinscribir a mi empresa",
+            "supporting_text": "Registra tu interés y recibe información antes de que abramos las próximas convocatorias"
+          }
+        }
+      }
+    },
+    {
+      "task_id": "FE-04",
+      "section": "Casos de Éxito",
+      "status": "in_scope",
+      "objective": "Dar protagonismo visual a los logos de empresas cliente y eliminar ruido visual.",
+      "content": {
+        "eyebrow": "CASOS DE ÉXITO",
+        "title": "Empresas que ya están transformando sus equipos con Kodigo.",
+        "supporting_text": "Conoce algunas de las organizaciones que han confiado en Kodigo para desarrollar nuevas capacidades, impulsar el talento y llevar la IA a su operación."
+      },
+      "requirements": [
+        "Sustituir el título anterior 'Empresas que llevan la formación a resultado'.",
+        "Eliminar por completo los bloques/etiquetas inferiores: 'Full Stack Jr.', 'Becas corporativas', 'Talento femenino' y 'Panamá'.",
+        "Dar mayor jerarquía, tamaño y espaciado limpio a los logos.",
+        "Solo hacer clicables los logos que abran un caso de éxito, testimonio o descripción real aprobada. Dejar estáticos (sin cursor pointer ni acción) los logos sin contenido real."
+      ]
+    },
+    {
+      "task_id": "FE-05",
+      "section": "Formación a tu medida",
+      "status": "in_scope",
+      "objective": "Posicionar la personalización operativa como argumento para solicitar una asesoría gratuita.",
+      "content": {
+        "eyebrow": "ASESORÍA GRATUITA PARA TU EMPRESA",
+        "title": "Antes de capacitar, identifica qué necesita realmente tu equipo.",
+        "description": "Agenda una asesoría gratuita con nuestro equipo. Conversaremos sobre los retos, objetivos y necesidades de tu organización para ayudarte a identificar oportunidades de formación y definir una ruta alineada a tu operación.",
+        "cta_text": "Agenda tu asesoria",
+        "cta_destination": "Mismo enlace/formulario de asesoría gratuita que en el Hero",
+        "supporting_text": "Sin costo y sin compromiso. Da el primer paso para construir un plan de formación con sentido para tu empresa.",
+        "attributes": [
+          {
+            "title": "Horarios a la medida",
+            "description": "Bloques que respetan la jornada y los picos operativos."
+          },
+          {
+            "title": "Ritmo adaptable",
+            "description": "Sesiones intensivas o distribuidas según la disponibilidad del equipo."
+          },
+          {
+            "title": "Modalidad flexible",
+            "description": "Presencial, virtual o híbrida según las necesidades de la organización."
+          },
+          {
+            "title": "Contenido aplicado",
+            "description": "Casos y ejercicios conectados con los retos y procesos reales de la empresa."
+          }
+        ]
+      },
+      "requirements": [
+        "Jerarquía visual: colocar primero el mensaje de asesoría gratuita y su CTA; presentar los 4 atributos como respaldo secundario sin competir con el CTA."
+      ]
+    },
+    {
+      "task_id": "FE-06",
+      "section": "Aliados",
+      "status": "in_scope",
+      "objective": "Reemplazar la cuadrícula estática extensa de logos por un carrusel horizontal limpio y responsive.",
+      "requirements": [
+        "Implementar componente de carrusel horizontal (sustituyendo el grid actual).",
+        "Configurar autoplay suave con velocidad moderada que permita leer/reconocer cada logo.",
+        "Incluir controles manuales visibles (flechas anterior / siguiente).",
+        "Habilitar soporte táctil (swipe) en mobile con tamaño legible de logos.",
+        "Respetar aspect-ratio original de cada logo (object-fit: contain, sin deformar ni recortar).",
+        "Renderizar logos sin destino real como elementos estáticos no interactivos (no simular botones)."
+      ]
+    }
+  ],
+  "analytics_gtm_specification": {
+    "architecture": "React envía objetos estructurados mediante window.dataLayer.push({ event: '<event_name>', ...params }). GTM escucha Custom Events y dispara etiquetas GA4.",
+    "implementation_notes": [
+      "Los nombres de eventos deben coincidir carácter por carácter con la matriz (prefijo obligatorio 'b2b_').",
+      "No usar un evento genérico 'cta_click'.",
+      "Corregir espacios accidentales del PDF en nombres de eventos: usar 'b2b_formation_section_view', 'b2b_navigation_start_click' y 'b2b_navigation_workshops_click' (confirmar 'b2b_formation_section_view' con equipo de marketing antes de publicar por un espacio tipográfico en el brief).",
+      "Evitar disparos duplicados en React (ej. usar refs/flags de 'alreadyTracked' en IntersectionObserver para vistas de sección y evitar doble ejecución en React.StrictMode)."
+    ],
+    "events_in_scope": {
+      "section_views": {
+        "trigger_rule": "IntersectionObserver con threshold >= 0.5 (50% visible) sostenido durante >= 1000ms continuos. Disparar una sola vez por carga de página.",
+        "events": [
+          {
+            "event_name": "b2b_hero_view",
+            "required_params": {
+              "section_name": "hero"
+            }
+          },
+          {
+            "event_name": "b2b_workshops_section_view",
+            "required_params": {
+              "section_name": "workshops"
+            }
+          },
+          {
+            "event_name": "b2b_success_cases_section_view",
+            "required_params": {
+              "section_name": "success_cases"
+            }
+          },
+          {
+            "event_name": "b2b_formation_section_view",
+            "required_params": {
+              "section_name": "formation_b2b"
+            },
+            "warning": "Verificar nombre exacto con Marketing por espacio tipográfico en brief ('b2b_formation _section_view')."
+          },
+          {
+            "event_name": "b2b_team_section_view",
+            "required_params": {
+              "section_name": "team"
+            },
+            "condition": "Solo implementar si la sección Equipo permanece publicada."
+          },
+          {
+            "event_name": "b2b_allies_section_view",
+            "required_params": {
+              "section_name": "allies"
+            }
+          }
+        ]
+      },
+      "cta_and_navigation_clicks": {
+        "trigger_rule": "Evento onClick en React. Microconversión.",
+        "events": [
+          {
+            "event_name": "b2b_hero_advisory_cta_click",
+            "trigger_element": "CTA 'Agenda tu asesoria' en Hero",
+            "required_params": {
+              "cta_text": "string (texto del botón)",
+              "cta_location": "hero",
+              "destination": "string (URL o ID destino)"
+            }
+          },
+          {
+            "event_name": "b2b_hero_workshops_cta_click",
+            "trigger_element": "CTA 'Ver workshops' en Hero",
+            "required_params": {
+              "cta_text": "string (texto del botón)",
+              "cta_location": "hero",
+              "destination": "#workshops"
+            }
+          },
+          {
+            "event_name": "b2b_nov26_workshop_cta_click",
+            "trigger_element": "CTA de reserva en tarjeta Workshop 26 nov",
+            "required_params": {
+              "workshop_id": "nov26_2026",
+              "cta_location": "workshops_section"
+            }
+          },
+          {
+            "event_name": "b2b_2027_preregistration_cta_click",
+            "trigger_element": "CTA 'Preinscribir a mi empresa' en bloque 2027",
+            "required_params": {
+              "program_id": "workshops_2027",
+              "cta_location": "workshops_section"
+            }
+          },
+          {
+            "event_name": "b2b_formation_to_measure_advisory_cta_click",
+            "trigger_element": "CTA 'Agenda tu asesoria' en Formación a tu medida",
+            "required_params": {
+              "cta_text": "string (texto del botón)",
+              "cta_location": "formation_to_measure",
+              "destination": "string (URL o ID destino)"
+            }
+          },
+          {
+            "event_name": "b2b_navigation_start_click",
+            "trigger_element": "Ítem de menú 'Comienza aquí'",
+            "required_params": {
+              "menu_item": "comienza_aqui",
+              "destination": "hero"
+            }
+          },
+          {
+            "event_name": "b2b_navigation_workshops_click",
+            "trigger_element": "Ítem de menú 'Workshops'",
+            "required_params": {
+              "menu_item": "workshops",
+              "destination": "workshops"
+            }
+          },
+          {
+            "event_name": "b2b_navigation_success_cases_click",
+            "trigger_element": "Ítem de menú 'Casos de Éxito'",
+            "required_params": {
+              "menu_item": "success_cases",
+              "destination": "success_cases"
+            }
+          },
+          {
+            "event_name": "b2b_navigation_formation_to_measure_click",
+            "trigger_element": "Ítem de menú 'Formación a tu medida'",
+            "required_params": {
+              "menu_item": "formation_to_measure",
+              "destination": "formation_to_measure"
+            }
+          }
+        ]
+      },
+      "carousel_and_success_cases_interactions": {
+        "events": [
+          {
+            "event_name": "b2b_allies_carousel_next",
+            "trigger_element": "Flecha/botón siguiente en carrusel Aliados (solo interacción manual, no autoplay)",
+            "required_params": {
+              "carousel_name": "allies",
+              "slide_index": "number"
+            }
+          },
+          {
+            "event_name": "b2b_allies_carousel_previous",
+            "trigger_element": "Flecha/botón anterior en carrusel Aliados (solo interacción manual, no autoplay)",
+            "required_params": {
+              "carousel_name": "allies",
+              "slide_index": "number"
+            }
+          },
+          {
+            "event_name": "b2b_allies_carousel_swipe",
+            "trigger_element": "Gesto swipe táctil en mobile que cambia de slide en carrusel Aliados",
+            "required_params": {
+              "carousel_name": "allies",
+              "slide_index": "number"
+            }
+          },
+          {
+            "event_name": "b2b_success_case_click",
+            "trigger_element": "Clic en logo/tarjeta de Caso de Éxito SOLO si abre contenido real",
+            "required_params": {
+              "company_or_case_id": "string",
+              "destination": "string"
+            }
+          }
+        ]
+      }
+    },
+    "events_out_of_scope_hubspot_blocked": [
+      {
+        "event_name": "b2b_advisory_form_start",
+        "params": [
+          "form_id",
+          "form_type=advisory",
+          "form_location"
+        ],
+        "reason": "Requiere detectar interacción real dentro del formulario embebido/externo de HubSpot."
+      },
+      {
+        "event_name": "b2b_advisory_form_submit",
+        "params": [
+          "form_id",
+          "form_type=advisory",
+          "form_location"
+        ],
+        "reason": "Requiere confirmación real de envío desde HubSpot (onFormSubmitted / webhook / redirect)."
+      },
+      {
+        "event_name": "b2b_nov26_registration_start",
+        "params": [
+          "form_id",
+          "workshop_id=nov26_2026"
+        ],
+        "reason": "Dependiente de HubSpot."
+      },
+      {
+        "event_name": "b2b_nov26_registration_submit",
+        "params": [
+          "form_id",
+          "workshop_id=nov26_2026"
+        ],
+        "reason": "Dependiente de confirmación real de HubSpot."
+      },
+      {
+        "event_name": "b2b_2027_preregistration_start",
+        "params": [
+          "form_id",
+          "program_id=workshops_2027"
+        ],
+        "reason": "Dependiente de HubSpot."
+      },
+      {
+        "event_name": "b2b_2027_preregistration_submit",
+        "params": [
+          "form_id",
+          "program_id=workshops_2027"
+        ],
+        "reason": "Dependiente de confirmación real de HubSpot."
+      },
+      {
+        "event_name": "b2b_form_validation_error",
+        "params": [
+          "form_id",
+          "form_type",
+          "error_type"
+        ],
+        "reason": "Los errores los gestiona y renderiza HubSpot internamente."
+      }
+    ]
+  },
+  "acceptance_and_qa_checklist": {
+    "functional_qa": [
+      "Todos los enlaces del navbar hacen scroll suave/exacto a su sección correspondiente en desktop y mobile.",
+      "Solo existen dos rutas comerciales en toda la página: Workshops y Asesoría gratuita.",
+      "Todos los textos, fechas, horarios, speaker, precios y descripciones coinciden con el brief.",
+      "Carrusel de Aliados funciona con autoplay, flechas y swipe en mobile sin deformar logos.",
+      "Bloques 'Full Stack Jr.', 'Becas corporativas', 'Talento femenino' y 'Panamá' eliminados de Casos de Éxito."
+    ],
+    "analytics_qa": [
+      "Validar en GTM Preview y GA4 DebugView los eventos de vista de sección (50% por 1s, sin duplicados).",
+      "Validar eventos de clic en CTAs, menú, carrusel y casos de éxito clicables con todos sus parámetros.",
+      "Confirmar que ningún evento *_submit ni *_start se dispara por error desde el frontend.",
+      "Auditar payloads de dataLayer para garantizar 0% de PII (datos personales)."
+    ],
+    "external_dependencies_needed_before_deploy": [
+      "URL/destino exacto del formulario/agenda de Asesoría gratuita (HubSpot).",
+      "URL/destino exacto del formulario de registro Workshop 26 de noviembre 2026 (HubSpot).",
+      "URL/destino exacto del formulario de preinscripción Workshops 2027 (HubSpot).",
+      "Confirmación de si algún logo de Casos de Éxito tiene contenido real/URL o si todos quedan estáticos.",
+      "Confirmación del nombre exacto del evento de vista de Formación ('b2b_formation_section_view')."
+    ]
+  }
+}

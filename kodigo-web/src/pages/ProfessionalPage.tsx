@@ -17,6 +17,7 @@ import { content } from "@/data/content";
 import { professionalSections } from "@/data/professional";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { media } from "@/styles/theme";
+import { B2BSectionTracker } from "@/services/analytics";
 import { NotFoundPage } from "./NotFoundPage";
 
 // Landing B2B (Alianzas): fondo morado continuo (el degradado cubre toda la página) y tipografía Matimo.
@@ -110,6 +111,7 @@ export const ProfessionalPage = () => {
   if (section.slug === "alianzas") {
     return (
       <B2bPage>
+        <B2BSectionTracker />
         <WorkshopRegistrationProvider>
           <AlliancesHero />
           <ImpactStats />

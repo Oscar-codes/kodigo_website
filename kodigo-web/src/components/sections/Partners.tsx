@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import alliesBg from "@/assets/b2b/aliados-bg.webp";
 import type { Partner } from "@/data/content";
+import { trackB2BAlliesCarouselAction } from "@/services/analytics";
 import { useInView } from "@/hooks/useInView";
 import { media } from "@/styles/theme";
 import { imageBackdrop } from "../ui/B2bKit";
@@ -198,11 +199,19 @@ const AlliesCarousel = ({ items }: { items: Partner[] }) => {
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
+  const getSlideIndex = () => {
+    const track = trackRef.current;
+    if (!track) return 0;
+    return Math.max(0, Math.round(track.scrollLeft / 190));
+  };
+
   const scroll = (direction: "prev" | "next") => {
     const track = trackRef.current;
     if (!track) return;
     const offset = direction === "next" ? 220 : -220;
     track.scrollBy({ left: offset, behavior: "smooth" });
+    const idx = Math.max(0, getSlideIndex() + (direction === "next" ? 1 : -1));
+    trackB2BAlliesCarouselAction(direction === "next" ? "next" : "previous", idx);
   };
 
   useEffect(() => {
@@ -241,8 +250,15 @@ const AlliesCarousel = ({ items }: { items: Partner[] }) => {
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0].clientX;
         }}
-        onTouchEnd={() => {
-          touchStartX.current = null;
+        onTouchEnd={(e) => {
+          if (touchStartX.current !== null) {
+            const diff = touchStartX.current - e.changedTouches[0].clientX;
+            touchStartX.current = null;
+            if (Math.abs(diff) > 40) {
+              const idx = getSlideIndex();
+              trackB2BAlliesCarouselAction("swipe", idx);
+            }
+          }
         }}
       >
         {items.map((p) => {

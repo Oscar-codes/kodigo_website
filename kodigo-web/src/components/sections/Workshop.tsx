@@ -8,6 +8,7 @@ import brand from "@/assets/brand/brand.json";
 import logoWhite from "@/assets/brand/kodigo-logo-white.webp";
 import { workshop } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
+import { trackB2B2027PreregistrationClick, trackB2BNov26WorkshopClick } from "@/services/analytics";
 import { flipInY } from "@/styles/effects";
 import { media } from "@/styles/theme";
 import { bracketLabel, glassCard, headlineText, iconTile, imageBackdrop, keywordText } from "../ui/B2bKit";
@@ -391,7 +392,10 @@ export const Workshop = () => {
                       variant="gradient"
                       arrow="right"
                       haspopup="dialog"
-                      onClick={() => openRegistration("nov26_2026")}
+                      onClick={() => {
+                        trackB2BNov26WorkshopClick();
+                        openRegistration("nov26_2026");
+                      }}
                     >
                       {workshop.upcoming.cta}
                     </ButtonAction>
@@ -406,7 +410,12 @@ export const Workshop = () => {
               <p>{workshop.preregistration2027.description}</p>
               <div className="actions">
                 {siteConfig.workshop2027Url ? (
-                  <ButtonLink to={siteConfig.workshop2027Url} variant="ghost" arrow="right">
+                  <ButtonLink
+                    to={siteConfig.workshop2027Url}
+                    variant="ghost"
+                    arrow="right"
+                    onClick={trackB2B2027PreregistrationClick}
+                  >
                     {workshop.preregistration2027.cta}
                   </ButtonLink>
                 ) : (
@@ -414,7 +423,10 @@ export const Workshop = () => {
                     variant="ghost"
                     arrow="right"
                     haspopup="dialog"
-                    onClick={() => openRegistration("workshops_2027")}
+                    onClick={() => {
+                      trackB2B2027PreregistrationClick();
+                      openRegistration("workshops_2027");
+                    }}
                   >
                     {workshop.preregistration2027.cta}
                   </ButtonAction>

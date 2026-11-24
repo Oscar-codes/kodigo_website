@@ -12,6 +12,7 @@ import smallPhoto from "@/assets/photos/hero-768.webp";
 import mainPhoto from "@/assets/photos/training.webp";
 import { adaptiveTraining } from "@/data/alliances";
 import { siteConfig } from "@/data/site";
+import { trackB2BFormationAdvisoryClick } from "@/services/analytics";
 import { useInView } from "@/hooks/useInView";
 import { bounceIn, bounceInDown, bounceInUp, flipInY, upDown } from "@/styles/effects";
 import { media } from "@/styles/theme";
@@ -447,7 +448,17 @@ export const AdaptiveTraining = () => {
               </h2>
               <p className="lead">{adaptiveTraining.lead}</p>
               <div className="cta-group">
-                <ButtonLink to={siteConfig.advisoryUrl ?? "#aplicar"} variant="gradient" arrow="right">
+                <ButtonLink
+                  to={siteConfig.advisoryUrl ?? "#aplicar"}
+                  variant="gradient"
+                  arrow="right"
+                  onClick={() =>
+                    trackB2BFormationAdvisoryClick(
+                      adaptiveTraining.cta,
+                      siteConfig.advisoryUrl ?? "#aplicar",
+                    )
+                  }
+                >
                   {adaptiveTraining.cta}
                 </ButtonLink>
                 <span className="supporting">{adaptiveTraining.supporting}</span>

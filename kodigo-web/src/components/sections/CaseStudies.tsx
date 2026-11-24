@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import casesBg from "@/assets/b2b/casos-bg.webp";
 import { successCases } from "@/data/alliances";
 import { partners } from "@/data/partners";
+import { trackB2BSuccessCaseClick } from "@/services/analytics";
 import { useInView } from "@/hooks/useInView";
 import { bounceIn, bounceInDown, bounceInUp } from "@/styles/effects";
 import { media } from "@/styles/theme";
@@ -425,7 +426,10 @@ export const CaseStudies = () => {
                     aria-controls={`case-${i}`}
                     aria-label={c.partner}
                     tabIndex={i === index ? 0 : -1}
-                    onClick={() => setIndex(i)}
+                    onClick={() => {
+                      trackB2BSuccessCaseClick(c.partner, `#case-${i}`);
+                      setIndex(i);
+                    }}
                   >
                     <span className="tile">{c.logo?.logo && <img src={c.logo.logo} alt="" width={c.logo.width} height={c.logo.height} loading="lazy" />}</span>
                     <span className="name" aria-hidden="true">

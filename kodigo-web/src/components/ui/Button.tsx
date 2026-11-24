@@ -137,13 +137,14 @@ interface ButtonLinkProps {
   variant?: Variant;
   /** Añade la flecha ↗ de Eduhall; con "right" usa la flecha →. */
   arrow?: boolean | "right";
+  onClick?: (e: React.MouseEvent) => void;
   children: React.ReactNode;
 }
 
 const isExternal = (to: string) => /^https?:\/\//i.test(to);
 const isAnchor = (to: string) => to.startsWith("#");
 
-export const ButtonLink = ({ to, variant = "primary", arrow = false, children }: ButtonLinkProps) => {
+export const ButtonLink = ({ to, variant = "primary", arrow = false, onClick, children }: ButtonLinkProps) => {
   const content = (
     <>
       {children}
@@ -152,17 +153,17 @@ export const ButtonLink = ({ to, variant = "primary", arrow = false, children }:
   );
   if (isAnchor(to)) {
     return (
-      <StyledAnchor href={to} $variant={variant}>
+      <StyledAnchor href={to} $variant={variant} onClick={onClick}>
         {content}
       </StyledAnchor>
     );
   }
   return isExternal(to) ? (
-    <StyledAnchor href={to} target="_blank" rel="noopener noreferrer" $variant={variant}>
+    <StyledAnchor href={to} target="_blank" rel="noopener noreferrer" $variant={variant} onClick={onClick}>
       {content}
     </StyledAnchor>
   ) : (
-    <StyledLink to={to} $variant={variant}>
+    <StyledLink to={to} $variant={variant} onClick={onClick}>
       {content}
     </StyledLink>
   );
