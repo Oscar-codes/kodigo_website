@@ -2,7 +2,6 @@ import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { AdaptiveTraining } from "@/components/sections/AdaptiveTraining";
 import { CaseStudies } from "@/components/sections/CaseStudies";
-import { ApplyB2b } from "@/components/sections/ApplyB2b";
 import { AlliancesHero } from "@/components/sections/AlliancesHero";
 import { ImpactStats } from "@/components/sections/ImpactStats";
 import { PageHeader } from "@/components/sections/PageHeader";
@@ -120,7 +119,6 @@ export const ProfessionalPage = () => {
           <AdaptiveTraining />
           <TeamBlock />
           {content.partners?.length ? <Partners items={content.partners} variant="carousel" dark /> : null}
-          <ApplyB2b />
         </WorkshopRegistrationProvider>
       </B2bPage>
     );
